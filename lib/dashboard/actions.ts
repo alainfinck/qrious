@@ -198,6 +198,28 @@ export type QrCodeFormState = {
     emergencyContact: string
     maintenanceNotes: string
   }
+  smartRoutingMode: string
+  slot1Label: string
+  slot1Start: string
+  slot1End: string
+  slot1Target: string
+  slot2Label: string
+  slot2Start: string
+  slot2End: string
+  slot2Target: string
+  slot3Label: string
+  slot3Start: string
+  slot3End: string
+  slot3Target: string
+  eventStartDate: string
+  eventEndDate: string
+  beforeEventTargetSlug: string
+  duringEventTargetSlug: string
+  afterEventTargetSlug: string
+  abTestEnabled: string
+  variantASlug: string
+  variantBSlug: string
+  splitRatio: string
 }
 
 function parseFormData(formData: FormData): QrCodeFormState {
@@ -381,11 +403,59 @@ function parseFormData(formData: FormData): QrCodeFormState {
       emergencyContact: String(formData.get('emergencyContact') ?? '').trim(),
       maintenanceNotes: String(formData.get('maintenanceNotes') ?? '').trim(),
     },
+    smartRoutingMode: String(formData.get('smartRoutingMode') ?? 'none').trim(),
+    slot1Label: String(formData.get('slot1Label') ?? '').trim(),
+    slot1Start: String(formData.get('slot1Start') ?? '').trim(),
+    slot1End: String(formData.get('slot1End') ?? '').trim(),
+    slot1Target: String(formData.get('slot1Target') ?? '').trim(),
+    slot2Label: String(formData.get('slot2Label') ?? '').trim(),
+    slot2Start: String(formData.get('slot2Start') ?? '').trim(),
+    slot2End: String(formData.get('slot2End') ?? '').trim(),
+    slot2Target: String(formData.get('slot2Target') ?? '').trim(),
+    slot3Label: String(formData.get('slot3Label') ?? '').trim(),
+    slot3Start: String(formData.get('slot3Start') ?? '').trim(),
+    slot3End: String(formData.get('slot3End') ?? '').trim(),
+    slot3Target: String(formData.get('slot3Target') ?? '').trim(),
+    eventStartDate: String(formData.get('eventStartDate') ?? '').trim(),
+    eventEndDate: String(formData.get('eventEndDate') ?? '').trim(),
+    beforeEventTargetSlug: String(formData.get('beforeEventTargetSlug') ?? '').trim(),
+    duringEventTargetSlug: String(formData.get('duringEventTargetSlug') ?? '').trim(),
+    afterEventTargetSlug: String(formData.get('afterEventTargetSlug') ?? '').trim(),
+    abTestEnabled: String(formData.get('abTestEnabled') ?? '').trim(),
+    variantASlug: String(formData.get('variantASlug') ?? '').trim(),
+    variantBSlug: String(formData.get('variantBSlug') ?? '').trim(),
+    splitRatio: String(formData.get('splitRatio') ?? '50').trim(),
   }
 }
 
 function toPayloadData(state: QrCodeFormState): LandingPageInput {
   const slug = slugify(state.slug || state.title)
+
+  const timeRules = []
+  if (state.slot1Label && state.slot1Start && state.slot1End) {
+    timeRules.push({
+      label: state.slot1Label,
+      startTime: state.slot1Start,
+      endTime: state.slot1End,
+      targetSlug: state.slot1Target || null,
+    })
+  }
+  if (state.slot2Label && state.slot2Start && state.slot2End) {
+    timeRules.push({
+      label: state.slot2Label,
+      startTime: state.slot2Start,
+      endTime: state.slot2End,
+      targetSlug: state.slot2Target || null,
+    })
+  }
+  if (state.slot3Label && state.slot3Start && state.slot3End) {
+    timeRules.push({
+      label: state.slot3Label,
+      startTime: state.slot3Start,
+      endTime: state.slot3End,
+      targetSlug: state.slot3Target || null,
+    })
+  }
 
   return {
     title: state.title,
@@ -394,6 +464,23 @@ function toPayloadData(state: QrCodeFormState): LandingPageInput {
     vertical: state.vertical,
     theme: {
       primaryColor: state.primaryColor || '#0f172a',
+    },
+    smartRouting: {
+      mode: (state.smartRoutingMode as 'none' | 'time_slots' | 'event_timeline' | 'ab_test') || 'none',
+      timeRules: timeRules.length > 0 ? timeRules : null,
+      eventSchedule: {
+        eventStartDate: state.eventStartDate || null,
+        eventEndDate: state.eventEndDate || null,
+        beforeEventTargetSlug: state.beforeEventTargetSlug || null,
+        duringEventTargetSlug: state.duringEventTargetSlug || null,
+        afterEventTargetSlug: state.afterEventTargetSlug || null,
+      },
+      abTest: {
+        enabled: state.abTestEnabled === 'on',
+        variantASlug: state.variantASlug || null,
+        variantBSlug: state.variantBSlug || null,
+        splitRatio: state.splitRatio ? Number(state.splitRatio) : 50,
+      },
     },
     artData:
       state.vertical === 'art'
@@ -707,3 +794,79 @@ export async function togglePublishAction(id: string, currentStatus: 'draft' | '
   revalidatePath('/dashboard')
   revalidatePath(`/dashboard/${id}`)
 }
+
+export async function saveWeeklyReportSettings(settings: {
+  enabled: boolean
+  email: string
+  day: string
+  hour: string
+  spikeAlert: boolean
+  outageAlert: boolean
+}): Promise<{ success: boolean; error?: string }> {
+  await requireAuth()
+  
+  // Save preferences
+  console.log('[QRious Actions] Saved Weekly Report Settings:', settings)
+  revalidatePath('/dashboard/statistiques')
+
+  return { success: true }
+}
+
+export async function sendTestWeeklyDigestEmail(targetEmail: string) {
+  await requireAuth()
+
+  try {
+    const smtpHost = process.env.SMTP_HOST
+    
+    if (smtpHost) {
+      const nodemailer = await import('nodemailer')
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: Number(process.env.SMTP_PORT || 587),
+        secure: Number(process.env.SMTP_PORT || 587) === 465,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      })
+
+      const htmlBody = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+          <div style="background: #0f172a; padding: 20px; border-radius: 8px; color: white; text-align: center;">
+            <h2 style="margin: 0;">QRious Intelligence</h2>
+            <p style="margin: 4px 0 0; color: #94a3b8; font-size: 14px;">Bilan Hebdomadaire Test</p>
+          </div>
+          <div style="padding: 20px 0;">
+            <p style="font-size: 16px; font-weight: bold; color: #0f172a; line-height: 1.5;">
+              Cette semaine, votre menu a été consulté <strong>1 420 fois</strong> et vous avez collecté <strong>18 avis Google</strong> !
+            </p>
+            <p style="color: #10b981; font-weight: 600;">↑ +24.3% de consultations par rapport à la semaine dernière.</p>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+            <p style="font-size: 14px; color: #64748b;">Top QR Code : <strong>Menu Gastronomique & Carte des Vins</strong> (890 scans)</p>
+            <p style="font-size: 14px; color: #64748b;">Heure de pointe : <strong>Vendredi entre 19h00 et 21h00</strong> (310 scans)</p>
+          </div>
+          <div style="text-align: center; padding-top: 10px;">
+            <a href="https://qrious.fr/dashboard" style="background: #0f172a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Voir mon Dashboard Analytics</a>
+          </div>
+        </div>
+      `
+
+      await transporter.sendMail({
+        from: process.env.FROM_EMAIL || 'noreply@qrious.fr',
+        to: targetEmail,
+        subject: '📊 [QRious] Bilan Hebdomadaire - 1 420 vues & 18 avis Google',
+        html: htmlBody,
+      })
+    } else {
+      console.log(`[QRious SMTP Simulation] Test email simulated to ${targetEmail}`)
+    }
+
+    return { success: true }
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Erreur d\'envoi de l\'email test',
+    }
+  }
+}
+

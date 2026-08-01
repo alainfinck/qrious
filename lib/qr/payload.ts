@@ -1,4 +1,21 @@
-export type QrContentType = 'url' | 'text' | 'email' | 'phone' | 'sms' | 'wifi' | 'vcard'
+export type QrContentType =
+  | 'url'
+  | 'text'
+  | 'email'
+  | 'phone'
+  | 'sms'
+  | 'wifi'
+  | 'vcard'
+  | 'art'
+  | 'immo'
+  | 'chrd'
+  | 'product'
+  | 'feedback'
+  | 'tourism'
+  | 'corporate_event'
+  | 'ugc_retail'
+  | 'field_service'
+  | 'generic_smart'
 
 export type WifiEncryption = 'WPA' | 'WEP' | 'nopass'
 
@@ -46,6 +63,85 @@ export interface VCardPayload {
   country?: string
 }
 
+export interface ArtPayload {
+  artistName: string
+  title: string
+  medium?: string
+  price?: string
+  gallery?: string
+  targetUrl?: string
+}
+
+export interface ImmoPayload {
+  title: string
+  city?: string
+  price?: string
+  wifiName?: string
+  contactPhone?: string
+  targetUrl?: string
+}
+
+export interface ChrdPayload {
+  establishmentName: string
+  menuUrl?: string
+  wifiName?: string
+  googleReviewUrl?: string
+  targetUrl?: string
+}
+
+export interface ProductPayload {
+  productName: string
+  brandName?: string
+  manualUrl?: string
+  supportEmail?: string
+  targetUrl?: string
+}
+
+export interface FeedbackPayload {
+  companyName: string
+  googleReviewUrl?: string
+  directEmail?: string
+  targetUrl?: string
+}
+
+export interface TourismPayload {
+  placeName: string
+  location?: string
+  audioGuideUrl?: string
+  websiteUrl?: string
+  targetUrl?: string
+}
+
+export interface CorporateEventPayload {
+  eventName: string
+  companyName?: string
+  date?: string
+  scheduleUrl?: string
+  targetUrl?: string
+}
+
+export interface UgcRetailPayload {
+  brandName: string
+  campaignTitle?: string
+  discountCode?: string
+  targetUrl?: string
+}
+
+export interface FieldServicePayload {
+  assetName: string
+  assetId?: string
+  status?: string
+  contactPhone?: string
+  targetUrl?: string
+}
+
+export interface GenericSmartPayload {
+  title: string
+  description?: string
+  ctaUrl?: string
+  targetUrl?: string
+}
+
 export type QrPayloadInput =
   | { type: 'url'; data: UrlPayload }
   | { type: 'text'; data: TextPayload }
@@ -54,6 +150,16 @@ export type QrPayloadInput =
   | { type: 'sms'; data: SmsPayload }
   | { type: 'wifi'; data: WifiPayload }
   | { type: 'vcard'; data: VCardPayload }
+  | { type: 'art'; data: ArtPayload }
+  | { type: 'immo'; data: ImmoPayload }
+  | { type: 'chrd'; data: ChrdPayload }
+  | { type: 'product'; data: ProductPayload }
+  | { type: 'feedback'; data: FeedbackPayload }
+  | { type: 'tourism'; data: TourismPayload }
+  | { type: 'corporate_event'; data: CorporateEventPayload }
+  | { type: 'ugc_retail'; data: UgcRetailPayload }
+  | { type: 'field_service'; data: FieldServicePayload }
+  | { type: 'generic_smart'; data: GenericSmartPayload }
 
 function escapeWifiValue(value: string): string {
   return value.replace(/([\\;,:"])/g, '\\$1')
@@ -119,6 +225,46 @@ export function buildQrPayload(input: QrPayloadInput): string {
       lines.push('END:VCARD')
       return lines.join('\n')
     }
+    case 'art':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-art?artist=${encodeURIComponent(input.data.artistName)}&title=${encodeURIComponent(input.data.title)}`
+    case 'immo':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-immo?title=${encodeURIComponent(input.data.title)}&city=${encodeURIComponent(input.data.city ?? '')}`
+    case 'chrd':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-chrd?name=${encodeURIComponent(input.data.establishmentName)}`
+    case 'product':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-product?name=${encodeURIComponent(input.data.productName)}`
+    case 'feedback':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-feedback?name=${encodeURIComponent(input.data.companyName)}`
+    case 'tourism':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-tourism?place=${encodeURIComponent(input.data.placeName)}`
+    case 'corporate_event':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-event?event=${encodeURIComponent(input.data.eventName)}`
+    case 'ugc_retail':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-retail?brand=${encodeURIComponent(input.data.brandName)}`
+    case 'field_service':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-field?asset=${encodeURIComponent(input.data.assetName)}`
+    case 'generic_smart':
+      return input.data.targetUrl?.trim()
+        ? normalizeUrl(input.data.targetUrl)
+        : `https://qrious.app/s/demo-page?title=${encodeURIComponent(input.data.title)}`
   }
 }
 
@@ -138,15 +284,49 @@ export function isPayloadReady(input: QrPayloadInput): boolean {
       return Boolean(input.data.ssid.trim())
     case 'vcard':
       return Boolean(input.data.firstName.trim())
+    case 'art':
+      return Boolean(input.data.artistName.trim() || input.data.title.trim())
+    case 'immo':
+      return Boolean(input.data.title.trim())
+    case 'chrd':
+      return Boolean(input.data.establishmentName.trim())
+    case 'product':
+      return Boolean(input.data.productName.trim())
+    case 'feedback':
+      return Boolean(input.data.companyName.trim())
+    case 'tourism':
+      return Boolean(input.data.placeName.trim())
+    case 'corporate_event':
+      return Boolean(input.data.eventName.trim())
+    case 'ugc_retail':
+      return Boolean(input.data.brandName.trim())
+    case 'field_service':
+      return Boolean(input.data.assetName.trim())
+    case 'generic_smart':
+      return Boolean(input.data.title.trim())
   }
 }
 
-export const QR_CONTENT_TYPES: { value: QrContentType; label: string; description: string }[] = [
-  { value: 'url', label: 'URL', description: 'Lien vers un site ou une page' },
-  { value: 'text', label: 'Texte', description: 'Message ou note libre' },
-  { value: 'email', label: 'Email', description: 'Ouvre un email prérempli' },
-  { value: 'phone', label: 'Téléphone', description: 'Lance un appel' },
-  { value: 'sms', label: 'SMS', description: 'Ouvre un SMS' },
-  { value: 'wifi', label: 'Wi-Fi', description: 'Partage un réseau Wi-Fi' },
-  { value: 'vcard', label: 'vCard', description: 'Carte de visite digitale' },
+export const QR_CONTENT_TYPES: { value: QrContentType; label: string; description: string; category: 'static' | 'smart' }[] = [
+  // Classiques Statiques
+  { value: 'url', label: 'Lien Web', description: 'Lien direct vers un site ou une page', category: 'static' },
+  { value: 'vcard', label: 'vCard', description: 'Fiche contact téléphonique standard', category: 'static' },
+  { value: 'wifi', label: 'Wi-Fi', description: 'Connexion automatique à un réseau Wi-Fi', category: 'static' },
+  { value: 'text', label: 'Texte', description: 'Texte ou note libre encodée', category: 'static' },
+  { value: 'email', label: 'Email', description: 'Ouvre une rédaction d’email prérempli', category: 'static' },
+  { value: 'phone', label: 'Téléphone', description: 'Déclenche un appel téléphonique direct', category: 'static' },
+  { value: 'sms', label: 'SMS', description: 'Message SMS pré-rédigé', category: 'static' },
+
+  // Smart QR Landing Pages
+  { value: 'art', label: 'Art & Exposition', description: 'Fiche d’œuvre, biographie d’artiste, certificat et prix', category: 'smart' },
+  { value: 'immo', label: 'Immobilier & Gîte', description: 'Notice de bienvenue, Wi-Fi, consignes et DPE', category: 'smart' },
+  { value: 'chrd', label: 'Hôtel & Resto', description: 'Menu digital PDF, accès Wi-Fi et cadeaux postales', category: 'smart' },
+  { value: 'product', label: 'Manuel Produit', description: 'Guide de mise en service, tutoriel vidéo et garantie', category: 'smart' },
+  { value: 'feedback', label: 'Avis & E-Réputation', description: 'Collecte Google Reviews, Tripadvisor et avis directs', category: 'smart' },
+  { value: 'tourism', label: 'Tourisme & Patrimoine', description: 'Audio-guide, coordonnées GPS et histoire du lieu', category: 'smart' },
+  { value: 'corporate_event', label: 'Événement Corporate', description: 'Programme B2B, slides et Live Wall photos', category: 'smart' },
+  { value: 'ugc_retail', label: 'Retail & Promo UGC', description: 'Codes promos, téléchargement de photos produit', category: 'smart' },
+  { value: 'field_service', label: 'Field Service', description: 'Fiche technique matériel, astreinte et contrôles', category: 'smart' },
+  { value: 'generic_smart', label: 'Landing Sur-Mesure', description: 'Page dynamique personnalisée avec boutons et média', category: 'smart' },
 ]
+

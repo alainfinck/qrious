@@ -33,10 +33,16 @@ import { cn } from '@/lib/utils'
 
 const productItems = [
   {
-    href: '/editeur',
-    label: 'Éditeur QR',
-    description: 'Créez et personnalisez un QR gratuitement',
+    href: '/generateur',
+    label: 'Générateur Universel',
+    description: 'Générez des QR codes pour tous types (Art, Immo, Resto, vCard...)',
     icon: QrCode,
+  },
+  {
+    href: '/editeur',
+    label: 'Éditeur & Design',
+    description: 'Personnalisez le style, les yeux et les couleurs',
+    icon: Wand2,
   },
   {
     href: '/#fonctionnalites',
@@ -46,15 +52,9 @@ const productItems = [
   },
   {
     href: '/demo',
-    label: 'Demo',
+    label: 'Démo',
     description: 'Voyez QRious en action',
     icon: Sparkles,
-  },
-  {
-    href: '/features',
-    label: 'Suite complète',
-    description: 'Détail de tous les outils',
-    icon: Wand2,
   },
 ]
 

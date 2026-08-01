@@ -989,6 +989,61 @@ export const LandingPages: CollectionConfig = {
         { name: 'maintenanceNotes', type: 'textarea', label: 'Consignes & notes de maintenance' },
       ],
     },
+    {
+      name: 'smartRouting',
+      type: 'group',
+      label: 'Smart Routing & Programmation Dynamique',
+      fields: [
+        {
+          name: 'mode',
+          type: 'select',
+          label: 'Mode de routage dynamique',
+          defaultValue: 'none',
+          options: [
+            { label: 'Désactivé (Contenu fixe)', value: 'none' },
+            { label: 'Règles Horaires (Petit-Déjeuner, Déjeuner, Soir)', value: 'time_slots' },
+            { label: 'Chronologie Événement (Avant, Pendant, Après)', value: 'event_timeline' },
+            { label: 'A/B Testing 50/50', value: 'ab_test' },
+          ],
+        },
+        {
+          name: 'timeRules',
+          type: 'array',
+          label: 'Créneaux horaires programmés',
+          fields: [
+            { name: 'label', type: 'text', label: 'Nom du créneau (ex: Menu Déjeuner)' },
+            { name: 'startTime', type: 'text', label: 'Heure de début (ex: 12:00)' },
+            { name: 'endTime', type: 'text', label: 'Heure de fin (ex: 15:00)' },
+            { name: 'targetSlug', type: 'text', label: 'Slug alternatif ou redirection' },
+            { name: 'customHeadline', type: 'text', label: 'Titre / Message d\'accroche spécifique' },
+          ],
+        },
+        {
+          name: 'eventSchedule',
+          type: 'group',
+          label: 'Chronologie de l\'événement',
+          fields: [
+            { name: 'eventStartDate', type: 'text', label: 'Date/Heure de début événement (ex: 2025-10-15T09:00)' },
+            { name: 'eventEndDate', type: 'text', label: 'Date/Heure de fin événement (ex: 2025-10-17T18:00)' },
+            { name: 'beforeEventTargetSlug', type: 'text', label: 'Slug Avant événement (Compte à rebours)' },
+            { name: 'duringEventTargetSlug', type: 'text', label: 'Slug Pendant événement (Live Wall)' },
+            { name: 'afterEventTargetSlug', type: 'text', label: 'Slug Après événement (Formulaire satisfaction)' },
+          ],
+        },
+        {
+          name: 'abTest',
+          type: 'group',
+          label: 'A/B Testing (Split de trafic)',
+          fields: [
+            { name: 'enabled', type: 'checkbox', label: 'Activer le test A/B' },
+            { name: 'variantASlug', type: 'text', label: 'Slug Variante A' },
+            { name: 'variantBSlug', type: 'text', label: 'Slug Variante B' },
+            { name: 'splitRatio', type: 'number', label: 'Pourcentage Variante A (ex: 50)' },
+          ],
+        },
+      ],
+    },
   ],
 }
+
 

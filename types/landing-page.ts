@@ -250,6 +250,40 @@ export interface GenericData {
   sections?: { title: string; body: string; id?: string | null }[] | null
 }
 
+export interface TimeRuleSlot {
+  label: string // Ex: "Menu Petit-Déjeuner", "Menu Déjeuner", "Soir / Cocktails"
+  startTime: string // Ex: "07:00"
+  endTime: string // Ex: "11:00"
+  targetSlug?: string | null // Redirection ou slug alternatif
+  customHeadline?: string | null
+  customNotice?: string | null
+}
+
+export interface EventScheduleRule {
+  enabled?: boolean | null
+  eventStartDate?: string | null // ISO date string ou "YYYY-MM-DDTHH:mm"
+  eventEndDate?: string | null // ISO date string ou "YYYY-MM-DDTHH:mm"
+  beforeEventTargetSlug?: string | null
+  beforeEventNotice?: string | null
+  duringEventTargetSlug?: string | null
+  afterEventTargetSlug?: string | null
+  afterEventNotice?: string | null
+}
+
+export interface AbTestConfig {
+  enabled?: boolean | null
+  variantASlug?: string | null
+  variantBSlug?: string | null
+  splitRatio?: number | null // Ex: 50 (50% / 50%)
+}
+
+export interface SmartRoutingConfig {
+  mode?: 'none' | 'time_slots' | 'event_timeline' | 'ab_test' | null
+  timeRules?: TimeRuleSlot[] | null
+  eventSchedule?: EventScheduleRule | null
+  abTest?: AbTestConfig | null
+}
+
 export interface LandingPage {
   id: string
   title: string
@@ -268,6 +302,7 @@ export interface LandingPage {
   corporateEventData?: CorporateEventData | null
   ugcRetailData?: UgcRetailData | null
   fieldServiceData?: FieldServiceData | null
+  smartRouting?: SmartRoutingConfig | null
   updatedAt?: string | null
   createdAt?: string | null
 }
@@ -277,4 +312,5 @@ export type LandingPageInput = Omit<LandingPage, 'id' | 'updatedAt' | 'createdAt
 export interface LandingPageTemplateProps {
   pageData: LandingPage
 }
+
 
