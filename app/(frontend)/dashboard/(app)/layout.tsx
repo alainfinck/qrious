@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 import { DashboardShell } from '@/components/dashboard/DashboardShell'
-import { isManagerAuthenticated } from '@/lib/auth/manager-session'
+import { isAuthenticated } from '@/lib/auth/session'
 
 export const metadata: Metadata = {
   title: 'Dashboard — Qrious',
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function DashboardAppLayout({ children }: { children: React.ReactNode }) {
-  const authenticated = await isManagerAuthenticated()
+  const authenticated = await isAuthenticated()
 
   if (!authenticated) {
     redirect('/dashboard/login')

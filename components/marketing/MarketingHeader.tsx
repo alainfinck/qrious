@@ -4,6 +4,7 @@ import { QrCode } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const navLinks = [
+  { href: '/editeur', label: 'Éditeur QR' },
   { href: '/features', label: 'Fonctionnalités' },
   { href: '/#pricing', label: 'Tarifs' },
   { href: '/demo', label: 'Demo' },
@@ -37,10 +38,10 @@ export function MarketingHeader() {
 
         <div className="flex items-center gap-2">
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link href="/dashboard">Connexion</Link>
+            <Link href="/dashboard/login">Connexion</Link>
           </Button>
           <Button asChild size="sm" className="bg-slate-900 hover:bg-slate-800">
-            <Link href="/dashboard">Créer mon QR code</Link>
+            <Link href="/dashboard/register">Créer mon QR code</Link>
           </Button>
         </div>
       </div>

@@ -8,7 +8,18 @@ interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-const RESERVED_SLUGS = new Set(['dashboard', 'api', 'admin', 'cms'])
+const RESERVED_SLUGS = new Set([
+  'dashboard',
+  'api',
+  'admin',
+  'cms',
+  'editeur',
+  'features',
+  'demo',
+  'galeries',
+  'about',
+  'contact',
+])
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params

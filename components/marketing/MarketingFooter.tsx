@@ -26,6 +26,11 @@ export function MarketingFooter() {
               </p>
               <ul className="space-y-2 text-sm text-slate-600">
                 <li>
+                  <Link href="/editeur" className="hover:text-slate-900">
+                    Éditeur QR gratuit
+                  </Link>
+                </li>
+                <li>
                   <Link href="/features" className="hover:text-slate-900">
                     QR Codes artistiques
                   </Link>

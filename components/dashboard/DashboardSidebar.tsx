@@ -14,7 +14,7 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { logoutAction } from '@/lib/dashboard/actions'
+import { logoutAction } from '@/lib/auth/actions'
 import { cn } from '@/lib/utils'
 
 const navItems = [

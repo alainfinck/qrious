@@ -205,7 +205,7 @@ export default function DemoPage() {
 
             <div className="mt-12 text-center">
               <Button asChild size="lg" className="bg-slate-900 hover:bg-slate-800 me-4">
-                <Link href="/register">Commencer gratuitement</Link>
+                <Link href="/dashboard/register">Commencer gratuitement</Link>
               </Button>
               <Button asChild variant="outline" size="lg">
                 <Link href="/#pricing">Voir les tarifs</Link>

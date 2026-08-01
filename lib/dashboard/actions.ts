@@ -3,12 +3,6 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import {
-  clearManagerSession,
-  createManagerSession,
-  isManagerAuthenticated,
-  verifyManagerPassword,
-} from '@/lib/auth/manager-session'
 import { slugify } from '@/lib/dashboard/utils'
 import {
   createLandingPage,
@@ -16,27 +10,12 @@ import {
   updateLandingPage,
 } from '@/lib/payload'
 import type { DpeRating, LandingPageInput, LandingPageVertical } from '@/types/landing-page'
+import { isAuthenticated } from '@/lib/auth/session'
 
 async function requireAuth() {
-  if (!(await isManagerAuthenticated())) {
+  if (!(await isAuthenticated())) {
     throw new Error('Non autorisé')
   }
-}
-
-export async function loginAction(formData: FormData) {
-  const password = String(formData.get('password') ?? '')
-
-  if (!verifyManagerPassword(password)) {
-    return { error: 'Mot de passe incorrect' }
-  }
-
-  await createManagerSession()
-  redirect('/dashboard')
-}
-
-export async function logoutAction() {
-  await clearManagerSession()
-  redirect('/dashboard/login')
 }
 
 export type QrCodeFormState = {

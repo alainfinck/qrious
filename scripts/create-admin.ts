@@ -4,8 +4,8 @@ import config from '../payload.config'
 import { getDatabaseUrl } from '../lib/database-url'
 
 async function createAdmin() {
-  const email = 'alain@wallprint.fr'
-  const password = 'caldera'
+  const email = process.env.ADMIN_EMAIL || 'alain@wallprint.fr'
+  const password = process.env.ADMIN_PASSWORD || 'caldera'
 
   try {
     getDatabaseUrl()
@@ -20,22 +20,26 @@ async function createAdmin() {
     collection: 'users',
     where: { email: { equals: email } },
     limit: 1,
+    overrideAccess: true,
   })
 
   if (existing.docs.length > 0) {
     await payload.update({
       collection: 'users',
       id: existing.docs[0].id,
-      data: { password },
+      data: { password, role: 'admin' },
+      overrideAccess: true,
     })
-    console.log(`✅ Mot de passe mis à jour pour ${email}`)
+    console.log(`✅ Compte admin mis à jour : ${email}`)
   } else {
     await payload.create({
       collection: 'users',
       data: {
         email,
         password,
+        role: 'admin',
       },
+      overrideAccess: true,
     })
     console.log(`✅ Compte admin créé : ${email}`)
   }
