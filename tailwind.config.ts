@@ -6,6 +6,10 @@ const config: Config = {
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['var(--font-display)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        body: ['var(--font-body)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -45,6 +49,16 @@ const config: Config = {
           foreground: 'hsl(var(--sidebar-foreground))',
           accent: 'hsl(var(--sidebar-accent))',
           border: 'hsl(var(--sidebar-border))',
+        },
+        mq: {
+          ink: 'var(--mq-ink)',
+          'ink-soft': 'var(--mq-ink-soft)',
+          mist: 'var(--mq-mist)',
+          fog: 'var(--mq-fog)',
+          signal: 'var(--mq-signal)',
+          'signal-deep': 'var(--mq-signal-deep)',
+          paper: 'var(--mq-paper)',
+          muted: 'var(--mq-muted)',
         },
       },
       borderRadius: {

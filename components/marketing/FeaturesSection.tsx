@@ -1,7 +1,5 @@
 import { BarChart3, Layers, Paintbrush, RefreshCw, Shield, Zap } from 'lucide-react'
 
-import { Card, CardContent } from '@/components/ui/card'
-
 const features = [
   {
     icon: RefreshCw,
@@ -13,7 +11,7 @@ const features = [
     icon: Layers,
     title: 'Multi-vertical',
     description:
-      'Un seul outil pour l\'art, l\'immobilier et les cartes de visite. Chaque métier a son template dédié.',
+      'Un seul outil pour l\'art, l\'immobilier et les cartes de visite. Chaque métier a son template.',
   },
   {
     icon: Paintbrush,
@@ -35,42 +33,47 @@ const features = [
   },
   {
     icon: Shield,
-    title: 'Pages optimisées mobile',
+    title: 'Pensé pour le mobile',
     description:
-      'Design type link-in-bio, pensé pour le scan smartphone. Rapide, lisible, élégant.',
+      'Design type link-in-bio, optimisé pour le scan smartphone. Rapide, lisible, élégant.',
   },
 ]
 
 export function FeaturesSection() {
   return (
-    <section id="fonctionnalites" className="border-t border-slate-100 bg-white py-20 sm:py-28">
+    <section id="fonctionnalites" className="bg-mq-paper py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto mb-14 max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-slate-400">
+        <div className="max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mq-signal-deep">
             Fonctionnalités
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Tout ce qu&apos;il faut pour des QR codes professionnels
+          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-mq-ink sm:text-5xl">
+            Tout pour des QR codes professionnels
           </h2>
-          <p className="mt-4 text-lg text-slate-600">
-            De la création à la mise en ligne, Qrious couvre l&apos;intégralité du parcours — sans
-            compétence technique requise.
+          <p className="mt-5 text-lg leading-relaxed text-mq-muted">
+            De la création à la mise en ligne — sans compétence technique.
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => (
-            <Card key={feature.title} className="border-slate-200/80 transition-shadow hover:shadow-md">
-              <CardContent className="p-6">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+        <ul className="mt-16 divide-y divide-mq-ink/10 border-y border-mq-ink/10">
+          {features.map((feature, index) => (
+            <li
+              key={feature.title}
+              className="group grid gap-4 py-8 transition-colors sm:grid-cols-[4rem_1fr_1.4fr] sm:items-start sm:gap-8"
+            >
+              <span className="font-display text-sm font-bold tabular-nums text-mq-fog group-hover:text-mq-signal">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <div className="flex items-start gap-4">
+                <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mq-ink text-white transition-transform duration-300 group-hover:scale-105 group-hover:bg-mq-signal group-hover:text-mq-ink">
                   <feature.icon className="h-5 w-5" />
-                </div>
-                <h3 className="text-lg font-semibold text-slate-900">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{feature.description}</p>
-              </CardContent>
-            </Card>
+                </span>
+                <h3 className="font-display text-xl font-semibold text-mq-ink">{feature.title}</h3>
+              </div>
+              <p className="text-base leading-relaxed text-mq-muted sm:pt-1">{feature.description}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

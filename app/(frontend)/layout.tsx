@@ -1,6 +1,19 @@
 import type { Metadata } from 'next'
+import { Outfit, Syne } from 'next/font/google'
 
 import '../globals.css'
+
+const display = Syne({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const body = Outfit({
+  subsets: ['latin'],
+  variable: '--font-body',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Qrious — QR codes dynamiques pour Art, Immobilier & Cartes de visite',
@@ -17,8 +30,8 @@ export const metadata: Metadata = {
 
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body className="antialiased">{children}</body>
+    <html lang="fr" className={`${display.variable} ${body.variable}`}>
+      <body className="font-body antialiased">{children}</body>
     </html>
   )
 }

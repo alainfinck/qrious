@@ -1,102 +1,116 @@
 import Link from 'next/link'
-import { ArrowRight, Palette, QrCode, Smartphone } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+
+function QrMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" className={className} aria-hidden>
+      <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="3" />
+      <rect x="8" y="8" width="8" height="8" fill="currentColor" />
+      <rect x="28" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="3" />
+      <rect x="32" y="8" width="8" height="8" fill="currentColor" />
+      <rect x="4" y="28" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="3" />
+      <rect x="8" y="32" width="8" height="8" fill="currentColor" />
+      <rect x="28" y="28" width="6" height="6" fill="currentColor" />
+      <rect x="38" y="28" width="6" height="6" fill="currentColor" />
+      <rect x="28" y="38" width="6" height="6" fill="currentColor" />
+      <rect x="36" y="36" width="8" height="8" fill="currentColor" />
+    </svg>
+  )
+}
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-white to-white" />
-      <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-slate-100/80 blur-3xl" />
-      <div className="pointer-events-none absolute -left-32 bottom-0 h-72 w-72 rounded-full bg-slate-50 blur-3xl" />
+    <section className="relative min-h-[min(100dvh,920px)] overflow-hidden bg-mq-ink text-white">
+      {/* Full-bleed visual plane */}
+      <div className="absolute inset-0" aria-hidden>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,#1a3d36_0%,transparent_55%),radial-gradient(ellipse_at_20%_80%,#14302b_0%,transparent_50%),linear-gradient(165deg,#0a0c0b_0%,#121816_45%,#0a0c0b_100%)]" />
+        <div className="mq-noise absolute inset-0 opacity-[0.12] mix-blend-overlay" />
+        <div className="absolute inset-0 mq-grid opacity-40" />
+        <div className="absolute -right-[18%] top-[-10%] h-[70%] w-[70%] rounded-full bg-mq-signal/15 blur-[100px]" />
+        <div className="absolute -left-[10%] bottom-[-20%] h-[50%] w-[50%] rounded-full bg-mq-signal/10 blur-[80px]" />
 
-      <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-28">
-        <div className="space-y-8">
-          <Badge variant="secondary" className="px-3 py-1 text-xs font-medium">
-            QR codes dynamiques · Multi-métiers
-          </Badge>
-
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-              Un QR code.
-              <br />
-              <span className="text-slate-500">Trois univers.</span>
-              <br />
-              Zéro limite.
-            </h1>
-            <p className="max-w-lg text-lg leading-relaxed text-slate-600">
-              Qrious transforme chaque scan en une landing page sur-mesure — Art, Immobilier ou Carte
-              de visite — avec votre identité visuelle, modifiable à tout moment sans réimprimer.
-            </p>
+        {/* Giant QR motif — edge-to-edge visual anchor */}
+        <div className="pointer-events-none absolute right-[-8%] top-1/2 hidden w-[min(58vw,640px)] -translate-y-1/2 lg:block">
+          <div className="relative aspect-square">
+            <div className="mq-pulse-ring absolute inset-[8%] rounded-[2.5rem] border border-mq-signal/30" />
+            <div className="mq-float absolute inset-0 flex items-center justify-center">
+              <div className="relative h-[78%] w-[78%] overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.02] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-sm">
+                <div className="absolute inset-6 grid grid-cols-7 gap-2 opacity-90">
+                  {Array.from({ length: 49 }).map((_, i) => {
+                    const filled = [0, 1, 2, 4, 5, 6, 7, 8, 10, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 35, 36, 38, 40, 41, 42, 43, 44, 46, 47, 48].includes(i)
+                    return (
+                      <span
+                        key={i}
+                        className={`rounded-sm ${filled ? 'bg-white' : 'bg-transparent'}`}
+                      />
+                    )
+                  })}
+                </div>
+                <div className="mq-scan absolute inset-x-0 h-1/3 bg-gradient-to-b from-transparent via-mq-signal/40 to-transparent" />
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button asChild size="lg" className="bg-slate-900 hover:bg-slate-800">
-              <Link href="/dashboard">
+      <div className="relative mx-auto flex min-h-[min(100dvh,920px)] max-w-6xl flex-col justify-center px-4 pb-24 pt-28 sm:px-6 lg:pb-32 lg:pt-32">
+        <div className="max-w-xl space-y-8 lg:max-w-2xl">
+          <p className="mq-reveal font-display text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+            Qrious
+          </p>
+
+          <h1 className="mq-reveal mq-reveal-delay-1 font-display text-3xl font-semibold leading-[1.15] tracking-tight text-white/95 sm:text-4xl lg:text-[2.75rem]">
+            Un QR code.
+            <br />
+            Trois univers.
+            <br />
+            <span className="text-mq-signal">Zéro limite.</span>
+          </h1>
+
+          <p className="mq-reveal mq-reveal-delay-2 max-w-md text-lg leading-relaxed text-white/65">
+            Transformez chaque scan en landing page sur-mesure — art, immobilier ou carte de
+            visite — modifiable sans jamais réimprimer.
+          </p>
+
+          <div className="mq-reveal mq-reveal-delay-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button
+              asChild
+              size="lg"
+              className="h-12 rounded-xl bg-mq-signal px-6 text-base font-semibold text-mq-ink hover:bg-mq-signal/90"
+            >
+              <Link href="/dashboard/register">
                 Commencer gratuitement
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button
+              asChild
+              variant="ghost"
+              size="lg"
+              className="h-12 rounded-xl px-6 text-base text-white/80 hover:bg-white/10 hover:text-white"
+            >
               <a href="#comment">Voir comment ça marche</a>
             </Button>
           </div>
-
-          <div className="flex flex-wrap gap-6 pt-2 text-sm text-slate-500">
-            <span className="flex items-center gap-2">
-              <QrCode className="h-4 w-4 text-slate-400" />
-              QR permanent
-            </span>
-            <span className="flex items-center gap-2">
-              <Palette className="h-4 w-4 text-slate-400" />
-              Marque blanche
-            </span>
-            <span className="flex items-center gap-2">
-              <Smartphone className="h-4 w-4 text-slate-400" />
-              Mobile-first
-            </span>
-          </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-          <div className="relative rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl shadow-slate-200/50">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex gap-1.5">
-                <span className="h-3 w-3 rounded-full bg-slate-200" />
-                <span className="h-3 w-3 rounded-full bg-slate-200" />
-                <span className="h-3 w-3 rounded-full bg-slate-200" />
+        {/* Mobile visual — below fold on small screens still part of hero composition */}
+        <div className="mq-reveal mq-reveal-delay-3 relative mt-16 flex justify-center lg:hidden">
+          <div className="relative h-56 w-56">
+            <div className="mq-pulse-ring absolute inset-0 rounded-[1.75rem] border border-mq-signal/35" />
+            <div className="absolute inset-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]">
+              <div className="absolute inset-4 flex items-center justify-center text-white">
+                <QrMark className="h-28 w-28" />
               </div>
-              <span className="text-xs text-slate-400">qrious.app/atelier-dubois</span>
+              <div className="mq-scan absolute inset-x-0 h-1/3 bg-gradient-to-b from-transparent via-mq-signal/40 to-transparent" />
             </div>
-
-            <div className="space-y-4 rounded-2xl bg-slate-50 p-5">
-              <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white">
-                <QrCode className="h-16 w-16 text-slate-800" />
-              </div>
-              <div className="text-center">
-                <p className="text-xs font-medium uppercase tracking-widest text-slate-400">Scan →</p>
-                <p className="mt-1 font-semibold text-slate-900">Landing page dynamique</p>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {['Art', 'Immo', 'VCard'].map((label) => (
-                  <div
-                    key={label}
-                    className="rounded-xl bg-white py-2 text-center text-xs font-medium text-slate-600 shadow-sm ring-1 ring-slate-200/80"
-                  >
-                    {label}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute -bottom-4 -left-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
-            <p className="text-xs text-slate-400">Contenu mis à jour</p>
-            <p className="text-sm font-semibold text-emerald-600">Sans changer le QR</p>
           </div>
         </div>
       </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-mq-paper to-transparent" />
     </section>
   )
 }
