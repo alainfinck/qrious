@@ -4,41 +4,47 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 224 71% 4%;
+    --background: 150 20% 98%;
+    --foreground: 150 8% 6%;
     --card: 0 0% 100%;
-    --card-foreground: 224 71% 4%;
+    --card-foreground: 150 8% 6%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 4%;
-    --primary: 262 83% 58%;
+    --popover-foreground: 150 8% 6%;
+    --primary: 168 84% 38%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 224 71% 4%;
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 262 100% 97%;
-    --accent-foreground: 262 83% 40%;
+    --secondary: 168 30% 94%;
+    --secondary-foreground: 210 40% 8%;
+    --muted: 168 20% 94%;
+    --muted-foreground: 200 12% 40%;
+    --accent: 8 100% 96%;
+    --accent-foreground: 8 90% 42%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262 83% 58%;
-    --radius: 0.75rem;
+    --border: 168 16% 88%;
+    --input: 168 16% 88%;
+    --ring: 168 84% 38%;
+    --radius: 0.9rem;
     --sidebar: 0 0% 100%;
-    --sidebar-foreground: 224 71% 4%;
-    --sidebar-accent: 262 100% 97%;
-    --sidebar-border: 220 13% 91%;
-    --brand-primary: #7c3aed;
+    --sidebar-foreground: 210 40% 8%;
+    --sidebar-accent: 168 40% 94%;
+    --sidebar-border: 168 16% 88%;
+    --brand-primary: #12c4a8;
+    --color-background: hsl(var(--background));
+    --color-border: hsl(var(--border));
 
-    /* Marketing identity — Ink & Signal */
-    --mq-ink: #0a0c0b;
-    --mq-ink-soft: #1a1f1c;
-    --mq-mist: #eef2ef;
-    --mq-fog: #d8e0da;
-    --mq-signal: #0f9f8a;
-    --mq-signal-deep: #0b7a6a;
-    --mq-paper: #f4f7f5;
-    --mq-muted: #5c6b62;
+    /* Marketing identity — playful Ink & Signal */
+    --mq-ink: #0b1220;
+    --mq-ink-soft: #152033;
+    --mq-mist: #e8f7f3;
+    --mq-fog: #c5ddd6;
+    --mq-signal: #12c4a8;
+    --mq-signal-deep: #0a8f7a;
+    --mq-paper: #f3faf7;
+    --mq-muted: #4d6470;
+    --mq-coral: #ff5c4d;
+    --mq-coral-deep: #e84435;
+    --mq-sun: #ffc53d;
+    --mq-sky: #3dbbff;
   }
 
   html {
@@ -57,10 +63,12 @@
 @layer utilities {
   .font-display {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.03em;
   }
 
   .font-body {
     font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.011em;
   }
 
   .mq-noise {
@@ -74,22 +82,6 @@
     background-size: 48px 48px;
   }
 
-  .mq-reveal {
-    animation: mq-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .mq-reveal-delay-1 {
-    animation-delay: 0.12s;
-  }
-
-  .mq-reveal-delay-2 {
-    animation-delay: 0.24s;
-  }
-
-  .mq-reveal-delay-3 {
-    animation-delay: 0.36s;
-  }
-
   .mq-float {
     animation: mq-float 7s ease-in-out infinite;
   }
@@ -101,16 +93,33 @@
   .mq-pulse-ring {
     animation: mq-pulse-ring 2.8s ease-out infinite;
   }
-}
 
-@keyframes mq-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
+  .mq-blob {
+    animation: mq-blob 12s ease-in-out infinite;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .mq-blob-delay {
+    animation: mq-blob 14s ease-in-out infinite reverse;
+    animation-delay: -4s;
+  }
+
+  .mq-rainbow-text {
+    background-image: linear-gradient(
+      110deg,
+      #12c4a8 0%,
+      #3dbbff 35%,
+      #ffc53d 65%,
+      #ff5c4d 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: mq-rainbow-shift 6s ease infinite;
+  }
+
+  .mq-wiggle:hover {
+    animation: mq-wiggle 0.55s ease;
   }
 }
 
@@ -148,5 +157,41 @@
   100% {
     transform: scale(1.18);
     opacity: 0;
+  }
+}
+
+@keyframes mq-blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(4%, -3%) scale(1.06);
+  }
+  66% {
+    transform: translate(-3%, 4%) scale(0.96);
+  }
+}
+
+@keyframes mq-rainbow-shift {
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+}
+
+@keyframes mq-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-4deg) scale(1.04);
+  }
+  75% {
+    transform: rotate(4deg) scale(1.04);
   }
 }

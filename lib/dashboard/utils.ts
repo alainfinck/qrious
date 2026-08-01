@@ -18,6 +18,7 @@ export function slugify(value: string): string {
 }
 
 export const VERTICAL_LABELS = {
+  generic: 'Générique',
   art: 'Art',
   immo: 'Immobilier',
   vcard: 'Carte de visite',

@@ -24,15 +24,15 @@ export function MarketingFooter() {
         <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2.5 font-display text-lg font-bold">
-              <BrandMark className="h-7 w-7 text-mq-signal" />
-              Qrious
+              <BrandMark className="h-7 w-7 text-mq-coral" />
+              QRious
             </Link>
             <p className="max-w-xs text-sm leading-relaxed text-white/45">
               QR codes dynamiques et landing pages adaptées à votre métier.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             <div>
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/35">
                 Solutions
@@ -53,6 +53,11 @@ export function MarketingFooter() {
                     Fonctionnalités
                   </Link>
                 </li>
+                <li>
+                  <Link href="/pricing" className="transition-colors hover:text-mq-signal">
+                    Tarifs
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
@@ -70,21 +75,48 @@ export function MarketingFooter() {
                     Contact
                   </Link>
                 </li>
-              </ul>
-            </div>
-            <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/35">
-                Entreprise
-              </p>
-              <ul className="space-y-2.5 text-sm text-white/60">
                 <li>
                   <Link href="/about" className="transition-colors hover:text-mq-signal">
                     À propos
                   </Link>
                 </li>
+              </ul>
+            </div>
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/35">
+                Légal
+              </p>
+              <ul className="space-y-2.5 text-sm text-white/60">
+                <li>
+                  <Link href="/conditions" className="transition-colors hover:text-mq-signal">
+                    CGU
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/confidentialite" className="transition-colors hover:text-mq-signal">
+                    Confidentialité
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cookies" className="transition-colors hover:text-mq-signal">
+                    Cookies
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/35">
+                App
+              </p>
+              <ul className="space-y-2.5 text-sm text-white/60">
                 <li>
                   <Link href="/dashboard" className="transition-colors hover:text-mq-signal">
                     Tableau de bord
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard/register" className="transition-colors hover:text-mq-signal">
+                    Créer un compte
                   </Link>
                 </li>
               </ul>
@@ -92,8 +124,9 @@ export function MarketingFooter() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 text-center text-xs text-white/30">
-          © {new Date().getFullYear()} Qrious. Tous droits réservés.
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/30 sm:flex-row">
+          <p>© {new Date().getFullYear()} QRious. Tous droits réservés.</p>
+          <p className="text-white/25">hello@qrious.fr · 06 76 38 01 52</p>
         </div>
       </div>
     </footer>

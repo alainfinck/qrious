@@ -131,13 +131,32 @@ export interface LandingPage {
    */
   slug: string;
   status: 'draft' | 'published';
-  vertical: 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism';
+  vertical: 'generic' | 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism';
   theme?: {
     /**
      * Code hexadécimal (ex: #2563eb)
      */
     primaryColor?: string | null;
     logo?: (number | null) | Media;
+  };
+  genericData?: {
+    headline?: string | null;
+    subheadline?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+    ctaUrl?: string | null;
+    secondaryCtaLabel?: string | null;
+    secondaryCtaUrl?: string | null;
+    websiteUrl?: string | null;
+    contactEmail?: string | null;
+    contactPhone?: string | null;
+    sections?:
+      | {
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
   };
   artData?: {
     artistName?: string | null;
@@ -491,6 +510,27 @@ export interface LandingPagesSelect<T extends boolean = true> {
     | {
         primaryColor?: T;
         logo?: T;
+      };
+  genericData?:
+    | T
+    | {
+        headline?: T;
+        subheadline?: T;
+        body?: T;
+        ctaLabel?: T;
+        ctaUrl?: T;
+        secondaryCtaLabel?: T;
+        secondaryCtaUrl?: T;
+        websiteUrl?: T;
+        contactEmail?: T;
+        contactPhone?: T;
+        sections?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              id?: T;
+            };
       };
   artData?:
     | T

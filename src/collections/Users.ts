@@ -13,7 +13,7 @@ export const Users: CollectionConfig = {
   auth: {
     tokenExpiration: 60 * 60 * 24 * 7,
     forgotPassword: {
-      generateEmailSubject: () => 'Réinitialisation de votre mot de passe Qrious',
+      generateEmailSubject: () => 'Réinitialisation de votre mot de passe QRious',
       generateEmailHTML: (args) => {
         const token = args?.token ?? ''
         const user = args?.user
@@ -25,7 +25,7 @@ export const Users: CollectionConfig = {
           <html>
             <body style="font-family: system-ui, sans-serif; line-height: 1.5; color: #0f172a;">
               <p>Bonjour${email ? ` ${email}` : ''},</p>
-              <p>Vous avez demandé à réinitialiser votre mot de passe Qrious.</p>
+              <p>Vous avez demandé à réinitialiser votre mot de passe QRious.</p>
               <p>
                 <a href="${resetUrl}" style="display:inline-block;background:#0f172a;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;">
                   Réinitialiser mon mot de passe

@@ -1,9 +1,10 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
-import { Send, Loader2 } from 'lucide-react'
+import Link from 'next/link'
+import { Loader2, Send } from 'lucide-react'
 
+import { BorderBeam } from '@/components/ui/border-beam'
 import { Button } from '@/components/ui/button'
 
 export function ContactForm() {
@@ -13,103 +14,69 @@ export function ContactForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false)
       setIsSuccess(true)
       ;(e.target as HTMLFormElement).reset()
-      
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setIsSuccess(false)
-      }, 5000)
-    }, 2000)
+      setTimeout(() => setIsSuccess(false), 5000)
+    }, 1500)
   }
 
+  const fieldClass =
+    'w-full rounded-xl border border-mq-ink/10 bg-mq-paper/80 px-4 py-3 text-mq-ink outline-none transition-colors placeholder:text-mq-muted/50 focus:border-mq-signal focus:bg-white focus:ring-2 focus:ring-mq-signal/20'
+
   return (
-    <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="h-12 w-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-2xl">
-          ✉️
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900">Envoyez-nous un message</h2>
-          <p className="text-slate-500">Remplissez ce formulaire et nous vous répondrons dans les plus brefs délais</p>
-        </div>
+    <div className="relative overflow-hidden rounded-3xl border border-mq-ink/8 bg-white p-8 shadow-[0_24px_60px_-30px_rgba(10,12,11,0.2)]">
+      <BorderBeam size={100} duration={12} colorFrom="#0f9f8a" colorTo="#5eead4" />
+      <div className="mb-8">
+        <h2 className="font-display text-2xl font-bold text-mq-ink">Envoyez-nous un message</h2>
+        <p className="mt-1 text-sm text-mq-muted">
+          Remplissez le formulaire — réponse sous 24h ouvrées.
+        </p>
       </div>
 
       {isSuccess && (
-        <div className="mb-6 p-4 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 flex items-start gap-3">
-          <div className="font-bold">✓</div>
-          <div>Message envoyé ! Nous vous répondrons dans les 24h.</div>
+        <div className="mb-6 rounded-xl border border-mq-signal/30 bg-mq-signal/10 px-4 py-3 text-sm text-mq-signal-deep">
+          Message envoyé ! Nous vous répondrons rapidement.
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid sm:grid-cols-2 gap-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="firstName" className="text-sm font-medium text-slate-900">
+            <label htmlFor="firstName" className="text-sm font-medium text-mq-ink">
               Prénom *
             </label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-colors outline-none"
-            />
+            <input type="text" id="firstName" name="firstName" required className={fieldClass} />
           </div>
           <div className="space-y-2">
-            <label htmlFor="lastName" className="text-sm font-medium text-slate-900">
+            <label htmlFor="lastName" className="text-sm font-medium text-mq-ink">
               Nom *
             </label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-colors outline-none"
-            />
+            <input type="text" id="lastName" name="lastName" required className={fieldClass} />
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-slate-900">
+            <label htmlFor="email" className="text-sm font-medium text-mq-ink">
               Email *
             </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-colors outline-none"
-            />
+            <input type="email" id="email" name="email" required className={fieldClass} />
           </div>
           <div className="space-y-2">
-            <label htmlFor="phone" className="text-sm font-medium text-slate-900">
+            <label htmlFor="phone" className="text-sm font-medium text-mq-ink">
               Téléphone
             </label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-colors outline-none"
-            />
+            <input type="tel" id="phone" name="phone" className={fieldClass} />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="subject" className="text-sm font-medium text-slate-900">
+          <label htmlFor="subject" className="text-sm font-medium text-mq-ink">
             Sujet *
           </label>
-          <select
-            id="subject"
-            name="subject"
-            required
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-colors outline-none appearance-none"
-          >
+          <select id="subject" name="subject" required className={fieldClass}>
             <option value="">Choisissez un sujet</option>
             <option value="demo">Demande de démonstration</option>
             <option value="pricing">Question sur les tarifs</option>
@@ -121,62 +88,50 @@ export function ContactForm() {
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="message" className="text-sm font-medium text-slate-900">
+          <label htmlFor="message" className="text-sm font-medium text-mq-ink">
             Message *
           </label>
           <textarea
             id="message"
             name="message"
-            rows={6}
+            rows={5}
             required
             placeholder="Décrivez votre projet ou votre question..."
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-colors outline-none resize-none"
-          ></textarea>
+            className={`${fieldClass} resize-none`}
+          />
         </div>
 
-        <div className="space-y-4">
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              name="newsletter"
-              className="mt-1 h-4 w-4 rounded border-slate-300 text-purple-600 focus:ring-purple-600"
-            />
-            <span className="text-sm text-slate-600">
-              Je souhaite recevoir la newsletter Qrious.fr avec les dernières actualités et conseils artistiques
-            </span>
-          </label>
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              name="privacy"
-              required
-              className="mt-1 h-4 w-4 rounded border-slate-300 text-purple-600 focus:ring-purple-600"
-            />
-            <span className="text-sm text-slate-600">
-              J'accepte que mes données soient traitées conformément à la{' '}
-              <Link href="/privacy" className="text-purple-600 hover:underline">
-                politique de confidentialité
-              </Link>{' '}
-              *
-            </span>
-          </label>
-        </div>
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            name="privacy"
+            required
+            className="mt-1 h-4 w-4 rounded border-mq-ink/20 text-mq-signal focus:ring-mq-signal"
+          />
+          <span className="text-sm text-mq-muted">
+            J&apos;accepte que mes données soient traitées conformément à la{' '}
+            <Link href="/confidentialite" className="text-mq-signal-deep hover:underline">
+              politique de confidentialité
+            </Link>{' '}
+            *
+          </span>
+        </label>
 
         <Button
           type="submit"
           size="lg"
           disabled={isSubmitting}
-          className="w-full sm:w-auto px-8"
+          className="h-12 rounded-xl bg-mq-ink px-8 font-semibold text-white hover:bg-mq-ink-soft"
         >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Envoi en cours...
+              Envoi…
             </>
           ) : (
             <>
               <Send className="mr-2 h-4 w-4" />
-              Envoyer le message
+              Envoyer
             </>
           )}
         </Button>

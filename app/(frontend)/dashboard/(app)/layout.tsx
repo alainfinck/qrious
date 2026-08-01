@@ -5,7 +5,7 @@ import { DashboardShell } from '@/components/dashboard/DashboardShell'
 import { isAuthenticated } from '@/lib/auth/session'
 
 export const metadata: Metadata = {
-  title: 'Dashboard — Qrious',
+  title: 'Dashboard — QRious',
   description: 'Gérez vos QR codes dynamiques',
 }
 

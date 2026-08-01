@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 const isVertical =
-  (vertical: 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism') =>
+  (vertical: 'generic' | 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism') =>
   (data: Record<string, unknown>) =>
     data?.vertical === vertical
 
@@ -14,7 +14,7 @@ export const LandingPages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'vertical', 'status', 'updatedAt'],
-    group: 'Qrious',
+    group: 'QRious',
   },
   access: {
     read: () => true,
@@ -53,6 +53,7 @@ export const LandingPages: CollectionConfig = {
       type: 'select',
       required: true,
       options: [
+        { label: 'Générique', value: 'generic' },
         { label: 'Art', value: 'art' },
         { label: 'Immobilier / Gîte', value: 'immo' },
         { label: 'Carte de visite', value: 'vcard' },
@@ -82,6 +83,85 @@ export const LandingPages: CollectionConfig = {
           name: 'logo',
           type: 'relationship',
           relationTo: 'media',
+        },
+      ],
+    },
+    {
+      name: 'genericData',
+      type: 'group',
+      label: 'Page générique',
+      admin: {
+        condition: isVertical('generic'),
+      },
+      fields: [
+        {
+          name: 'headline',
+          type: 'text',
+          label: 'Titre affiché',
+        },
+        {
+          name: 'subheadline',
+          type: 'text',
+          label: 'Sous-titre',
+        },
+        {
+          name: 'body',
+          type: 'textarea',
+          label: 'Texte principal',
+        },
+        {
+          name: 'ctaLabel',
+          type: 'text',
+          label: 'Bouton principal — libellé',
+        },
+        {
+          name: 'ctaUrl',
+          type: 'text',
+          label: 'Bouton principal — URL',
+        },
+        {
+          name: 'secondaryCtaLabel',
+          type: 'text',
+          label: 'Bouton secondaire — libellé',
+        },
+        {
+          name: 'secondaryCtaUrl',
+          type: 'text',
+          label: 'Bouton secondaire — URL',
+        },
+        {
+          name: 'websiteUrl',
+          type: 'text',
+          label: 'Site web',
+        },
+        {
+          name: 'contactEmail',
+          type: 'email',
+          label: 'Email',
+        },
+        {
+          name: 'contactPhone',
+          type: 'text',
+          label: 'Téléphone',
+        },
+        {
+          name: 'sections',
+          type: 'array',
+          label: 'Sections libres',
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              label: 'Titre',
+              required: true,
+            },
+            {
+              name: 'body',
+              type: 'textarea',
+              label: 'Contenu',
+              required: true,
+            },
+          ],
         },
       ],
     },

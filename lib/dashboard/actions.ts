@@ -138,6 +138,19 @@ export type QrCodeFormState = {
     contactPhone: string
     pointsOfInterest: string
   }
+  genericData: {
+    headline: string
+    subheadline: string
+    body: string
+    ctaLabel: string
+    ctaUrl: string
+    secondaryCtaLabel: string
+    secondaryCtaUrl: string
+    websiteUrl: string
+    contactEmail: string
+    contactPhone: string
+    sections: string
+  }
 }
 
 function parseFormData(formData: FormData): QrCodeFormState {
@@ -145,7 +158,7 @@ function parseFormData(formData: FormData): QrCodeFormState {
     title: String(formData.get('title') ?? '').trim(),
     slug: String(formData.get('slug') ?? '').trim(),
     status: (formData.get('status') as 'draft' | 'published') || 'draft',
-    vertical: (formData.get('vertical') as LandingPageVertical) || 'art',
+    vertical: (formData.get('vertical') as LandingPageVertical) || 'generic',
     primaryColor: String(formData.get('primaryColor') ?? '#0f172a').trim(),
     artData: {
       artistName: String(formData.get('artistName') ?? '').trim(),
@@ -261,6 +274,19 @@ function parseFormData(formData: FormData): QrCodeFormState {
       contactPhone: String(formData.get('contactPhone') ?? '').trim(),
       pointsOfInterest: String(formData.get('pointsOfInterest') ?? '').trim(),
     },
+    genericData: {
+      headline: String(formData.get('genericHeadline') ?? '').trim(),
+      subheadline: String(formData.get('genericSubheadline') ?? '').trim(),
+      body: String(formData.get('genericBody') ?? '').trim(),
+      ctaLabel: String(formData.get('genericCtaLabel') ?? '').trim(),
+      ctaUrl: String(formData.get('genericCtaUrl') ?? '').trim(),
+      secondaryCtaLabel: String(formData.get('genericSecondaryCtaLabel') ?? '').trim(),
+      secondaryCtaUrl: String(formData.get('genericSecondaryCtaUrl') ?? '').trim(),
+      websiteUrl: String(formData.get('genericWebsiteUrl') ?? '').trim(),
+      contactEmail: String(formData.get('genericContactEmail') ?? '').trim(),
+      contactPhone: String(formData.get('genericContactPhone') ?? '').trim(),
+      sections: String(formData.get('genericSections') ?? '').trim(),
+    },
   }
 }
 
@@ -302,6 +328,34 @@ function toPayloadData(state: QrCodeFormState): LandingPageInput {
             websiteUrl: state.artData.websiteUrl || null,
             shopUrl: state.artData.shopUrl || null,
             contactEmail: state.artData.contactEmail || null,
+          }
+        : undefined,
+    genericData:
+      state.vertical === 'generic'
+        ? {
+            headline: state.genericData.headline || null,
+            subheadline: state.genericData.subheadline || null,
+            body: state.genericData.body || null,
+            ctaLabel: state.genericData.ctaLabel || null,
+            ctaUrl: state.genericData.ctaUrl || null,
+            secondaryCtaLabel: state.genericData.secondaryCtaLabel || null,
+            secondaryCtaUrl: state.genericData.secondaryCtaUrl || null,
+            websiteUrl: state.genericData.websiteUrl || null,
+            contactEmail: state.genericData.contactEmail || null,
+            contactPhone: state.genericData.contactPhone || null,
+            sections: state.genericData.sections
+              ? state.genericData.sections
+                  .split('\n')
+                  .map((line) => {
+                    const idx = line.indexOf(':')
+                    if (idx === -1) return { title: line.trim(), body: '' }
+                    return {
+                      title: line.substring(0, idx).trim(),
+                      body: line.substring(idx + 1).trim(),
+                    }
+                  })
+                  .filter((section) => section.title)
+              : null,
           }
         : undefined,
     immoData:

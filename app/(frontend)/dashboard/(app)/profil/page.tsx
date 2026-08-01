@@ -10,7 +10,7 @@ export default async function ProfilPage() {
     <div className="mx-auto max-w-3xl space-y-8">
       <DashboardPageHeader
         title="Profil"
-        description="Votre espace Qrious"
+        description="Votre espace QRious"
         showCreateButton={false}
       />
 

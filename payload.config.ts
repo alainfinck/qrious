@@ -28,7 +28,7 @@ export default buildConfig({
   admin: {
     user: 'users',
     meta: {
-      titleSuffix: '— Qrious',
+      titleSuffix: '— QRious',
     },
     importMap: {
       baseDir: path.resolve(dirname, 'app/(payload)'),
@@ -73,7 +73,7 @@ export default buildConfig({
     ? {
         email: nodemailerAdapter({
           defaultFromAddress: fromEmail,
-          defaultFromName: 'Qrious',
+          defaultFromName: 'QRious',
           skipVerify: true,
           transportOptions: {
             host: smtpHost,

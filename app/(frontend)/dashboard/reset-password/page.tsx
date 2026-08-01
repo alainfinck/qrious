@@ -14,9 +14,5 @@ export default async function ResetPasswordPage({
 
   const params = await searchParams
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-white to-white p-4">
-      <ResetPasswordForm token={params.token ?? ''} />
-    </div>
-  )
+  return <ResetPasswordForm token={params.token ?? ''} />
 }

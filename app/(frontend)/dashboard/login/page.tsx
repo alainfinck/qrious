@@ -20,9 +20,5 @@ export default async function DashboardLoginPage({
     notice = 'Compte créé. Connectez-vous avec vos identifiants.'
   }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-white to-white p-4">
-      <LoginForm notice={notice} />
-    </div>
-  )
+  return <LoginForm notice={notice} />
 }

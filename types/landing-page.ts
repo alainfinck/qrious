@@ -1,4 +1,11 @@
-export type LandingPageVertical = 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism'
+export type LandingPageVertical =
+  | 'generic'
+  | 'art'
+  | 'immo'
+  | 'vcard'
+  | 'product'
+  | 'feedback'
+  | 'tourism'
 
 export type LandingPageStatus = 'draft' | 'published'
 
@@ -172,6 +179,20 @@ export interface TourismData {
   pointsOfInterest?: { name: string; description: string; id?: string | null }[] | null
 }
 
+export interface GenericData {
+  headline?: string | null
+  subheadline?: string | null
+  body?: string | null
+  ctaLabel?: string | null
+  ctaUrl?: string | null
+  secondaryCtaLabel?: string | null
+  secondaryCtaUrl?: string | null
+  websiteUrl?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  sections?: { title: string; body: string; id?: string | null }[] | null
+}
+
 export interface LandingPage {
   id: string
   title: string
@@ -179,6 +200,7 @@ export interface LandingPage {
   status: LandingPageStatus
   vertical: LandingPageVertical
   theme?: LandingPageTheme | null
+  genericData?: GenericData | null
   artData?: ArtData | null
   immoData?: ImmoData | null
   vcardData?: VCardData | null

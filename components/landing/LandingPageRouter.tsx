@@ -1,4 +1,5 @@
 import { ArtTemplate } from '@/components/landing/templates/ArtTemplate'
+import { GenericTemplate } from '@/components/landing/templates/GenericTemplate'
 import { ImmoTemplate } from '@/components/landing/templates/ImmoTemplate'
 import { VCardTemplate } from '@/components/landing/templates/VCardTemplate'
 import { ProductTemplate } from '@/components/landing/templates/ProductTemplate'
@@ -13,6 +14,8 @@ interface LandingPageRouterProps {
 
 function renderVerticalTemplate(pageData: LandingPage) {
   switch (pageData.vertical) {
+    case 'generic':
+      return <GenericTemplate pageData={pageData} />
     case 'art':
       return <ArtTemplate pageData={pageData} />
     case 'immo':
@@ -33,7 +36,6 @@ function renderVerticalTemplate(pageData: LandingPage) {
 }
 
 export function LandingPageRouter({ pageData }: LandingPageRouterProps) {
-  // All templates are rendered full-width mobile-first inside a max-w-lg container (e.g. gite companion, digital business card, museum flyer)
   return (
     <ThemeWrapper theme={pageData.theme}>
       <main className="mx-auto w-full max-w-lg">

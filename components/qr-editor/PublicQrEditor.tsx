@@ -1,19 +1,16 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
 import Link from 'next/link'
-import QRCode from 'qrcode'
 import {
   Copy,
   Check,
   Download,
-  ImagePlus,
   Link2,
   Mail,
   MessageSquare,
   Phone,
   QrCode,
-  Trash2,
   Type,
   User,
   Wifi,
@@ -38,9 +35,11 @@ import {
   type QrPayloadInput,
   type WifiEncryption,
 } from '@/lib/qr/payload'
+import { DEFAULT_QR_STYLE, type QrStyle } from '@/lib/qr/style'
 import { cn } from '@/lib/utils'
 
-type ErrorLevel = 'L' | 'M' | 'Q' | 'H'
+import { QrStyleForm } from './QrStyleForm'
+import { QrStyledPreview, type QrStyledPreviewHandle } from './QrStyledPreview'
 
 const CONTENT_ICONS: Record<QrContentType, typeof Link2> = {
   url: Link2,
@@ -60,16 +59,6 @@ const CONTENT_OPTIONS: { value: QrContentType; label: string }[] = [
   { value: 'sms', label: 'SMS' },
   { value: 'wifi', label: 'Wi-Fi' },
   { value: 'vcard', label: 'vCard' },
-]
-
-const PRESET_COLORS = [
-  '#0f172a',
-  '#1e3a5f',
-  '#0f766e',
-  '#b45309',
-  '#9f1239',
-  '#5b21b6',
-  '#ffffff',
 ]
 
 function defaultPayload(type: QrContentType): QrPayloadInput {
@@ -102,69 +91,6 @@ function defaultPayload(type: QrContentType): QrPayloadInput {
   }
 }
 
-async function composeWithLogo(
-  qrDataUrl: string,
-  logoDataUrl: string,
-  size: number,
-): Promise<string> {
-  const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return qrDataUrl
-
-  const qrImage = await loadImage(qrDataUrl)
-  ctx.drawImage(qrImage, 0, 0, size, size)
-
-  const logo = await loadImage(logoDataUrl)
-  const logoSize = Math.round(size * 0.22)
-  const padding = Math.round(logoSize * 0.12)
-  const box = logoSize + padding * 2
-  const x = (size - box) / 2
-  const y = (size - box) / 2
-
-  ctx.fillStyle = '#ffffff'
-  ctx.beginPath()
-  const r = Math.round(box * 0.18)
-  roundRect(ctx, x, y, box, box, r)
-  ctx.fill()
-
-  ctx.drawImage(logo, x + padding, y + padding, logoSize, logoSize)
-  return canvas.toDataURL('image/png')
-}
-
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(img)
-    img.onerror = reject
-    img.src = src
-  })
-}
-
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number,
-) {
-  ctx.moveTo(x + r, y)
-  ctx.arcTo(x + w, y, x + w, y + h, r)
-  ctx.arcTo(x + w, y + h, x, y + h, r)
-  ctx.arcTo(x, y + h, x, y, r)
-  ctx.arcTo(x, y, x + w, y, r)
-  ctx.closePath()
-}
-
-function downloadDataUrl(dataUrl: string, filename: string) {
-  const a = document.createElement('a')
-  a.href = dataUrl
-  a.download = filename
-  a.click()
-}
-
 function Field({
   label,
   children,
@@ -187,17 +113,10 @@ function Field({
 export function PublicQrEditor() {
   const [contentType, setContentType] = useState<QrContentType>('url')
   const [payload, setPayload] = useState<QrPayloadInput>(defaultPayload('url'))
-  const [fgColor, setFgColor] = useState('#0f172a')
-  const [bgColor, setBgColor] = useState('#ffffff')
-  const [errorLevel, setErrorLevel] = useState<ErrorLevel>('M')
-  const [margin, setMargin] = useState(2)
-  const [size, setSize] = useState(512)
-  const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [style, setStyle] = useState<QrStyle>(DEFAULT_QR_STYLE)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
-  const [generating, setGenerating] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const previewRef = useRef<QrStyledPreviewHandle>(null)
 
   const ready = isPayloadReady(payload)
   const encoded = ready ? buildQrPayload(payload) : ''
@@ -211,95 +130,19 @@ export function PublicQrEditor() {
     setPayload(defaultPayload(type))
   }
 
-  const handleLogoUpload = (file: File | undefined) => {
-    if (!file) return
-    if (!file.type.startsWith('image/')) {
-      setError('Le logo doit être une image (PNG, JPG, SVG…).')
-      return
+  const downloadPng = async () => {
+    if (!ready) return
+    try {
+      await previewRef.current?.download('png', `qrious-qr-${contentType}`)
+    } catch {
+      setError('Export PNG impossible.')
     }
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Le logo ne doit pas dépasser 2 Mo.')
-      return
-    }
-    const reader = new FileReader()
-    reader.onload = () => {
-      setLogoDataUrl(String(reader.result))
-      setErrorLevel('H')
-      setError(null)
-    }
-    reader.readAsDataURL(file)
-  }
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function render() {
-      if (!ready || !encoded) {
-        setPreviewUrl(null)
-        return
-      }
-
-      setGenerating(true)
-      try {
-        const effectiveEcc = logoDataUrl ? 'H' : errorLevel
-        let dataUrl = await QRCode.toDataURL(encoded, {
-          width: size,
-          margin,
-          errorCorrectionLevel: effectiveEcc,
-          color: { dark: fgColor, light: bgColor },
-        })
-
-        if (logoDataUrl) {
-          dataUrl = await composeWithLogo(dataUrl, logoDataUrl, size)
-        }
-
-        if (!cancelled) {
-          setPreviewUrl(dataUrl)
-          setError(null)
-        }
-      } catch {
-        if (!cancelled) {
-          setPreviewUrl(null)
-          setError('Impossible de générer ce QR code. Vérifiez le contenu.')
-        }
-      } finally {
-        if (!cancelled) setGenerating(false)
-      }
-    }
-
-    const timer = window.setTimeout(render, 180)
-    return () => {
-      cancelled = true
-      window.clearTimeout(timer)
-    }
-  }, [encoded, ready, fgColor, bgColor, errorLevel, margin, size, logoDataUrl])
-
-  const downloadPng = () => {
-    if (!previewUrl) return
-    downloadDataUrl(previewUrl, `qrious-qr-${contentType}.png`)
   }
 
   const downloadSvg = async () => {
-    if (!ready || !encoded) return
+    if (!ready) return
     try {
-      // Logo composite is raster-only; fall back to PNG when a logo is present
-      if (logoDataUrl && previewUrl) {
-        downloadDataUrl(previewUrl, `qrious-qr-${contentType}.png`)
-        return
-      }
-
-      const svg = await QRCode.toString(encoded, {
-        type: 'svg',
-        width: size,
-        margin,
-        errorCorrectionLevel: errorLevel,
-        color: { dark: fgColor, light: bgColor },
-      })
-
-      const blob = new Blob([svg], { type: 'image/svg+xml' })
-      const url = URL.createObjectURL(blob)
-      downloadDataUrl(url, `qrious-qr-${contentType}.svg`)
-      URL.revokeObjectURL(url)
+      await previewRef.current?.download('svg', `qrious-qr-${contentType}`)
     } catch {
       setError('Export SVG impossible.')
     }
@@ -352,157 +195,12 @@ export function PublicQrEditor() {
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5">
-            <h2 className="text-lg font-semibold text-slate-900">Apparence</h2>
-            <p className="text-sm text-slate-500">Couleurs, taille, correction d’erreur et logo.</p>
+            <h2 className="text-lg font-semibold text-slate-900">Style du QR</h2>
+            <p className="text-sm text-slate-500">
+              Modules, yeux, couleurs et logo — prévisualisation en direct.
+            </p>
           </div>
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label="Couleur du QR">
-              <div className="flex items-center gap-3">
-                <input
-                  type="color"
-                  value={fgColor}
-                  onChange={(e) => setFgColor(e.target.value)}
-                  className="h-10 w-12 cursor-pointer rounded-md border border-slate-200 bg-white p-1"
-                  aria-label="Couleur du QR"
-                />
-                <Input
-                  value={fgColor}
-                  onChange={(e) => setFgColor(e.target.value)}
-                  className="font-mono text-sm uppercase"
-                />
-              </div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {PRESET_COLORS.filter((c) => c !== '#ffffff').map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setFgColor(c)}
-                    className={cn(
-                      'h-7 w-7 rounded-full border border-slate-200',
-                      fgColor === c && 'ring-2 ring-slate-900 ring-offset-2',
-                    )}
-                    style={{ backgroundColor: c }}
-                    aria-label={`Couleur ${c}`}
-                  />
-                ))}
-              </div>
-            </Field>
-
-            <Field label="Couleur de fond">
-              <div className="flex items-center gap-3">
-                <input
-                  type="color"
-                  value={bgColor}
-                  onChange={(e) => setBgColor(e.target.value)}
-                  className="h-10 w-12 cursor-pointer rounded-md border border-slate-200 bg-white p-1"
-                  aria-label="Couleur de fond"
-                />
-                <Input
-                  value={bgColor}
-                  onChange={(e) => setBgColor(e.target.value)}
-                  className="font-mono text-sm uppercase"
-                />
-              </div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {['#ffffff', '#f8fafc', '#fef3c7', '#ecfeff', '#fce7f3'].map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setBgColor(c)}
-                    className={cn(
-                      'h-7 w-7 rounded-full border border-slate-200',
-                      bgColor === c && 'ring-2 ring-slate-900 ring-offset-2',
-                    )}
-                    style={{ backgroundColor: c }}
-                    aria-label={`Fond ${c}`}
-                  />
-                ))}
-              </div>
-            </Field>
-
-            <Field label="Niveau de correction">
-              <Select
-                value={logoDataUrl ? 'H' : errorLevel}
-                onValueChange={(v) => setErrorLevel(v as ErrorLevel)}
-                disabled={Boolean(logoDataUrl)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="L">L — ~7% (faible)</SelectItem>
-                  <SelectItem value="M">M — ~15% (recommandé)</SelectItem>
-                  <SelectItem value="Q">Q — ~25%</SelectItem>
-                  <SelectItem value="H">H — ~30% (logo)</SelectItem>
-                </SelectContent>
-              </Select>
-              {logoDataUrl ? (
-                <p className="text-xs text-slate-500">Forcé sur H tant qu’un logo est présent.</p>
-              ) : null}
-            </Field>
-
-            <Field label="Taille d’export (px)">
-              <Select value={String(size)} onValueChange={(v) => setSize(Number(v))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="256">256 × 256</SelectItem>
-                  <SelectItem value="512">512 × 512</SelectItem>
-                  <SelectItem value="1024">1024 × 1024</SelectItem>
-                  <SelectItem value="2048">2048 × 2048</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field label={`Marge (${margin})`}>
-              <input
-                type="range"
-                min={0}
-                max={8}
-                step={1}
-                value={margin}
-                onChange={(e) => setMargin(Number(e.target.value))}
-                className="w-full accent-slate-900"
-              />
-            </Field>
-
-            <Field label="Logo au centre (optionnel)">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleLogoUpload(e.target.files?.[0])}
-              />
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <ImagePlus className="mr-2 h-4 w-4" />
-                  {logoDataUrl ? 'Changer' : 'Ajouter un logo'}
-                </Button>
-                {logoDataUrl ? (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setLogoDataUrl(null)
-                      if (fileInputRef.current) fileInputRef.current.value = ''
-                    }}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Retirer
-                  </Button>
-                ) : null}
-              </div>
-            </Field>
-          </div>
+          <QrStyleForm value={style} onChange={setStyle} onError={setError} />
         </section>
       </div>
 
@@ -511,33 +209,15 @@ export function PublicQrEditor() {
           <h2 className="text-lg font-semibold text-slate-900">Aperçu</h2>
           <p className="mb-4 text-sm text-slate-500">Mise à jour en direct — gratuit, sans compte.</p>
 
-          <div
-            className="mx-auto flex aspect-square w-full max-w-[280px] items-center justify-center rounded-2xl border border-dashed border-slate-200 p-4"
-            style={{ backgroundColor: bgColor === '#ffffff' ? '#f8fafc' : bgColor }}
-          >
-            {previewUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={previewUrl}
-                alt="Aperçu du QR code"
-                className="h-full w-full object-contain transition-opacity duration-200"
-                style={{ opacity: generating ? 0.55 : 1 }}
-              />
-            ) : (
-              <div className="text-center text-sm text-slate-400">
-                <QrCode className="mx-auto mb-2 h-10 w-10 opacity-40" />
-                Renseignez un contenu pour générer le QR
-              </div>
-            )}
-          </div>
+          <QrStyledPreview ref={previewRef} data={encoded} style={style} displaySize={280} />
 
           {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
 
           <div className="mt-5 grid gap-2">
             <Button
               type="button"
-              className="bg-slate-900 hover:bg-slate-800"
-              disabled={!previewUrl}
+              className="bg-mq-ink text-white hover:bg-mq-ink-soft"
+              disabled={!ready}
               onClick={downloadPng}
             >
               <Download className="mr-2 h-4 w-4" />
@@ -561,7 +241,7 @@ export function PublicQrEditor() {
               Suivez les scans, changez la destination sans réimprimer, et créez une landing page
               dédiée.
             </p>
-            <Button asChild size="sm" className="mt-3 bg-slate-900 hover:bg-slate-800">
+            <Button asChild size="sm" className="mt-3 bg-mq-ink text-white hover:bg-mq-ink-soft">
               <Link href="/dashboard">Créer un QR dynamique</Link>
             </Button>
           </div>

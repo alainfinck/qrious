@@ -1,4 +1,4 @@
-import { Palette, Building2, Contact, QrCode, Eye, FilePenLine, FileText, Star, Landmark } from 'lucide-react'
+import { Palette, Building2, Contact, QrCode, Eye, FilePenLine, FileText, Star, Landmark, LayoutTemplate } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -8,6 +8,7 @@ interface StatsCardsProps {
     published: number
     drafts: number
     byVertical: {
+      generic: number
       art: number
       immo: number
       vcard: number
@@ -60,10 +61,16 @@ export function StatsCards({ stats }: StatsCardsProps) {
 
       <Card className="border-slate-200/80 shadow-sm sm:col-span-2 xl:col-span-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Par univers</CardTitle>
+          <CardTitle className="text-sm font-medium text-muted-foreground">Par modèle</CardTitle>
           <Palette className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2 text-muted-foreground">
+              <LayoutTemplate className="h-3.5 w-3.5" /> Générique
+            </span>
+            <span className="font-semibold">{stats.byVertical.generic}</span>
+          </div>
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-muted-foreground">
               <Palette className="h-3.5 w-3.5" /> Art
@@ -94,7 +101,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
             </span>
             <span className="font-semibold">{stats.byVertical.feedback}</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="col-span-2 flex items-center justify-between">
             <span className="flex items-center gap-2 text-muted-foreground">
               <Landmark className="h-3.5 w-3.5" /> Tourisme
             </span>

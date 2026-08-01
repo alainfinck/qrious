@@ -147,6 +147,7 @@ export async function getDashboardStats() {
     published: pages.filter((p) => p.status === 'published').length,
     drafts: pages.filter((p) => p.status === 'draft').length,
     byVertical: {
+      generic: pages.filter((p) => p.vertical === 'generic').length,
       art: pages.filter((p) => p.vertical === 'art').length,
       immo: pages.filter((p) => p.vertical === 'immo').length,
       vcard: pages.filter((p) => p.vertical === 'vcard').length,
