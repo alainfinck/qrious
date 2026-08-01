@@ -131,7 +131,18 @@ export interface LandingPage {
    */
   slug: string;
   status: 'draft' | 'published';
-  vertical: 'generic' | 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism';
+  vertical:
+    | 'generic'
+    | 'art'
+    | 'immo'
+    | 'vcard'
+    | 'product'
+    | 'feedback'
+    | 'tourism'
+    | 'chrd'
+    | 'corporate_event'
+    | 'ugc_retail'
+    | 'field_service';
   theme?: {
     /**
      * Code hexadécimal (ex: #2563eb)
@@ -366,6 +377,79 @@ export interface LandingPage {
           id?: string | null;
         }[]
       | null;
+  };
+  chrdData?: {
+    establishmentName?: string | null;
+    establishmentType?: ('hotel' | 'restaurant' | 'bar' | 'camping') | null;
+    welcomeMessage?: string | null;
+    menuPdfUrl?: string | null;
+    wifiName?: string | null;
+    wifiPassword?: string | null;
+    googleReviewUrl?: string | null;
+    tripadvisorUrl?: string | null;
+    enablePostcardGift?: boolean | null;
+    postcardCode?: string | null;
+  };
+  corporateEventData?: {
+    eventName?: string | null;
+    companyName?: string | null;
+    eventDate?: string | null;
+    location?: string | null;
+    welcomeMessage?: string | null;
+    wifiCode?: string | null;
+    scheduleUrl?: string | null;
+    slidesUrl?: string | null;
+    liveWallEnabled?: boolean | null;
+    galleryCode?: string | null;
+  };
+  ugcRetailData?: {
+    brandName?: string | null;
+    campaignTitle?: string | null;
+    productName?: string | null;
+    instructions?: string | null;
+    rewardDiscountCode?: string | null;
+    rewardDescription?: string | null;
+    rulesUrl?: string | null;
+    supportEmail?: string | null;
+  };
+  fieldServiceData?: {
+    assetName?: string | null;
+    assetId?: string | null;
+    category?: string | null;
+    location?: string | null;
+    status?: ('operational' | 'maintenance_required' | 'out_of_service') | null;
+    lastInspectionDate?: string | null;
+    nextInspectionDate?: string | null;
+    documentationUrl?: string | null;
+    contactTechnicianPhone?: string | null;
+    emergencyContact?: string | null;
+    maintenanceNotes?: string | null;
+  };
+  smartRouting?: {
+    mode?: ('none' | 'time_slots' | 'event_timeline' | 'ab_test') | null;
+    timeRules?:
+      | {
+          label?: string | null;
+          startTime?: string | null;
+          endTime?: string | null;
+          targetSlug?: string | null;
+          customHeadline?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    eventSchedule?: {
+      eventStartDate?: string | null;
+      eventEndDate?: string | null;
+      beforeEventTargetSlug?: string | null;
+      duringEventTargetSlug?: string | null;
+      afterEventTargetSlug?: string | null;
+    };
+    abTest?: {
+      enabled?: boolean | null;
+      variantASlug?: string | null;
+      variantBSlug?: string | null;
+      splitRatio?: number | null;
+    };
   };
   updatedAt: string;
   createdAt: string;
@@ -673,6 +757,93 @@ export interface LandingPagesSelect<T extends boolean = true> {
               name?: T;
               description?: T;
               id?: T;
+            };
+      };
+  chrdData?:
+    | T
+    | {
+        establishmentName?: T;
+        establishmentType?: T;
+        welcomeMessage?: T;
+        menuPdfUrl?: T;
+        wifiName?: T;
+        wifiPassword?: T;
+        googleReviewUrl?: T;
+        tripadvisorUrl?: T;
+        enablePostcardGift?: T;
+        postcardCode?: T;
+      };
+  corporateEventData?:
+    | T
+    | {
+        eventName?: T;
+        companyName?: T;
+        eventDate?: T;
+        location?: T;
+        welcomeMessage?: T;
+        wifiCode?: T;
+        scheduleUrl?: T;
+        slidesUrl?: T;
+        liveWallEnabled?: T;
+        galleryCode?: T;
+      };
+  ugcRetailData?:
+    | T
+    | {
+        brandName?: T;
+        campaignTitle?: T;
+        productName?: T;
+        instructions?: T;
+        rewardDiscountCode?: T;
+        rewardDescription?: T;
+        rulesUrl?: T;
+        supportEmail?: T;
+      };
+  fieldServiceData?:
+    | T
+    | {
+        assetName?: T;
+        assetId?: T;
+        category?: T;
+        location?: T;
+        status?: T;
+        lastInspectionDate?: T;
+        nextInspectionDate?: T;
+        documentationUrl?: T;
+        contactTechnicianPhone?: T;
+        emergencyContact?: T;
+        maintenanceNotes?: T;
+      };
+  smartRouting?:
+    | T
+    | {
+        mode?: T;
+        timeRules?:
+          | T
+          | {
+              label?: T;
+              startTime?: T;
+              endTime?: T;
+              targetSlug?: T;
+              customHeadline?: T;
+              id?: T;
+            };
+        eventSchedule?:
+          | T
+          | {
+              eventStartDate?: T;
+              eventEndDate?: T;
+              beforeEventTargetSlug?: T;
+              duringEventTargetSlug?: T;
+              afterEventTargetSlug?: T;
+            };
+        abTest?:
+          | T
+          | {
+              enabled?: T;
+              variantASlug?: T;
+              variantBSlug?: T;
+              splitRatio?: T;
             };
       };
   updatedAt?: T;

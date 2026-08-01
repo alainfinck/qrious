@@ -1,0 +1,2664 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.landing_pages_generic_data_sections": {
+      "name": "landing_pages_generic_data_sections",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "body": {
+          "name": "body",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "landing_pages_generic_data_sections_order_idx": {
+          "name": "landing_pages_generic_data_sections_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_generic_data_sections_parent_id_idx": {
+          "name": "landing_pages_generic_data_sections_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "landing_pages_generic_data_sections_parent_id_fk": {
+          "name": "landing_pages_generic_data_sections_parent_id_fk",
+          "tableFrom": "landing_pages_generic_data_sections",
+          "tableTo": "landing_pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.landing_pages_immo_data_amenities": {
+      "name": "landing_pages_immo_data_amenities",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "landing_pages_immo_data_amenities_order_idx": {
+          "name": "landing_pages_immo_data_amenities_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_immo_data_amenities_parent_id_idx": {
+          "name": "landing_pages_immo_data_amenities_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "landing_pages_immo_data_amenities_parent_id_fk": {
+          "name": "landing_pages_immo_data_amenities_parent_id_fk",
+          "tableFrom": "landing_pages_immo_data_amenities",
+          "tableTo": "landing_pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.landing_pages_product_data_quick_start_steps": {
+      "name": "landing_pages_product_data_quick_start_steps",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "landing_pages_product_data_quick_start_steps_order_idx": {
+          "name": "landing_pages_product_data_quick_start_steps_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_product_data_quick_start_steps_parent_id_idx": {
+          "name": "landing_pages_product_data_quick_start_steps_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "landing_pages_product_data_quick_start_steps_parent_id_fk": {
+          "name": "landing_pages_product_data_quick_start_steps_parent_id_fk",
+          "tableFrom": "landing_pages_product_data_quick_start_steps",
+          "tableTo": "landing_pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.landing_pages_tourism_data_points_of_interest": {
+      "name": "landing_pages_tourism_data_points_of_interest",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "landing_pages_tourism_data_points_of_interest_order_idx": {
+          "name": "landing_pages_tourism_data_points_of_interest_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_tourism_data_points_of_interest_parent_id_idx": {
+          "name": "landing_pages_tourism_data_points_of_interest_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "landing_pages_tourism_data_points_of_interest_parent_id_fk": {
+          "name": "landing_pages_tourism_data_points_of_interest_parent_id_fk",
+          "tableFrom": "landing_pages_tourism_data_points_of_interest",
+          "tableTo": "landing_pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.landing_pages_smart_routing_time_rules": {
+      "name": "landing_pages_smart_routing_time_rules",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start_time": {
+          "name": "start_time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end_time": {
+          "name": "end_time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "target_slug": {
+          "name": "target_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_headline": {
+          "name": "custom_headline",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "landing_pages_smart_routing_time_rules_order_idx": {
+          "name": "landing_pages_smart_routing_time_rules_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_smart_routing_time_rules_parent_id_idx": {
+          "name": "landing_pages_smart_routing_time_rules_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "landing_pages_smart_routing_time_rules_parent_id_fk": {
+          "name": "landing_pages_smart_routing_time_rules_parent_id_fk",
+          "tableFrom": "landing_pages_smart_routing_time_rules",
+          "tableTo": "landing_pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.landing_pages": {
+      "name": "landing_pages",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "enum_landing_pages_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'draft'"
+        },
+        "vertical": {
+          "name": "vertical",
+          "type": "enum_landing_pages_vertical",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "theme_primary_color": {
+          "name": "theme_primary_color",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'#0f172a'"
+        },
+        "theme_logo_id": {
+          "name": "theme_logo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_headline": {
+          "name": "generic_data_headline",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_subheadline": {
+          "name": "generic_data_subheadline",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_body": {
+          "name": "generic_data_body",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_cta_label": {
+          "name": "generic_data_cta_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_cta_url": {
+          "name": "generic_data_cta_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_secondary_cta_label": {
+          "name": "generic_data_secondary_cta_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_secondary_cta_url": {
+          "name": "generic_data_secondary_cta_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_website_url": {
+          "name": "generic_data_website_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_contact_email": {
+          "name": "generic_data_contact_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generic_data_contact_phone": {
+          "name": "generic_data_contact_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_artist_name": {
+          "name": "art_data_artist_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_artist_bio": {
+          "name": "art_data_artist_bio",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_artist_nationality": {
+          "name": "art_data_artist_nationality",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_artist_birth_year": {
+          "name": "art_data_artist_birth_year",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_year": {
+          "name": "art_data_year",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_medium": {
+          "name": "art_data_medium",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_dimensions": {
+          "name": "art_data_dimensions",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_series": {
+          "name": "art_data_series",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_edition": {
+          "name": "art_data_edition",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_certificate": {
+          "name": "art_data_certificate",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_description": {
+          "name": "art_data_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_price": {
+          "name": "art_data_price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_currency": {
+          "name": "art_data_currency",
+          "type": "enum_landing_pages_art_data_currency",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'EUR'"
+        },
+        "art_data_available": {
+          "name": "art_data_available",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "art_data_sold": {
+          "name": "art_data_sold",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "art_data_exhibition_name": {
+          "name": "art_data_exhibition_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_exhibition_location": {
+          "name": "art_data_exhibition_location",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_exhibition_dates": {
+          "name": "art_data_exhibition_dates",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_video_url": {
+          "name": "art_data_video_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_audio_guide_url": {
+          "name": "art_data_audio_guide_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_instagram_username": {
+          "name": "art_data_instagram_username",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_website_url": {
+          "name": "art_data_website_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_shop_url": {
+          "name": "art_data_shop_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "art_data_contact_email": {
+          "name": "art_data_contact_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_property_type": {
+          "name": "immo_data_property_type",
+          "type": "enum_landing_pages_immo_data_property_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_address": {
+          "name": "immo_data_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_city": {
+          "name": "immo_data_city",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_price": {
+          "name": "immo_data_price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_surface": {
+          "name": "immo_data_surface",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_rooms": {
+          "name": "immo_data_rooms",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_dpe": {
+          "name": "immo_data_dpe",
+          "type": "enum_landing_pages_immo_data_dpe",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_booking_url": {
+          "name": "immo_data_booking_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_welcome_message": {
+          "name": "immo_data_welcome_message",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_check_in_time": {
+          "name": "immo_data_check_in_time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_check_out_time": {
+          "name": "immo_data_check_out_time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_check_in_instructions": {
+          "name": "immo_data_check_in_instructions",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_wifi_name": {
+          "name": "immo_data_wifi_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_wifi_password": {
+          "name": "immo_data_wifi_password",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_house_rules": {
+          "name": "immo_data_house_rules",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_local_tips": {
+          "name": "immo_data_local_tips",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_host_name": {
+          "name": "immo_data_host_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_host_phone": {
+          "name": "immo_data_host_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_host_email": {
+          "name": "immo_data_host_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "immo_data_emergency_phone": {
+          "name": "immo_data_emergency_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_full_name": {
+          "name": "vcard_data_full_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_first_name": {
+          "name": "vcard_data_first_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_last_name": {
+          "name": "vcard_data_last_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_job_title": {
+          "name": "vcard_data_job_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_company": {
+          "name": "vcard_data_company",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_bio": {
+          "name": "vcard_data_bio",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_phone": {
+          "name": "vcard_data_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_email": {
+          "name": "vcard_data_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_website": {
+          "name": "vcard_data_website",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_address": {
+          "name": "vcard_data_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_phone_work": {
+          "name": "vcard_data_phone_work",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_email_work": {
+          "name": "vcard_data_email_work",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_linkedin_url": {
+          "name": "vcard_data_linkedin_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_twitter_url": {
+          "name": "vcard_data_twitter_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_instagram_url": {
+          "name": "vcard_data_instagram_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_github_url": {
+          "name": "vcard_data_github_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_youtube_url": {
+          "name": "vcard_data_youtube_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_calendly_url": {
+          "name": "vcard_data_calendly_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vcard_data_cover_color": {
+          "name": "vcard_data_cover_color",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_product_name": {
+          "name": "product_data_product_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_brand_name": {
+          "name": "product_data_brand_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_model_number": {
+          "name": "product_data_model_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_description": {
+          "name": "product_data_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_manual_url": {
+          "name": "product_data_manual_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_video_tutorial_url": {
+          "name": "product_data_video_tutorial_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_troubleshooting_url": {
+          "name": "product_data_troubleshooting_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_warranty_duration": {
+          "name": "product_data_warranty_duration",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_warranty_details": {
+          "name": "product_data_warranty_details",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_registration_url": {
+          "name": "product_data_registration_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_support_email": {
+          "name": "product_data_support_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "product_data_support_phone": {
+          "name": "product_data_support_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_company_name": {
+          "name": "feedback_data_company_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_heading": {
+          "name": "feedback_data_heading",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Votre avis compte !'"
+        },
+        "feedback_data_subheading": {
+          "name": "feedback_data_subheading",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Aidez-nous à nous améliorer en partageant votre expérience.'"
+        },
+        "feedback_data_google_review_url": {
+          "name": "feedback_data_google_review_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_tripadvisor_url": {
+          "name": "feedback_data_tripadvisor_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_trustpilot_url": {
+          "name": "feedback_data_trustpilot_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_custom_review_url": {
+          "name": "feedback_data_custom_review_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_custom_review_label": {
+          "name": "feedback_data_custom_review_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_enable_direct_form": {
+          "name": "feedback_data_enable_direct_form",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "feedback_data_direct_form_email": {
+          "name": "feedback_data_direct_form_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_data_prompt_question": {
+          "name": "feedback_data_prompt_question",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Qu''aurions-nous pu mieux faire ?'"
+        },
+        "tourism_data_place_name": {
+          "name": "tourism_data_place_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_location_name": {
+          "name": "tourism_data_location_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_historic_period": {
+          "name": "tourism_data_historic_period",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_description": {
+          "name": "tourism_data_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_audio_guide_url": {
+          "name": "tourism_data_audio_guide_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_video_url": {
+          "name": "tourism_data_video_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_latitude": {
+          "name": "tourism_data_latitude",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_longitude": {
+          "name": "tourism_data_longitude",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_address": {
+          "name": "tourism_data_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_opening_hours": {
+          "name": "tourism_data_opening_hours",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_entry_fee": {
+          "name": "tourism_data_entry_fee",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_website_url": {
+          "name": "tourism_data_website_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tourism_data_contact_phone": {
+          "name": "tourism_data_contact_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_establishment_name": {
+          "name": "chrd_data_establishment_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_establishment_type": {
+          "name": "chrd_data_establishment_type",
+          "type": "enum_landing_pages_chrd_data_establishment_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_welcome_message": {
+          "name": "chrd_data_welcome_message",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_menu_pdf_url": {
+          "name": "chrd_data_menu_pdf_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_wifi_name": {
+          "name": "chrd_data_wifi_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_wifi_password": {
+          "name": "chrd_data_wifi_password",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_google_review_url": {
+          "name": "chrd_data_google_review_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_tripadvisor_url": {
+          "name": "chrd_data_tripadvisor_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_enable_postcard_gift": {
+          "name": "chrd_data_enable_postcard_gift",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chrd_data_postcard_code": {
+          "name": "chrd_data_postcard_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_event_name": {
+          "name": "corporate_event_data_event_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_company_name": {
+          "name": "corporate_event_data_company_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_event_date": {
+          "name": "corporate_event_data_event_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_location": {
+          "name": "corporate_event_data_location",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_welcome_message": {
+          "name": "corporate_event_data_welcome_message",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_wifi_code": {
+          "name": "corporate_event_data_wifi_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_schedule_url": {
+          "name": "corporate_event_data_schedule_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_slides_url": {
+          "name": "corporate_event_data_slides_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_live_wall_enabled": {
+          "name": "corporate_event_data_live_wall_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "corporate_event_data_gallery_code": {
+          "name": "corporate_event_data_gallery_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_brand_name": {
+          "name": "ugc_retail_data_brand_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_campaign_title": {
+          "name": "ugc_retail_data_campaign_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_product_name": {
+          "name": "ugc_retail_data_product_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_instructions": {
+          "name": "ugc_retail_data_instructions",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_reward_discount_code": {
+          "name": "ugc_retail_data_reward_discount_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_reward_description": {
+          "name": "ugc_retail_data_reward_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_rules_url": {
+          "name": "ugc_retail_data_rules_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ugc_retail_data_support_email": {
+          "name": "ugc_retail_data_support_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_asset_name": {
+          "name": "field_service_data_asset_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_asset_id": {
+          "name": "field_service_data_asset_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_category": {
+          "name": "field_service_data_category",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_location": {
+          "name": "field_service_data_location",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_status": {
+          "name": "field_service_data_status",
+          "type": "enum_landing_pages_field_service_data_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_last_inspection_date": {
+          "name": "field_service_data_last_inspection_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_next_inspection_date": {
+          "name": "field_service_data_next_inspection_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_documentation_url": {
+          "name": "field_service_data_documentation_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_contact_technician_phone": {
+          "name": "field_service_data_contact_technician_phone",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_emergency_contact": {
+          "name": "field_service_data_emergency_contact",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "field_service_data_maintenance_notes": {
+          "name": "field_service_data_maintenance_notes",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_mode": {
+          "name": "smart_routing_mode",
+          "type": "enum_landing_pages_smart_routing_mode",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'none'"
+        },
+        "smart_routing_event_schedule_event_start_date": {
+          "name": "smart_routing_event_schedule_event_start_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_event_schedule_event_end_date": {
+          "name": "smart_routing_event_schedule_event_end_date",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_event_schedule_before_event_target_slug": {
+          "name": "smart_routing_event_schedule_before_event_target_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_event_schedule_during_event_target_slug": {
+          "name": "smart_routing_event_schedule_during_event_target_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_event_schedule_after_event_target_slug": {
+          "name": "smart_routing_event_schedule_after_event_target_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_ab_test_enabled": {
+          "name": "smart_routing_ab_test_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_ab_test_variant_a_slug": {
+          "name": "smart_routing_ab_test_variant_a_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_ab_test_variant_b_slug": {
+          "name": "smart_routing_ab_test_variant_b_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "smart_routing_ab_test_split_ratio": {
+          "name": "smart_routing_ab_test_split_ratio",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "landing_pages_slug_idx": {
+          "name": "landing_pages_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_theme_theme_logo_idx": {
+          "name": "landing_pages_theme_theme_logo_idx",
+          "columns": [
+            {
+              "expression": "theme_logo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_updated_at_idx": {
+          "name": "landing_pages_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "landing_pages_created_at_idx": {
+          "name": "landing_pages_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "landing_pages_theme_logo_id_media_id_fk": {
+          "name": "landing_pages_theme_logo_id_media_id_fk",
+          "tableFrom": "landing_pages",
+          "tableTo": "media",
+          "columnsFrom": [
+            "theme_logo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.media": {
+      "name": "media",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "alt": {
+          "name": "alt",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "thumbnail_u_r_l": {
+          "name": "thumbnail_u_r_l",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "filename": {
+          "name": "filename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mime_type": {
+          "name": "mime_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "filesize": {
+          "name": "filesize",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "width": {
+          "name": "width",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "height": {
+          "name": "height",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "focal_x": {
+          "name": "focal_x",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "focal_y": {
+          "name": "focal_y",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "media_updated_at_idx": {
+          "name": "media_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "media_created_at_idx": {
+          "name": "media_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "media_filename_idx": {
+          "name": "media_filename_idx",
+          "columns": [
+            {
+              "expression": "filename",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users_sessions": {
+      "name": "users_sessions",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "users_sessions_order_idx": {
+          "name": "users_sessions_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "users_sessions_parent_id_idx": {
+          "name": "users_sessions_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "users_sessions_parent_id_fk": {
+          "name": "users_sessions_parent_id_fk",
+          "tableFrom": "users_sessions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "enum_users_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'user'"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reset_password_token": {
+          "name": "reset_password_token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reset_password_expiration": {
+          "name": "reset_password_expiration",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "salt": {
+          "name": "salt",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hash": {
+          "name": "hash",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "login_attempts": {
+          "name": "login_attempts",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "lock_until": {
+          "name": "lock_until",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "users_updated_at_idx": {
+          "name": "users_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "users_created_at_idx": {
+          "name": "users_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "users_email_idx": {
+          "name": "users_email_idx",
+          "columns": [
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payload_kv": {
+      "name": "payload_kv",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "payload_kv_key_idx": {
+          "name": "payload_kv_key_idx",
+          "columns": [
+            {
+              "expression": "key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payload_locked_documents": {
+      "name": "payload_locked_documents",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "global_slug": {
+          "name": "global_slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "payload_locked_documents_global_slug_idx": {
+          "name": "payload_locked_documents_global_slug_idx",
+          "columns": [
+            {
+              "expression": "global_slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_updated_at_idx": {
+          "name": "payload_locked_documents_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_created_at_idx": {
+          "name": "payload_locked_documents_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payload_locked_documents_rels": {
+      "name": "payload_locked_documents_rels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "landing_pages_id": {
+          "name": "landing_pages_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "media_id": {
+          "name": "media_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "users_id": {
+          "name": "users_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "payload_locked_documents_rels_order_idx": {
+          "name": "payload_locked_documents_rels_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_parent_idx": {
+          "name": "payload_locked_documents_rels_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_path_idx": {
+          "name": "payload_locked_documents_rels_path_idx",
+          "columns": [
+            {
+              "expression": "path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_landing_pages_id_idx": {
+          "name": "payload_locked_documents_rels_landing_pages_id_idx",
+          "columns": [
+            {
+              "expression": "landing_pages_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_media_id_idx": {
+          "name": "payload_locked_documents_rels_media_id_idx",
+          "columns": [
+            {
+              "expression": "media_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_users_id_idx": {
+          "name": "payload_locked_documents_rels_users_id_idx",
+          "columns": [
+            {
+              "expression": "users_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "payload_locked_documents_rels_parent_fk": {
+          "name": "payload_locked_documents_rels_parent_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "payload_locked_documents",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_landing_pages_fk": {
+          "name": "payload_locked_documents_rels_landing_pages_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "landing_pages",
+          "columnsFrom": [
+            "landing_pages_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_media_fk": {
+          "name": "payload_locked_documents_rels_media_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "media",
+          "columnsFrom": [
+            "media_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_users_fk": {
+          "name": "payload_locked_documents_rels_users_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "users",
+          "columnsFrom": [
+            "users_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payload_preferences": {
+      "name": "payload_preferences",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "value": {
+          "name": "value",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "payload_preferences_key_idx": {
+          "name": "payload_preferences_key_idx",
+          "columns": [
+            {
+              "expression": "key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_preferences_updated_at_idx": {
+          "name": "payload_preferences_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_preferences_created_at_idx": {
+          "name": "payload_preferences_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payload_preferences_rels": {
+      "name": "payload_preferences_rels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "users_id": {
+          "name": "users_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "payload_preferences_rels_order_idx": {
+          "name": "payload_preferences_rels_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_preferences_rels_parent_idx": {
+          "name": "payload_preferences_rels_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_preferences_rels_path_idx": {
+          "name": "payload_preferences_rels_path_idx",
+          "columns": [
+            {
+              "expression": "path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_preferences_rels_users_id_idx": {
+          "name": "payload_preferences_rels_users_id_idx",
+          "columns": [
+            {
+              "expression": "users_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "payload_preferences_rels_parent_fk": {
+          "name": "payload_preferences_rels_parent_fk",
+          "tableFrom": "payload_preferences_rels",
+          "tableTo": "payload_preferences",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_preferences_rels_users_fk": {
+          "name": "payload_preferences_rels_users_fk",
+          "tableFrom": "payload_preferences_rels",
+          "tableTo": "users",
+          "columnsFrom": [
+            "users_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payload_migrations": {
+      "name": "payload_migrations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "batch": {
+          "name": "batch",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "payload_migrations_updated_at_idx": {
+          "name": "payload_migrations_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_migrations_created_at_idx": {
+          "name": "payload_migrations_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.enum_landing_pages_status": {
+      "name": "enum_landing_pages_status",
+      "schema": "public",
+      "values": [
+        "draft",
+        "published"
+      ]
+    },
+    "public.enum_landing_pages_vertical": {
+      "name": "enum_landing_pages_vertical",
+      "schema": "public",
+      "values": [
+        "generic",
+        "art",
+        "immo",
+        "vcard",
+        "product",
+        "feedback",
+        "tourism",
+        "chrd",
+        "corporate_event",
+        "ugc_retail",
+        "field_service"
+      ]
+    },
+    "public.enum_landing_pages_art_data_currency": {
+      "name": "enum_landing_pages_art_data_currency",
+      "schema": "public",
+      "values": [
+        "EUR",
+        "USD",
+        "GBP",
+        "CHF"
+      ]
+    },
+    "public.enum_landing_pages_immo_data_property_type": {
+      "name": "enum_landing_pages_immo_data_property_type",
+      "schema": "public",
+      "values": [
+        "apartment",
+        "house",
+        "gite",
+        "villa",
+        "studio"
+      ]
+    },
+    "public.enum_landing_pages_immo_data_dpe": {
+      "name": "enum_landing_pages_immo_data_dpe",
+      "schema": "public",
+      "values": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ]
+    },
+    "public.enum_landing_pages_chrd_data_establishment_type": {
+      "name": "enum_landing_pages_chrd_data_establishment_type",
+      "schema": "public",
+      "values": [
+        "hotel",
+        "restaurant",
+        "bar",
+        "camping"
+      ]
+    },
+    "public.enum_landing_pages_field_service_data_status": {
+      "name": "enum_landing_pages_field_service_data_status",
+      "schema": "public",
+      "values": [
+        "operational",
+        "maintenance_required",
+        "out_of_service"
+      ]
+    },
+    "public.enum_landing_pages_smart_routing_mode": {
+      "name": "enum_landing_pages_smart_routing_mode",
+      "schema": "public",
+      "values": [
+        "none",
+        "time_slots",
+        "event_timeline",
+        "ab_test"
+      ]
+    },
+    "public.enum_users_role": {
+      "name": "enum_users_role",
+      "schema": "public",
+      "values": [
+        "user",
+        "admin"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "id": "14bec706-beab-4bd5-82e6-44e7dc2594ce",
+  "prevId": "00000000-0000-0000-0000-000000000000"
+}
