@@ -1,0 +1,24 @@
+import type { Metadata } from 'next'
+
+import '../globals.css'
+
+export const metadata: Metadata = {
+  title: 'Qrious — QR codes dynamiques pour Art, Immobilier & Cartes de visite',
+  description:
+    'Créez des QR codes permanents qui pointent vers des landing pages dynamiques. Art, immobilier, carte de visite — marque blanche incluse.',
+  openGraph: {
+    title: 'Qrious — QR codes dynamiques multi-métiers',
+    description:
+      'Un QR code. Trois univers. Zéro limite. Landing pages mobile-first avec marque blanche.',
+    type: 'website',
+    locale: 'fr_FR',
+  },
+}
+
+export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="fr">
+      <body className="antialiased">{children}</body>
+    </html>
+  )
+}
