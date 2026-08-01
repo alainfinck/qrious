@@ -17,7 +17,7 @@ export default function EditeurPage() {
     <div className="min-h-dvh bg-white">
       <MarketingHeader />
       <main>
-        <section className="relative overflow-hidden border-b border-slate-100 pt-16 pb-10 lg:pt-20 lg:pb-12">
+        <section className="relative overflow-hidden border-b border-slate-100 pt-28 pb-10 lg:pt-32 lg:pb-12">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-white to-white" />
           <div className="container relative mx-auto max-w-6xl px-4 sm:px-6">
             <div className="max-w-2xl space-y-4">

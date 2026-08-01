@@ -9,7 +9,7 @@ import { WhiteLabelSection } from '@/components/marketing/WhiteLabelSection'
 
 export default function HomePage() {
   return (
-    <div className="min-h-dvh bg-white">
+    <div className="min-h-dvh bg-mq-paper">
       <MarketingHeader />
       <main>
         <HeroSection />
