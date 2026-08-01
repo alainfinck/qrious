@@ -6,6 +6,10 @@ export type LandingPageVertical =
   | 'product'
   | 'feedback'
   | 'tourism'
+  | 'chrd'
+  | 'corporate_event'
+  | 'ugc_retail'
+  | 'field_service'
 
 export type LandingPageStatus = 'draft' | 'published'
 
@@ -179,6 +183,59 @@ export interface TourismData {
   pointsOfInterest?: { name: string; description: string; id?: string | null }[] | null
 }
 
+export interface ChrdData {
+  establishmentName?: string | null
+  establishmentType?: 'hotel' | 'restaurant' | 'bar' | 'camping' | null
+  welcomeMessage?: string | null
+  menuPdfUrl?: string | null
+  wifiName?: string | null
+  wifiPassword?: string | null
+  googleReviewUrl?: string | null
+  tripadvisorUrl?: string | null
+  enablePostcardGift?: boolean | null
+  postcardCode?: string | null
+  menuCategories?: { categoryName: string; itemsSummary: string; id?: string | null }[] | null
+}
+
+export interface CorporateEventData {
+  eventName?: string | null
+  companyName?: string | null
+  eventDate?: string | null
+  location?: string | null
+  welcomeMessage?: string | null
+  wifiCode?: string | null
+  scheduleUrl?: string | null
+  slidesUrl?: string | null
+  liveWallEnabled?: boolean | null
+  galleryCode?: string | null
+  agendaItems?: { time: string; title: string; speaker?: string; id?: string | null }[] | null
+}
+
+export interface UgcRetailData {
+  brandName?: string | null
+  campaignTitle?: string | null
+  productName?: string | null
+  instructions?: string | null
+  rewardDiscountCode?: string | null
+  rewardDescription?: string | null
+  rulesUrl?: string | null
+  supportEmail?: string | null
+}
+
+export interface FieldServiceData {
+  assetName?: string | null
+  assetId?: string | null
+  category?: string | null
+  location?: string | null
+  status?: 'operational' | 'maintenance_required' | 'out_of_service' | null
+  lastInspectionDate?: string | null
+  nextInspectionDate?: string | null
+  documentationUrl?: string | null
+  contactTechnicianPhone?: string | null
+  emergencyContact?: string | null
+  maintenanceNotes?: string | null
+}
+
 export interface GenericData {
   headline?: string | null
   subheadline?: string | null
@@ -207,6 +264,10 @@ export interface LandingPage {
   productData?: ProductData | null
   feedbackData?: FeedbackData | null
   tourismData?: TourismData | null
+  chrdData?: ChrdData | null
+  corporateEventData?: CorporateEventData | null
+  ugcRetailData?: UgcRetailData | null
+  fieldServiceData?: FieldServiceData | null
   updatedAt?: string | null
   createdAt?: string | null
 }
@@ -216,3 +277,4 @@ export type LandingPageInput = Omit<LandingPage, 'id' | 'updatedAt' | 'createdAt
 export interface LandingPageTemplateProps {
   pageData: LandingPage
 }
+

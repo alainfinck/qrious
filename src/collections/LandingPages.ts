@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 const isVertical =
-  (vertical: 'generic' | 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism') =>
+  (vertical: 'generic' | 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism' | 'chrd' | 'corporate_event' | 'ugc_retail' | 'field_service') =>
   (data: Record<string, unknown>) =>
     data?.vertical === vertical
 
@@ -60,6 +60,10 @@ export const LandingPages: CollectionConfig = {
         { label: 'Manuel / Produit', value: 'product' },
         { label: 'Avis / Feedback', value: 'feedback' },
         { label: 'Tourisme / Patrimoine', value: 'tourism' },
+        { label: 'CHRD (Hôtel / Resto)', value: 'chrd' },
+        { label: 'Événementiel Corporate', value: 'corporate_event' },
+        { label: 'Retail & UGC Promo', value: 'ugc_retail' },
+        { label: 'Field Service & Maintenance', value: 'field_service' },
       ],
       admin: {
         position: 'sidebar',
@@ -887,5 +891,104 @@ export const LandingPages: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'chrdData',
+      type: 'group',
+      label: 'CHRD (Hôtel / Resto / Camping)',
+      admin: {
+        condition: isVertical('chrd'),
+      },
+      fields: [
+        { name: 'establishmentName', type: 'text', label: 'Nom de l\'établissement' },
+        {
+          name: 'establishmentType',
+          type: 'select',
+          label: 'Type d\'établissement',
+          options: [
+            { label: 'Hôtel', value: 'hotel' },
+            { label: 'Restaurant', value: 'restaurant' },
+            { label: 'Bar', value: 'bar' },
+            { label: 'Camping / Gîte', value: 'camping' },
+          ],
+        },
+        { name: 'welcomeMessage', type: 'textarea', label: 'Message de bienvenue' },
+        { name: 'menuPdfUrl', type: 'text', label: 'Lien du Menu (PDF ou Web)' },
+        { name: 'wifiName', type: 'text', label: 'Nom du réseau Wi-Fi' },
+        { name: 'wifiPassword', type: 'text', label: 'Mot de passe Wi-Fi' },
+        { name: 'googleReviewUrl', type: 'text', label: 'Lien Avis Google' },
+        { name: 'tripadvisorUrl', type: 'text', label: 'Lien TripAdvisor' },
+        { name: 'enablePostcardGift', type: 'checkbox', label: 'Proposer une carte postale souvenir offerte' },
+        { name: 'postcardCode', type: 'text', label: 'Code cadeau carte postale' },
+      ],
+    },
+    {
+      name: 'corporateEventData',
+      type: 'group',
+      label: 'Événementiel Corporate & Séminaire',
+      admin: {
+        condition: isVertical('corporate_event'),
+      },
+      fields: [
+        { name: 'eventName', type: 'text', label: 'Nom de l\'événement' },
+        { name: 'companyName', type: 'text', label: 'Entreprise organisatrice' },
+        { name: 'eventDate', type: 'text', label: 'Date de l\'événement' },
+        { name: 'location', type: 'text', label: 'Lieu / Salle' },
+        { name: 'welcomeMessage', type: 'textarea', label: 'Message d\'accueil' },
+        { name: 'wifiCode', type: 'text', label: 'Code Wi-Fi invités' },
+        { name: 'scheduleUrl', type: 'text', label: 'Lien du programme complet' },
+        { name: 'slidesUrl', type: 'text', label: 'Lien des présentations / PDF' },
+        { name: 'liveWallEnabled', type: 'checkbox', label: 'Activer le Live Wall photo collaboratif' },
+        { name: 'galleryCode', type: 'text', label: 'Code / Slug Galerie Pixshare' },
+      ],
+    },
+    {
+      name: 'ugcRetailData',
+      type: 'group',
+      label: 'Retail & Concours Photo UGC',
+      admin: {
+        condition: isVertical('ugc_retail'),
+      },
+      fields: [
+        { name: 'brandName', type: 'text', label: 'Nom de la marque' },
+        { name: 'campaignTitle', type: 'text', label: 'Titre de l\'opération promo' },
+        { name: 'productName', type: 'text', label: 'Nom du produit' },
+        { name: 'instructions', type: 'textarea', label: 'Consignes de participation' },
+        { name: 'rewardDiscountCode', type: 'text', label: 'Code promo / Bon de réduction offert' },
+        { name: 'rewardDescription', type: 'text', label: 'Description du cadeau' },
+        { name: 'rulesUrl', type: 'text', label: 'Lien du règlement du jeu' },
+        { name: 'supportEmail', type: 'text', label: 'Email support client' },
+      ],
+    },
+    {
+      name: 'fieldServiceData',
+      type: 'group',
+      label: 'Field Service & Maintenance',
+      admin: {
+        condition: isVertical('field_service'),
+      },
+      fields: [
+        { name: 'assetName', type: 'text', label: 'Nom de l\'équipement / Machine' },
+        { name: 'assetId', type: 'text', label: 'Numéro de série / ID Asset' },
+        { name: 'category', type: 'text', label: 'Catégorie d\'équipement' },
+        { name: 'location', type: 'text', label: 'Emplacement (Bâtiment, Salle)' },
+        {
+          name: 'status',
+          type: 'select',
+          label: 'Statut de l\'équipement',
+          options: [
+            { label: 'Opérationnel', value: 'operational' },
+            { label: 'Maintenance requise', value: 'maintenance_required' },
+            { label: 'Hors service', value: 'out_of_service' },
+          ],
+        },
+        { name: 'lastInspectionDate', type: 'text', label: 'Date dernière inspection' },
+        { name: 'nextInspectionDate', type: 'text', label: 'Prochaine inspection prévue' },
+        { name: 'documentationUrl', type: 'text', label: 'Lien fiche technique / Manuel PDF' },
+        { name: 'contactTechnicianPhone', type: 'text', label: 'Téléphone astreinte technique' },
+        { name: 'emergencyContact', type: 'text', label: 'Numéro d\'urgence' },
+        { name: 'maintenanceNotes', type: 'textarea', label: 'Consignes & notes de maintenance' },
+      ],
+    },
   ],
 }
+

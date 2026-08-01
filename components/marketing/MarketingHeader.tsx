@@ -236,18 +236,17 @@ export function MarketingHeader() {
             </nav>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              <Button
-                asChild
-                variant="ghost"
-                className="hidden h-11 rounded-xl px-4 text-base text-white/90 hover:bg-white/10 hover:text-white sm:inline-flex"
+              <Link
+                href="/dashboard/login"
+                className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white sm:px-4 sm:text-base"
               >
-                <Link href="/dashboard/login">Connexion</Link>
-              </Button>
+                Connexion
+              </Link>
               <Button
                 asChild
                 className="h-11 rounded-xl bg-gradient-to-r from-mq-coral to-mq-sun px-5 text-base font-semibold text-mq-ink hover:opacity-90"
               >
-                <Link href="/dashboard/register">Créer mon QR</Link>
+                <Link href="/editeur">Créer mon QR</Link>
               </Button>
               <button
                 type="button"

@@ -77,6 +77,30 @@ const VERTICALS: {
     model: 'Fiche lieu',
     fields: ['Lieu', 'Médias', 'Pratique', 'À voir'],
   },
+  {
+    value: 'chrd',
+    label: 'CHRD (Hôtel/Resto)',
+    model: 'Menu & Expérience',
+    fields: ['Établissement', 'Menu PDF', 'Wi-Fi', 'Carte Postale'],
+  },
+  {
+    value: 'corporate_event',
+    label: 'Événement Pro',
+    model: 'Séminaire & Live',
+    fields: ['Événement', 'Live Wall', 'Programme', 'Wi-Fi'],
+  },
+  {
+    value: 'ugc_retail',
+    label: 'Retail & UGC',
+    model: 'Concours Photo',
+    fields: ['Marque', 'Partage Photo', 'Code Promo', 'Règlement'],
+  },
+  {
+    value: 'field_service',
+    label: 'Field Service',
+    model: 'Maintenance Machine',
+    fields: ['Équipement', 'Inspect', 'Documentation', 'Tickets'],
+  },
 ]
 
 const CONTENT_TABS: Record<LandingPageVertical, { id: string; label: string }[]> = {
@@ -120,6 +144,22 @@ const CONTENT_TABS: Record<LandingPageVertical, { id: string; label: string }[]>
     { id: 'media', label: 'Médias' },
     { id: 'practical', label: 'Pratique' },
     { id: 'poi', label: 'À voir' },
+  ],
+  chrd: [
+    { id: 'info', label: 'Établissement' },
+    { id: 'menu', label: 'Menu & Services' },
+  ],
+  corporate_event: [
+    { id: 'info', label: 'Événement' },
+    { id: 'agenda', label: 'Agenda' },
+  ],
+  ugc_retail: [
+    { id: 'info', label: 'Offre' },
+    { id: 'campaign', label: 'Participation' },
+  ],
+  field_service: [
+    { id: 'info', label: 'Équipement' },
+    { id: 'maintenance', label: 'Maintenance' },
   ],
 }
 

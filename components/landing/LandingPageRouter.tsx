@@ -5,6 +5,10 @@ import { VCardTemplate } from '@/components/landing/templates/VCardTemplate'
 import { ProductTemplate } from '@/components/landing/templates/ProductTemplate'
 import { FeedbackTemplate } from '@/components/landing/templates/FeedbackTemplate'
 import { TourismTemplate } from '@/components/landing/templates/TourismTemplate'
+import { ChrdTemplate } from '@/components/landing/templates/ChrdTemplate'
+import { CorporateEventTemplate } from '@/components/landing/templates/CorporateEventTemplate'
+import { UgcRetailTemplate } from '@/components/landing/templates/UgcRetailTemplate'
+import { FieldServiceTemplate } from '@/components/landing/templates/FieldServiceTemplate'
 import { ThemeWrapper } from '@/components/landing/ThemeWrapper'
 import type { LandingPage } from '@/types/landing-page'
 
@@ -28,6 +32,14 @@ function renderVerticalTemplate(pageData: LandingPage) {
       return <FeedbackTemplate pageData={pageData} />
     case 'tourism':
       return <TourismTemplate pageData={pageData} />
+    case 'chrd':
+      return <ChrdTemplate pageData={pageData} />
+    case 'corporate_event':
+      return <CorporateEventTemplate pageData={pageData} />
+    case 'ugc_retail':
+      return <UgcRetailTemplate pageData={pageData} />
+    case 'field_service':
+      return <FieldServiceTemplate pageData={pageData} />
     default: {
       const _exhaustive: never = pageData.vertical
       return _exhaustive
@@ -44,3 +56,4 @@ export function LandingPageRouter({ pageData }: LandingPageRouterProps) {
     </ThemeWrapper>
   )
 }
+

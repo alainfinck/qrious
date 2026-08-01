@@ -10,12 +10,17 @@ export async function getCurrentUser(): Promise<User | null> {
     return null
   }
 
-  const payload = await getPayload({ config })
-  const headers = await getHeaders()
-  const { user } = await payload.auth({ headers })
+  try {
+    const payload = await getPayload({ config })
+    const headers = await getHeaders()
+    const { user } = await payload.auth({ headers })
 
-  if (user && 'collection' in user && user.collection === 'users') {
-    return user as User
+    if (user && 'collection' in user && user.collection === 'users') {
+      return user as User
+    }
+  } catch (err) {
+    console.error('Error in getCurrentUser:', err)
+    return null
   }
 
   return null

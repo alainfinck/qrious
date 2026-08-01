@@ -17,7 +17,9 @@ export function slugify(value: string): string {
     .slice(0, 64)
 }
 
-export const VERTICAL_LABELS = {
+import type { LandingPageVertical } from '@/types/landing-page'
+
+export const VERTICAL_LABELS: Record<LandingPageVertical, string> = {
   generic: 'Générique',
   art: 'Art',
   immo: 'Immobilier',
@@ -25,7 +27,11 @@ export const VERTICAL_LABELS = {
   product: 'Manuel / Produit',
   feedback: 'Avis / Feedback',
   tourism: 'Tourisme / Patrimoine',
-} as const
+  chrd: 'CHR & Hôtellerie',
+  corporate_event: 'Événement Pro',
+  ugc_retail: 'UGC & Retail',
+  field_service: 'Intervention / Maintenance',
+}
 
 export const STATUS_LABELS = {
   draft: 'Brouillon',
