@@ -13,6 +13,13 @@ import {
   Sparkles,
   Wand2,
   X,
+  Utensils,
+  Calendar,
+  ShoppingBag,
+  Wrench,
+  Compass,
+  Star,
+  Box,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -53,22 +60,64 @@ const productItems = [
 
 const metierItems = [
   {
-    href: '/galeries',
+    href: '/solutions/chrd',
+    label: 'Hôtellerie & Resto (CHRD)',
+    description: 'Menu PDF, Wi-Fi & Carte postale',
+    icon: Utensils,
+  },
+  {
+    href: '/solutions/corporate-event',
+    label: 'Événementiel Corporate',
+    description: 'Live Wall photo & Séminaires B2B',
+    icon: Calendar,
+  },
+  {
+    href: '/solutions/ugc-retail',
+    label: 'Retail & Concours UGC',
+    description: 'Photos produit & Codes promo',
+    icon: ShoppingBag,
+  },
+  {
+    href: '/solutions/field-service',
+    label: 'Field Service & Maintenance',
+    description: 'Gestion d’équipements & astreinte',
+    icon: Wrench,
+  },
+  {
+    href: '/solutions/art',
     label: 'Art & Galeries',
     description: 'Landings œuvres et expositions',
     icon: Palette,
   },
   {
-    href: '/features',
+    href: '/solutions/immo',
     label: 'Immobilier & Gîtes',
     description: 'Biens, prix, DPE et réservation',
     icon: Building2,
   },
   {
-    href: '/editeur',
-    label: 'Carte de visite',
+    href: '/solutions/vcard',
+    label: 'Carte de visite (vCard)',
     description: 'vCard digitale en un scan',
     icon: Contact,
+  },
+  {
+    href: '/solutions/tourism',
+    label: 'Tourisme & Musées',
+    description: 'Audio-guides et lieux culturels',
+    icon: Compass,
+  },
+  {
+    href: '/solutions/feedback',
+    label: 'Avis & E-Réputation',
+    description: 'Collecte Google Reviews & privé',
+    icon: Star,
+  },
+  {
+    href: '/solutions/product',
+    label: 'Manuel Produit',
+    description: 'Guides vidéo & dépannage',
+    icon: Box,
   },
 ]
 

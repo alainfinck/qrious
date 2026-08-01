@@ -84,27 +84,32 @@ export function MarketingFooter() {
             {/* Column 1: Solutions */}
             <div>
               <h4 className="mb-4 text-base font-bold uppercase tracking-wider text-white">
-                Solutions
+                Solutions Métier
               </h4>
               <ul className="space-y-3 text-base font-medium text-white/75">
                 <li>
-                  <Link href="/editeur" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
-                    Éditeur QR
+                  <Link href="/solutions/chrd" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                    Hôtellerie & Resto
                   </Link>
                 </li>
                 <li>
-                  <Link href="/galeries" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
-                    Pour les galeries
+                  <Link href="/solutions/corporate-event" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                    Événementiel B2B
                   </Link>
                 </li>
                 <li>
-                  <Link href="/features" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
-                    Fonctionnalités
+                  <Link href="/solutions/ugc-retail" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                    Retail & Concours UGC
                   </Link>
                 </li>
                 <li>
-                  <Link href="/pricing" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
-                    Tarifs
+                  <Link href="/solutions/field-service" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                    Field Service & Maint.
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/solutions/art" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                    Art & Galeries
                   </Link>
                 </li>
               </ul>

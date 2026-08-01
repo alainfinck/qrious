@@ -406,6 +406,10 @@ export function QrCodeForm({ page, action, submitLabel }: QrCodeFormProps) {
           {vertical === 'product' ? <ProductFields page={page} tab={contentTab} /> : null}
           {vertical === 'feedback' ? <FeedbackFields page={page} tab={contentTab} /> : null}
           {vertical === 'tourism' ? <TourismFields page={page} tab={contentTab} /> : null}
+          {vertical === 'chrd' ? <ChrdFields page={page} tab={contentTab} /> : null}
+          {vertical === 'corporate_event' ? <CorporateEventFields page={page} tab={contentTab} /> : null}
+          {vertical === 'ugc_retail' ? <UgcRetailFields page={page} tab={contentTab} /> : null}
+          {vertical === 'field_service' ? <FieldServiceFields page={page} tab={contentTab} /> : null}
         </Section>
       </div>
 
@@ -920,3 +924,124 @@ function TourismFields({ page, tab }: { page?: LandingPage; tab: string }) {
     </>
   )
 }
+
+function ChrdFields({ page, tab }: { page?: LandingPage; tab: string }) {
+  return (
+    <>
+      <Panel active={tab === 'info'}>
+        <Field id="establishmentName" label="Nom de l'établissement" defaultValue={page?.chrdData?.establishmentName} className="sm:col-span-2" placeholder="Hôtel la Plage / Bistro Gourmet" />
+        <div className="space-y-1.5">
+          <Label htmlFor="establishmentType">Type d'établissement</Label>
+          <select id="establishmentType" name="establishmentType" defaultValue={page?.chrdData?.establishmentType ?? 'hotel'} className={selectClassName}>
+            <option value="hotel">Hôtel</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="bar">Bar / Cafétéria</option>
+            <option value="camping">Camping / Gîte</option>
+          </select>
+        </div>
+        <Field id="chrdWifiName" label="Nom du Wi-Fi" defaultValue={page?.chrdData?.wifiName} placeholder="Hotel-Guest-Wifi" />
+        <Field id="chrdWifiPassword" label="Mot de passe Wi-Fi" defaultValue={page?.chrdData?.wifiPassword} placeholder="Bienvenue2025" />
+        <TextAreaField id="chrdWelcomeMessage" label="Message de bienvenue" defaultValue={page?.chrdData?.welcomeMessage} className="sm:col-span-2" rows={3} placeholder="Toute l'équipe vous souhaite un excellent séjour !" />
+      </Panel>
+
+      <Panel active={tab === 'menu'}>
+        <Field id="menuPdfUrl" label="Lien du Menu / Carte (PDF ou Web)" defaultValue={page?.chrdData?.menuPdfUrl} className="sm:col-span-2" placeholder="https://monsite.fr/menu.pdf" />
+        <Field id="chrdGoogleReviewUrl" label="Lien Avis Google" defaultValue={page?.chrdData?.googleReviewUrl} className="sm:col-span-2" placeholder="https://g.page/r/..." />
+        <Field id="chrdTripadvisorUrl" label="Lien TripAdvisor" defaultValue={page?.chrdData?.tripadvisorUrl} className="sm:col-span-2" placeholder="https://tripadvisor.fr/..." />
+        <label className="flex items-center gap-2 text-sm sm:col-span-2">
+          <input
+            type="checkbox"
+            id="enablePostcardGift"
+            name="enablePostcardGift"
+            defaultChecked={page?.chrdData?.enablePostcardGift ?? true}
+            className="h-4 w-4 rounded border-slate-300"
+          />
+          Proposer une carte postale souvenir offerte aux clients
+        </label>
+        <Field id="postcardCode" label="Code cadeau carte postale" defaultValue={page?.chrdData?.postcardCode} placeholder="OFFERT2025" />
+      </Panel>
+    </>
+  )
+}
+
+function CorporateEventFields({ page, tab }: { page?: LandingPage; tab: string }) {
+  return (
+    <>
+      <Panel active={tab === 'info'}>
+        <Field id="corporateEventName" label="Nom de l'événement" defaultValue={page?.corporateEventData?.eventName} className="sm:col-span-2" placeholder="Séminaire Annuel 2025" />
+        <Field id="corporateCompanyName" label="Entreprise organisatrice" defaultValue={page?.corporateEventData?.companyName} placeholder="Acme Corp" />
+        <Field id="eventDate" label="Date de l'événement" defaultValue={page?.corporateEventData?.eventDate} placeholder="15 Octobre 2025" />
+        <Field id="eventLocation" label="Lieu / Salle" defaultValue={page?.corporateEventData?.location} className="sm:col-span-2" placeholder="Palais des Congrès, Salle A" />
+        <Field id="eventWifiCode" label="Code Wi-Fi invités" defaultValue={page?.corporateEventData?.wifiCode} placeholder="AcmeSeminar2025" />
+        <TextAreaField id="eventWelcomeMessage" label="Message d'accueil" defaultValue={page?.corporateEventData?.welcomeMessage} className="sm:col-span-2" rows={3} placeholder="Bienvenue à toutes nos équipes !" />
+      </Panel>
+
+      <Panel active={tab === 'agenda'}>
+        <Field id="scheduleUrl" label="Lien du programme complet (PDF)" defaultValue={page?.corporateEventData?.scheduleUrl} className="sm:col-span-2" placeholder="https://..." />
+        <Field id="slidesUrl" label="Lien des présentations / Slides" defaultValue={page?.corporateEventData?.slidesUrl} className="sm:col-span-2" placeholder="https://..." />
+        <label className="flex items-center gap-2 text-sm sm:col-span-2">
+          <input
+            type="checkbox"
+            id="liveWallEnabled"
+            name="liveWallEnabled"
+            defaultChecked={page?.corporateEventData?.liveWallEnabled ?? true}
+            className="h-4 w-4 rounded border-slate-300"
+          />
+          Activer le Live Wall photo collaboratif Pixshare
+        </label>
+        <Field id="galleryCode" label="Code / Slug Galerie Pixshare" defaultValue={page?.corporateEventData?.galleryCode} placeholder="seminaire-2025" />
+      </Panel>
+    </>
+  )
+}
+
+function UgcRetailFields({ page, tab }: { page?: LandingPage; tab: string }) {
+  return (
+    <>
+      <Panel active={tab === 'info'}>
+        <Field id="ugcBrandName" label="Nom de la marque" defaultValue={page?.ugcRetailData?.brandName} placeholder="Ma Marque" />
+        <Field id="campaignTitle" label="Titre de l'opération promo" defaultValue={page?.ugcRetailData?.campaignTitle} placeholder="Partagez votre style & gagnez 15%" />
+        <Field id="ugcProductName" label="Nom du produit" defaultValue={page?.ugcRetailData?.productName} className="sm:col-span-2" placeholder="Édition Limitée Été" />
+        <TextAreaField id="ugcInstructions" label="Consignes de participation" defaultValue={page?.ugcRetailData?.instructions} className="sm:col-span-2" rows={3} placeholder="Prenez une photo de votre produit et recevez votre bon d'achat immédiat." />
+      </Panel>
+
+      <Panel active={tab === 'campaign'}>
+        <Field id="rewardDiscountCode" label="Code promo offert" defaultValue={page?.ugcRetailData?.rewardDiscountCode} placeholder="PROMO15OFF" />
+        <Field id="rewardDescription" label="Description du cadeau" defaultValue={page?.ugcRetailData?.rewardDescription} placeholder="15% de réduction sur votre prochaine commande" />
+        <Field id="rulesUrl" label="Lien du règlement du jeu" defaultValue={page?.ugcRetailData?.rulesUrl} className="sm:col-span-2" placeholder="https://..." />
+        <Field id="ugcSupportEmail" label="Email support client" type="email" defaultValue={page?.ugcRetailData?.supportEmail} className="sm:col-span-2" />
+      </Panel>
+    </>
+  )
+}
+
+function FieldServiceFields({ page, tab }: { page?: LandingPage; tab: string }) {
+  return (
+    <>
+      <Panel active={tab === 'info'}>
+        <Field id="assetName" label="Nom de l'équipement" defaultValue={page?.fieldServiceData?.assetName} className="sm:col-span-2" placeholder="Groupe Électrogène XL-500" />
+        <Field id="assetId" label="Numéro de série / ID Asset" defaultValue={page?.fieldServiceData?.assetId} placeholder="SN-2025-9981" />
+        <Field id="assetCategory" label="Catégorie" defaultValue={page?.fieldServiceData?.category} placeholder="Énergie / Moteur" />
+        <Field id="assetLocation" label="Emplacement (Bâtiment, Salle)" defaultValue={page?.fieldServiceData?.location} className="sm:col-span-2" placeholder="Bâtiment B - Sous-sol" />
+        <div className="space-y-1.5 sm:col-span-2">
+          <Label htmlFor="assetStatus">Statut de l'équipement</Label>
+          <select id="assetStatus" name="assetStatus" defaultValue={page?.fieldServiceData?.status ?? 'operational'} className={selectClassName}>
+            <option value="operational">Opérationnel</option>
+            <option value="maintenance_required">Maintenance requise</option>
+            <option value="out_of_service">Hors service</option>
+          </select>
+        </div>
+      </Panel>
+
+      <Panel active={tab === 'maintenance'}>
+        <Field id="lastInspectionDate" label="Date dernière inspection" defaultValue={page?.fieldServiceData?.lastInspectionDate} placeholder="12/06/2025" />
+        <Field id="nextInspectionDate" label="Prochaine inspection prévue" defaultValue={page?.fieldServiceData?.nextInspectionDate} placeholder="12/12/2025" />
+        <Field id="documentationUrl" label="Lien Fiche technique / Manuel PDF" defaultValue={page?.fieldServiceData?.documentationUrl} className="sm:col-span-2" placeholder="https://..." />
+        <Field id="contactTechnicianPhone" label="Téléphone astreinte technique" defaultValue={page?.fieldServiceData?.contactTechnicianPhone} placeholder="+33 6..." />
+        <Field id="emergencyContact" label="Numéro d'urgence" defaultValue={page?.fieldServiceData?.emergencyContact} placeholder="112 / Astreinte 24h" />
+        <TextAreaField id="maintenanceNotes" label="Consignes & notes de maintenance" defaultValue={page?.fieldServiceData?.maintenanceNotes} className="sm:col-span-2" rows={3} placeholder="Vérifier la pression de l'huile avant démarrage..." />
+      </Panel>
+    </>
+  )
+}
+

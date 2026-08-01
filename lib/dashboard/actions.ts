@@ -151,6 +151,53 @@ export type QrCodeFormState = {
     contactPhone: string
     sections: string
   }
+  chrdData: {
+    establishmentName: string
+    establishmentType: string
+    welcomeMessage: string
+    menuPdfUrl: string
+    wifiName: string
+    wifiPassword: string
+    googleReviewUrl: string
+    tripadvisorUrl: string
+    enablePostcardGift: string
+    postcardCode: string
+  }
+  corporateEventData: {
+    eventName: string
+    companyName: string
+    eventDate: string
+    location: string
+    welcomeMessage: string
+    wifiCode: string
+    scheduleUrl: string
+    slidesUrl: string
+    liveWallEnabled: string
+    galleryCode: string
+  }
+  ugcRetailData: {
+    brandName: string
+    campaignTitle: string
+    productName: string
+    instructions: string
+    rewardDiscountCode: string
+    rewardDescription: string
+    rulesUrl: string
+    supportEmail: string
+  }
+  fieldServiceData: {
+    assetName: string
+    assetId: string
+    category: string
+    location: string
+    status: string
+    lastInspectionDate: string
+    nextInspectionDate: string
+    documentationUrl: string
+    contactTechnicianPhone: string
+    emergencyContact: string
+    maintenanceNotes: string
+  }
 }
 
 function parseFormData(formData: FormData): QrCodeFormState {
@@ -286,6 +333,53 @@ function parseFormData(formData: FormData): QrCodeFormState {
       contactEmail: String(formData.get('genericContactEmail') ?? '').trim(),
       contactPhone: String(formData.get('genericContactPhone') ?? '').trim(),
       sections: String(formData.get('genericSections') ?? '').trim(),
+    },
+    chrdData: {
+      establishmentName: String(formData.get('establishmentName') ?? '').trim(),
+      establishmentType: String(formData.get('establishmentType') ?? '').trim(),
+      welcomeMessage: String(formData.get('chrdWelcomeMessage') ?? '').trim(),
+      menuPdfUrl: String(formData.get('menuPdfUrl') ?? '').trim(),
+      wifiName: String(formData.get('chrdWifiName') ?? '').trim(),
+      wifiPassword: String(formData.get('chrdWifiPassword') ?? '').trim(),
+      googleReviewUrl: String(formData.get('chrdGoogleReviewUrl') ?? '').trim(),
+      tripadvisorUrl: String(formData.get('chrdTripadvisorUrl') ?? '').trim(),
+      enablePostcardGift: String(formData.get('enablePostcardGift') ?? '').trim(),
+      postcardCode: String(formData.get('postcardCode') ?? '').trim(),
+    },
+    corporateEventData: {
+      eventName: String(formData.get('corporateEventName') ?? '').trim(),
+      companyName: String(formData.get('corporateCompanyName') ?? '').trim(),
+      eventDate: String(formData.get('eventDate') ?? '').trim(),
+      location: String(formData.get('eventLocation') ?? '').trim(),
+      welcomeMessage: String(formData.get('eventWelcomeMessage') ?? '').trim(),
+      wifiCode: String(formData.get('eventWifiCode') ?? '').trim(),
+      scheduleUrl: String(formData.get('scheduleUrl') ?? '').trim(),
+      slidesUrl: String(formData.get('slidesUrl') ?? '').trim(),
+      liveWallEnabled: String(formData.get('liveWallEnabled') ?? '').trim(),
+      galleryCode: String(formData.get('galleryCode') ?? '').trim(),
+    },
+    ugcRetailData: {
+      brandName: String(formData.get('ugcBrandName') ?? '').trim(),
+      campaignTitle: String(formData.get('campaignTitle') ?? '').trim(),
+      productName: String(formData.get('ugcProductName') ?? '').trim(),
+      instructions: String(formData.get('ugcInstructions') ?? '').trim(),
+      rewardDiscountCode: String(formData.get('rewardDiscountCode') ?? '').trim(),
+      rewardDescription: String(formData.get('rewardDescription') ?? '').trim(),
+      rulesUrl: String(formData.get('rulesUrl') ?? '').trim(),
+      supportEmail: String(formData.get('ugcSupportEmail') ?? '').trim(),
+    },
+    fieldServiceData: {
+      assetName: String(formData.get('assetName') ?? '').trim(),
+      assetId: String(formData.get('assetId') ?? '').trim(),
+      category: String(formData.get('assetCategory') ?? '').trim(),
+      location: String(formData.get('assetLocation') ?? '').trim(),
+      status: String(formData.get('assetStatus') ?? '').trim(),
+      lastInspectionDate: String(formData.get('lastInspectionDate') ?? '').trim(),
+      nextInspectionDate: String(formData.get('nextInspectionDate') ?? '').trim(),
+      documentationUrl: String(formData.get('documentationUrl') ?? '').trim(),
+      contactTechnicianPhone: String(formData.get('contactTechnicianPhone') ?? '').trim(),
+      emergencyContact: String(formData.get('emergencyContact') ?? '').trim(),
+      maintenanceNotes: String(formData.get('maintenanceNotes') ?? '').trim(),
     },
   }
 }
@@ -485,6 +579,65 @@ function toPayloadData(state: QrCodeFormState): LandingPageInput {
                   })
                   .filter((poi) => poi.name)
               : null,
+          }
+        : undefined,
+    chrdData:
+      state.vertical === 'chrd'
+        ? {
+            establishmentName: state.chrdData.establishmentName || null,
+            establishmentType: (state.chrdData.establishmentType as 'hotel' | 'restaurant' | 'bar' | 'camping') || null,
+            welcomeMessage: state.chrdData.welcomeMessage || null,
+            menuPdfUrl: state.chrdData.menuPdfUrl || null,
+            wifiName: state.chrdData.wifiName || null,
+            wifiPassword: state.chrdData.wifiPassword || null,
+            googleReviewUrl: state.chrdData.googleReviewUrl || null,
+            tripadvisorUrl: state.chrdData.tripadvisorUrl || null,
+            enablePostcardGift: state.chrdData.enablePostcardGift === 'on',
+            postcardCode: state.chrdData.postcardCode || null,
+          }
+        : undefined,
+    corporateEventData:
+      state.vertical === 'corporate_event'
+        ? {
+            eventName: state.corporateEventData.eventName || null,
+            companyName: state.corporateEventData.companyName || null,
+            eventDate: state.corporateEventData.eventDate || null,
+            location: state.corporateEventData.location || null,
+            welcomeMessage: state.corporateEventData.welcomeMessage || null,
+            wifiCode: state.corporateEventData.wifiCode || null,
+            scheduleUrl: state.corporateEventData.scheduleUrl || null,
+            slidesUrl: state.corporateEventData.slidesUrl || null,
+            liveWallEnabled: state.corporateEventData.liveWallEnabled === 'on',
+            galleryCode: state.corporateEventData.galleryCode || null,
+          }
+        : undefined,
+    ugcRetailData:
+      state.vertical === 'ugc_retail'
+        ? {
+            brandName: state.ugcRetailData.brandName || null,
+            campaignTitle: state.ugcRetailData.campaignTitle || null,
+            productName: state.ugcRetailData.productName || null,
+            instructions: state.ugcRetailData.instructions || null,
+            rewardDiscountCode: state.ugcRetailData.rewardDiscountCode || null,
+            rewardDescription: state.ugcRetailData.rewardDescription || null,
+            rulesUrl: state.ugcRetailData.rulesUrl || null,
+            supportEmail: state.ugcRetailData.supportEmail || null,
+          }
+        : undefined,
+    fieldServiceData:
+      state.vertical === 'field_service'
+        ? {
+            assetName: state.fieldServiceData.assetName || null,
+            assetId: state.fieldServiceData.assetId || null,
+            category: state.fieldServiceData.category || null,
+            location: state.fieldServiceData.location || null,
+            status: (state.fieldServiceData.status as 'operational' | 'maintenance_required' | 'out_of_service') || null,
+            lastInspectionDate: state.fieldServiceData.lastInspectionDate || null,
+            nextInspectionDate: state.fieldServiceData.nextInspectionDate || null,
+            documentationUrl: state.fieldServiceData.documentationUrl || null,
+            contactTechnicianPhone: state.fieldServiceData.contactTechnicianPhone || null,
+            emergencyContact: state.fieldServiceData.emergencyContact || null,
+            maintenanceNotes: state.fieldServiceData.maintenanceNotes || null,
           }
         : undefined,
   }
