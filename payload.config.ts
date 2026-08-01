@@ -19,6 +19,10 @@ const databaseUrl = getDatabaseUrl()
 const smtpHost = process.env.SMTP_HOST
 const fromEmail = process.env.FROM_EMAIL || 'noreply@qrious.fr'
 
+/** Next sets this during `next build` — never run interactive migrations then. */
+const isNextBuild = process.env.NEXT_PHASE === 'phase-production-build'
+const isProd = process.env.NODE_ENV === 'production'
+
 export default buildConfig({
   serverURL: (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(/\/$/, ''),
   admin: {
@@ -60,7 +64,10 @@ export default buildConfig({
     pool: {
       connectionString: databaseUrl,
     },
-    prodMigrations: migrations,
+    // Never auto-push schema in prod/build (avoids mixing push + migrations).
+    push: !isProd && !isNextBuild && process.env.PAYLOAD_DATABASE_PUSH !== 'false',
+    // Skip during Next build: migrate prompt hangs CI when a `batch = -1` row exists.
+    ...(isNextBuild ? {} : { prodMigrations: migrations }),
   }),
   ...(smtpHost
     ? {

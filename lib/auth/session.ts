@@ -5,6 +5,11 @@ import config from '@payload-config'
 import type { User } from '@/payload-types'
 
 export async function getCurrentUser(): Promise<User | null> {
+  // Avoid connecting to Payload/DB while Next is statically generating pages.
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return null
+  }
+
   const payload = await getPayload({ config })
   const headers = await getHeaders()
   const { user } = await payload.auth({ headers })
