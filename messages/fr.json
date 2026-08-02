@@ -1052,7 +1052,13 @@
       "emptyTitle": "Aucun média pour le moment",
       "emptyDescription": "Uploadez vos logos, bannières et menus (PDF) pour les insérer facilement dans vos Smart Pages.",
       "startUpload": "Commencer l'upload",
-      "open": "Ouvrir"
+      "open": "Ouvrir",
+      "dropTitle": "Glissez-déposez vos médias ici",
+      "dropHere": "Déposez pour uploader",
+      "dropHint": "Images ou PDF · max 10 Mo · plusieurs fichiers acceptés",
+      "browse": "Parcourir les fichiers",
+      "uploading": "Upload de {count, plural, one {# fichier} other {# fichiers}}…",
+      "invalidFiles": "Seules les images et PDF jusqu'à 10 Mo sont acceptés."
     },
     "artists": {
       "title": "Artistes",

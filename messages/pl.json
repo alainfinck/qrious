@@ -1052,7 +1052,13 @@
       "emptyTitle": "Brak mediów na razie",
       "emptyDescription": "Prześlij logo, banery i menu (PDF), by łatwo wstawiać je do Smart Pages.",
       "startUpload": "Rozpocznij przesyłanie",
-      "open": "Otwórz"
+      "open": "Otwórz",
+      "dropTitle": "Przeciągnij i upuść media tutaj",
+      "dropHere": "Upuść, aby przesłać",
+      "dropHint": "Obrazy lub PDF · max 10 MB · wiele plików dozwolonych",
+      "browse": "Przeglądaj pliki",
+      "uploading": "Przesyłanie {count, plural, one {# pliku} other {# plików}}…",
+      "invalidFiles": "Akceptowane są tylko obrazy i PDF do 10 MB."
     },
     "artists": {
       "title": "Artyści",

@@ -1052,7 +1052,13 @@
       "emptyTitle": "Noch keine Medien",
       "emptyDescription": "Laden Sie Logos, Banner und Menüs (PDF) hoch, um sie leicht in Smart Pages einzufügen.",
       "startUpload": "Upload starten",
-      "open": "Öffnen"
+      "open": "Öffnen",
+      "dropTitle": "Medien hierher ziehen und ablegen",
+      "dropHere": "Zum Hochladen ablegen",
+      "dropHint": "Bilder oder PDF · max. 10 MB · mehrere Dateien erlaubt",
+      "browse": "Dateien durchsuchen",
+      "uploading": "{count, plural, one {# Datei wird} other {# Dateien werden}} hochgeladen…",
+      "invalidFiles": "Nur Bilder und PDFs bis 10 MB werden akzeptiert."
     },
     "artists": {
       "title": "Künstler",

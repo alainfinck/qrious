@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { generateRandomSlug, slugify } from '@/lib/dashboard/utils'
 import {
   createLandingPage,
+  createMedia,
   deleteLandingPage,
   getLandingPageBySlugAny,
   updateLandingPage,
@@ -847,6 +848,62 @@ export async function saveWeeklyReportSettings(settings: {
   revalidatePath('/dashboard/statistiques')
 
   return { success: true }
+}
+
+const MEDIA_MAX_BYTES = 10 * 1024 * 1024
+const MEDIA_ALLOWED_PREFIXES = ['image/', 'application/pdf'] as const
+
+function isAllowedMediaType(mimeType: string) {
+  return MEDIA_ALLOWED_PREFIXES.some(
+    (prefix) => mimeType === prefix || mimeType.startsWith(prefix),
+  )
+}
+
+export async function uploadMediaAction(
+  formData: FormData,
+): Promise<{ error?: string; uploaded?: number }> {
+  await requireAuth()
+
+  const files = formData
+    .getAll('files')
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0)
+
+  if (files.length === 0) {
+    return { error: 'Aucun fichier sélectionné' }
+  }
+
+  let uploaded = 0
+
+  try {
+    for (const file of files) {
+      if (file.size > MEDIA_MAX_BYTES) {
+        return { error: `« ${file.name} » dépasse la limite de 10 Mo` }
+      }
+      if (!isAllowedMediaType(file.type)) {
+        return { error: `Type non supporté : ${file.name}` }
+      }
+
+      const buffer = Buffer.from(await file.arrayBuffer())
+      await createMedia(
+        {
+          data: buffer,
+          mimetype: file.type || 'application/octet-stream',
+          name: file.name,
+          size: file.size,
+        },
+        file.name.replace(/\.[^.]+$/, ''),
+      )
+      uploaded += 1
+    }
+
+    revalidatePath('/dashboard/medias')
+    return { uploaded }
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Erreur lors de l'upload",
+      uploaded,
+    }
+  }
 }
 
 export async function sendTestWeeklyDigestEmail(targetEmail: string) {

@@ -207,3 +207,20 @@ export async function getAllMedia() {
 
   return result.docs
 }
+
+export async function createMedia(file: {
+  data: Buffer
+  mimetype: string
+  name: string
+  size: number
+}, alt?: string) {
+  const payload = await getPayload({ config })
+
+  return payload.create({
+    collection: 'media',
+    data: {
+      alt: alt || file.name.replace(/\.[^.]+$/, ''),
+    },
+    file,
+  })
+}

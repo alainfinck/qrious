@@ -1052,7 +1052,13 @@
       "emptyTitle": "No media yet",
       "emptyDescription": "Upload your logos, banners, and menus (PDF) to easily insert them into your Smart Pages.",
       "startUpload": "Start upload",
-      "open": "Open"
+      "open": "Open",
+      "dropTitle": "Drag & drop your media here",
+      "dropHere": "Drop to upload",
+      "dropHint": "Images or PDF · max 10 MB · multiple files allowed",
+      "browse": "Browse files",
+      "uploading": "Uploading {count, plural, one {# file} other {# files}}…",
+      "invalidFiles": "Only images and PDFs up to 10 MB are accepted."
     },
     "artists": {
       "title": "Artists",

@@ -1052,7 +1052,13 @@
       "emptyTitle": "Nessun media per ora",
       "emptyDescription": "Carica loghi, banner e menu (PDF) per inserirli facilmente nelle Smart Pages.",
       "startUpload": "Inizia l'upload",
-      "open": "Apri"
+      "open": "Apri",
+      "dropTitle": "Trascina e rilascia i media qui",
+      "dropHere": "Rilascia per caricare",
+      "dropHint": "Immagini o PDF · max 10 MB · più file consentiti",
+      "browse": "Sfoglia file",
+      "uploading": "Caricamento di {count, plural, one {# file} other {# file}}…",
+      "invalidFiles": "Sono accettati solo immagini e PDF fino a 10 MB."
     },
     "artists": {
       "title": "Artisti",

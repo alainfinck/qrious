@@ -1052,7 +1052,13 @@
       "emptyTitle": "Ningún medio por ahora",
       "emptyDescription": "Sube tus logos, banners y menús (PDF) para insertarlos fácilmente en tus Smart Pages.",
       "startUpload": "Empezar la subida",
-      "open": "Abrir"
+      "open": "Abrir",
+      "dropTitle": "Arrastra y suelta tus medios aquí",
+      "dropHere": "Suelta para subir",
+      "dropHint": "Imágenes o PDF · máx. 10 MB · varios archivos permitidos",
+      "browse": "Explorar archivos",
+      "uploading": "Subiendo {count, plural, one {# archivo} other {# archivos}}…",
+      "invalidFiles": "Solo se aceptan imágenes y PDF de hasta 10 MB."
     },
     "artists": {
       "title": "Artistas",
