@@ -1,3 +1,5 @@
+import { Linking, Platform } from 'react-native'
+
 import type { LandingPageVertical } from '../types/landing-page'
 
 export function getApiBaseUrl(): string {
@@ -6,6 +8,15 @@ export function getApiBaseUrl(): string {
     return 'https://www.qrious.fr'
   }
   return raw
+}
+
+export function goToSiteHome() {
+  const url = `${getApiBaseUrl()}/`
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    window.location.assign(url)
+    return
+  }
+  void Linking.openURL(url)
 }
 
 export function getQrTargetUrl(slug: string): string {

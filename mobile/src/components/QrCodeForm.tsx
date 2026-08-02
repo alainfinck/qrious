@@ -673,13 +673,8 @@ function SmartIdentityStep({
                   <Text style={styles.verticalModel}>{option.model}</Text>
                 )}
               </View>
-              <Text style={[styles.verticalLabel, active && { color: colors.white }]}>
-                {option.label}
-              </Text>
-              <Text
-                style={[styles.verticalDesc, active && { color: 'rgba(255,255,255,0.7)' }]}
-                numberOfLines={2}
-              >
+              <Text style={styles.verticalLabel}>{option.label}</Text>
+              <Text style={styles.verticalDesc} numberOfLines={2}>
                 {option.description}
               </Text>
             </Pressable>
@@ -1002,13 +997,17 @@ const styles = StyleSheet.create({
     minWidth: 150,
     flexGrow: 1,
     borderRadius: 16,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colors.slate200,
     backgroundColor: colors.white,
     padding: 14,
     gap: 6,
   },
-  verticalCardActive: { backgroundColor: colors.slate900, borderColor: colors.slate900 },
+  verticalCardActive: {
+    backgroundColor: colors.white,
+    borderColor: colors.signal,
+    borderWidth: 2,
+  },
   verticalCardTop: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,21 +1,41 @@
 import React from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native'
 import { Link, useLocalSearchParams, useRouter } from 'expo-router'
+import { ChevronLeft } from 'lucide-react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { QrCodeForm } from '../../src/components/QrCodeForm'
+import { goToSiteHome } from '../../src/lib/utils'
 import { colors, spacing } from '../../src/theme/colors'
 import type { LandingPageVertical } from '../../src/types/landing-page'
 import type { StaticQrContentType } from '../../src/lib/qr-payload'
 
 export default function PublicEditorScreen() {
   const router = useRouter()
+  const { width } = useWindowDimensions()
   const params = useLocalSearchParams<{ type?: string; vertical?: string }>()
+  const showHomeHint = width >= 420
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
       <View style={styles.topBar}>
-        <Text style={styles.brand}>QRious</Text>
+        <Pressable
+          onPress={goToSiteHome}
+          accessibilityRole="link"
+          accessibilityLabel="Retour à l’accueil QRious"
+          style={styles.brandLink}
+        >
+          <ChevronLeft size={18} color={colors.slate600} />
+          <Text style={styles.brand}>QRious</Text>
+          {showHomeHint ? <Text style={styles.homeHint}>Accueil</Text> : null}
+        </Pressable>
         <View style={styles.topActions}>
           <Link href="/login" asChild>
             <Pressable style={styles.linkBtn}>
@@ -62,7 +82,21 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.slate100,
     backgroundColor: colors.white,
   },
+  brandLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 4,
+    paddingRight: 8,
+    minWidth: 0,
+  },
   brand: { fontSize: 20, fontWeight: '800', color: colors.ink },
+  homeHint: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.slate500,
+    marginLeft: 4,
+  },
   topActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   linkBtn: { paddingHorizontal: 12, paddingVertical: 8 },
   linkBtnText: { fontWeight: '600', color: colors.slate600 },

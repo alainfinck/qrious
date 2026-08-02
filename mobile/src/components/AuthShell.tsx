@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +10,7 @@ import {
   useWindowDimensions,
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { ChevronLeft } from 'lucide-react-native'
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -18,6 +20,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import { goToSiteHome } from '../lib/utils'
 import { BrandMark, BrandWordmark } from './Brand'
 
 const FEATURES = [
@@ -57,6 +60,20 @@ function FadeIn({
   return <Animated.View style={[animatedStyle, style]}>{children}</Animated.View>
 }
 
+function BackToSite() {
+  return (
+    <Pressable
+      onPress={goToSiteHome}
+      accessibilityRole="link"
+      accessibilityLabel="Retour au site QRious"
+      style={({ pressed }) => [styles.backBtn, pressed && { opacity: 0.75 }]}
+    >
+      <ChevronLeft size={18} color="rgba(255,255,255,0.75)" />
+      <Text style={styles.backBtnText}>Retour au site</Text>
+    </Pressable>
+  )
+}
+
 export function AuthShell({
   title,
   description,
@@ -88,15 +105,23 @@ export function AuthShell({
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={styles.flex}
         >
+          <View style={styles.topBar}>
+            <BackToSite />
+          </View>
           <View style={[styles.layout, desktop && styles.layoutDesktop]}>
             <View style={[styles.stage, desktop && styles.stageDesktop]}>
               {desktop ? (
                 <View style={styles.brandPanel}>
                   <FadeIn delay={40}>
-                    <View style={styles.brandRow}>
+                    <Pressable
+                      onPress={goToSiteHome}
+                      accessibilityRole="link"
+                      accessibilityLabel="Retour à l’accueil QRious"
+                      style={styles.brandRow}
+                    >
                       <BrandMark size={36} />
                       <BrandWordmark size={30} />
-                    </View>
+                    </Pressable>
                   </FadeIn>
 
                   <View style={styles.heroBlock}>
@@ -143,10 +168,15 @@ export function AuthShell({
               >
                 {!desktop ? (
                   <FadeIn delay={40} style={styles.mobileBrand}>
-                    <View style={styles.brandRow}>
+                    <Pressable
+                      onPress={goToSiteHome}
+                      accessibilityRole="link"
+                      accessibilityLabel="Retour à l’accueil QRious"
+                      style={styles.brandRow}
+                    >
                       <BrandMark size={30} />
                       <BrandWordmark size={26} />
-                    </View>
+                    </Pressable>
                   </FadeIn>
                 ) : null}
 
@@ -180,6 +210,24 @@ const styles = StyleSheet.create({
   },
   flex: { flex: 1 },
   safe: { flex: 1 },
+  topBar: {
+    paddingHorizontal: 16,
+    paddingTop: 4,
+    paddingBottom: 4,
+  },
+  backBtn: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+  },
+  backBtnText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.75)',
+  },
   blob: {
     position: 'absolute',
     borderRadius: 9999,
