@@ -566,8 +566,11 @@ cmd_web() {
   export EXPO_PUBLIC_API_URL="${EXPO_PUBLIC_API_URL:-$DEFAULT_API_URL}"
   echo "🌐 Expo web (pnpm web) — API: $EXPO_PUBLIC_API_URL"
   echo "   Ouvre : http://localhost:8081/newqr"
-  echo "   Backend : ./mobile.sh site  (ou ./runsh.sh)"
-  echo "   Prod-like : ./mobile.sh newqr && ./runsh.sh → http://localhost:3000/newqr"
+  if [[ "$EXPO_PUBLIC_API_URL" == *"localhost"* ]] || [[ "$EXPO_PUBLIC_API_URL" == *"127.0.0.1"* ]]; then
+    echo "   Backend local requis : ./mobile.sh site  (DB peut être distante)"
+  else
+    echo "   API distante — pas besoin de ./mobile.sh site"
+  fi
   pnpm web
 }
 

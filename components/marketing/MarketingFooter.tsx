@@ -167,19 +167,19 @@ export function MarketingFooter() {
               </h4>
               <ul className="space-y-3 text-base font-medium text-white/75">
                 <li>
-                  <Link href="/dashboard/login" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                  <a href="/newqr/login" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
                     {t('linkLogin')}
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/dashboard" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                  <a href="/newqr/home" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
                     {t('linkDashboard')}
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link href="/dashboard/register" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                  <a href="/newqr/register" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
                     {t('linkRegister')}
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>

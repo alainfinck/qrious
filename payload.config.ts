@@ -105,6 +105,10 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: databaseUrl,
+      // Fail fast instead of hanging RSC navigations when DB is unreachable.
+      connectionTimeoutMillis: 4_000,
+      idleTimeoutMillis: 20_000,
+      max: 20,
     },
     // Never auto-push schema in prod/build (avoids mixing push + migrations).
     push: !isProd && !isNextBuild && process.env.PAYLOAD_DATABASE_PUSH !== 'false',

@@ -2,8 +2,28 @@ import { Linking, Platform } from 'react-native'
 
 import type { LandingPageVertical } from '../types/landing-page'
 
+function isLocalHostUrl(url: string): boolean {
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(url)
+}
+
+/**
+ * API base URL.
+ * - Native / Metro: `EXPO_PUBLIC_API_URL` (défaut localhost:3000)
+ * - Web export sous /newqr : si l’env a été buildée en localhost alors que la page
+ *   est en prod, on utilise `window.location.origin` (même host que Next/Payload).
+ */
 export function getApiBaseUrl(): string {
-  const raw = (process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/$/, '')
+  const fromEnv = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, '')
+
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    const origin = window.location.origin.replace(/\/$/, '')
+    const envIsLocal = !fromEnv || isLocalHostUrl(fromEnv)
+    if (envIsLocal && !isLocalHostUrl(origin)) {
+      return origin
+    }
+  }
+
+  const raw = (fromEnv || 'http://localhost:3000').replace(/\/$/, '')
   if (raw === 'https://v2.qrious.fr' || raw === 'http://v2.qrious.fr') {
     return 'https://www.qrious.fr'
   }

@@ -133,7 +133,7 @@ export function DashboardSidebar({ className, onNavigate }: DashboardSidebarProp
           <Button
             type="submit"
             variant="ghost"
-            className="h-11 w-full justify-start gap-3 rounded-xl px-3.5 text-base font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            className="h-11 w-full justify-start gap-3 rounded-xl px-3.5 text-base font-medium text-slate-500 hover:bg-red-50 hover:text-red-700"
           >
             <LogOut className="h-5 w-5" />
             {t('logout')}

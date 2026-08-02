@@ -58,12 +58,12 @@ export default async function ScannerPage() {
               >
                 {t('ctaCreate')}
               </Link>
-              <Link
-                href="/dashboard/login"
+              <a
+                href="/newqr/login"
                 className="inline-flex items-center rounded-xl border border-mq-ink/15 px-5 py-3 text-sm font-semibold text-mq-ink transition hover:bg-mq-ink/[0.03]"
               >
                 {t('ctaDashboard')}
-              </Link>
+              </a>
             </div>
           </div>
         </section>

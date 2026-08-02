@@ -519,12 +519,12 @@ export function MarketingHeader() {
 
             <div className="flex items-center gap-2 sm:gap-3">
               <LanguageSwitcher className="hidden lg:inline-flex" />
-              <Link
-                href="/dashboard/login"
+              <a
+                href="/newqr/login"
                 className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm font-medium text-mq-ink/80 transition-colors hover:bg-slate-100 hover:text-mq-ink sm:px-4 sm:text-base"
               >
                 {t('login')}
-              </Link>
+              </a>
               <Button
                 asChild
                 className="h-11 rounded-xl bg-gradient-to-r from-mq-coral to-mq-sun px-5 text-base font-semibold text-mq-ink hover:opacity-90"
@@ -651,13 +651,13 @@ export function MarketingHeader() {
                 <LanguageSwitcher className="w-full justify-start" />
               </div>
 
-              <Link
-                href="/dashboard/login"
+              <a
+                href="/newqr/login"
                 onClick={() => setOpen(false)}
                 className="block rounded-xl px-3 py-3 text-base font-medium text-mq-ink/80 hover:bg-slate-100 hover:text-mq-ink sm:hidden"
               >
                 {t('login')}
-              </Link>
+              </a>
             </nav>
           )}
         </div>
