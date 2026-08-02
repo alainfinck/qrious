@@ -287,21 +287,42 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
     setContentTab(CONTENT_TABS[next][0].id)
   }
 
-  function goNext() {
+  function goNext(e?: React.MouseEvent | React.FormEvent | React.KeyboardEvent) {
+    e?.preventDefault()
     if (step === 0 && !title.trim()) {
-      setError('Le titre est obligatoire.')
+      setError('Le titre est obligatoire pour passer à l’étape suivante.')
+      const titleInput = document.getElementById('title') as HTMLInputElement | null
+      if (titleInput) {
+        titleInput.focus()
+        titleInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
       return
     }
     setError(null)
     setStep((s) => Math.min(s + 1, STEPS.length - 1))
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
-  function goBack() {
+  function goBack(e?: React.MouseEvent) {
+    e?.preventDefault()
     setError(null)
     setStep((s) => Math.max(s - 1, 0))
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
   async function handleSubmit(formData: FormData) {
+    if (!title.trim()) {
+      setError('Le titre est obligatoire.')
+      setStep(0)
+      const titleInput = document.getElementById('title') as HTMLInputElement | null
+      if (titleInput) titleInput.focus()
+      return
+    }
+
     setPending(true)
     setError(null)
     setSuccess(false)
@@ -321,7 +342,16 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
   }
 
   return (
-    <form action={handleSubmit} className="space-y-6">
+    <form
+      action={handleSubmit}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && e.target instanceof HTMLInputElement && step < STEPS.length - 1) {
+          e.preventDefault()
+          goNext(e)
+        }
+      }}
+      className="space-y-6"
+    >
       {/* Step indicator */}
       <nav aria-label="Étapes" className="rounded-xl border border-slate-200/80 bg-white p-2 shadow-sm">
         <ol className="grid grid-cols-3 gap-1">
@@ -332,9 +362,11 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
               <li key={item.id}>
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={(e) => {
                     if (index > 0 && !title.trim()) {
                       setError('Le titre est obligatoire.')
+                      const titleInput = document.getElementById('title') as HTMLInputElement | null
+                      if (titleInput) titleInput.focus()
                       return
                     }
                     setError(null)
@@ -390,11 +422,18 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
                 value={title}
                 onChange={(e) => {
                   setTitle(e.target.value)
+                  if (error) setError(null)
                   if (!page) setSlug(slugify(e.target.value))
                 }}
                 placeholder="Ex. Exposition Lumière 2026"
+                className={cn(!title.trim() && error && 'border-red-500 ring-2 ring-red-500/20')}
                 required
               />
+              {!title.trim() && error ? (
+                <p className="text-xs font-semibold text-red-600 animate-fadeIn">
+                  ⚠️ Le titre est obligatoire pour pouvoir continuer.
+                </p>
+              ) : null}
             </div>
 
             <div className="space-y-2 sm:col-span-2">
@@ -814,30 +853,51 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
       </div>
 
       {error ? (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 font-medium flex items-center justify-between shadow-sm">
+          <span>⚠️ {error}</span>
+          <button
+            type="button"
+            onClick={() => setError(null)}
+            className="text-xs font-bold text-red-600 hover:underline ml-3 shrink-0"
+          >
+            Masquer
+          </button>
         </div>
       ) : null}
 
       {success ? (
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          Modifications enregistrées avec succès.
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700 font-medium shadow-sm">
+          ✅ Modifications enregistrées avec succès.
         </div>
       ) : null}
 
-      <div className="flex items-center justify-between gap-3">
-        <Button type="button" variant="outline" onClick={goBack} disabled={step === 0 || pending}>
-          <ChevronLeft className="h-4 w-4" />
+      <div className="flex items-center justify-between gap-3 pt-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={(e) => goBack(e)}
+          disabled={step === 0 || pending}
+          className="h-10 px-4 font-semibold rounded-xl"
+        >
+          <ChevronLeft className="mr-1 h-4 w-4" />
           Retour
         </Button>
 
         {step < STEPS.length - 1 ? (
-          <Button type="button" onClick={goNext}>
-            Continuer
+          <Button
+            type="button"
+            onClick={(e) => goNext(e)}
+            className="h-10 px-5 font-bold bg-mq-ink text-white hover:bg-mq-ink/90 rounded-xl shadow-md transition-all flex items-center gap-1.5"
+          >
+            Étape suivante : {STEPS[step + 1]?.label}
             <ChevronRight className="h-4 w-4" />
           </Button>
         ) : (
-          <Button type="submit" disabled={pending}>
+          <Button
+            type="submit"
+            disabled={pending}
+            className="h-10 px-6 font-bold bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl shadow-md transition-all"
+          >
             {pending ? 'Enregistrement…' : submitLabel}
           </Button>
         )}
@@ -1005,7 +1065,6 @@ function RedirectFields({ page }: { page?: LandingPage }) {
             type="url"
             defaultValue={page?.redirectData?.targetUrl || ''}
             placeholder="https://mon-site.fr/ma-page"
-            required
           />
           <p className="text-xs text-muted-foreground">
             L’URL complète vers laquelle le QR code redirigera (doit commencer par https://)
