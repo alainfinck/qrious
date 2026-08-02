@@ -13,11 +13,17 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (loading) return
-    const inAuth = segments[0] === '(auth)'
-    if (!user && !inAuth) {
-      router.replace('/login')
-    } else if (user && inAuth) {
+    const root = segments[0]
+    const inAuth = root === '(auth)'
+    const inPublic = root === '(public)'
+
+    if (!user && !inAuth && !inPublic) {
+      // Invité : éditeur public plutôt que login forcé
       router.replace('/')
+    } else if (user && inAuth) {
+      router.replace('/home')
+    } else if (user && inPublic) {
+      router.replace('/home')
     }
   }, [user, loading, segments, router])
 

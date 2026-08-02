@@ -35,16 +35,16 @@ export function generateRandomSlug(length = 4): string {
 export const VERTICAL_LABELS: Record<LandingPageVertical, string> = {
   generic: 'Générique',
   redirect: 'Redirection URL',
-  art: 'Art',
-  immo: 'Immobilier',
-  vcard: 'Carte de visite',
-  product: 'Manuel / Produit',
-  feedback: 'Avis / Feedback',
-  tourism: 'Tourisme / Patrimoine',
-  chrd: 'CHR & Hôtellerie',
-  corporate_event: 'Événement Pro',
-  ugc_retail: 'UGC & Retail',
-  field_service: 'Intervention / Maintenance',
+  art: 'Art & Galerie',
+  immo: 'Immobilier & Gîte',
+  vcard: 'vCard Pro',
+  product: 'Produit & Notice',
+  feedback: 'Avis & Satisfaction',
+  tourism: 'Tourisme & Guide',
+  chrd: 'CHRD (Hôtel/Resto)',
+  corporate_event: 'Événement Corporate',
+  ugc_retail: 'Retail & Concours UGC',
+  field_service: 'Field Service & Machine',
 }
 
 export const STATUS_LABELS = {

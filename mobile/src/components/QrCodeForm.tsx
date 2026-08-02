@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import {
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -8,11 +9,34 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native'
-import QRCode from 'react-native-qrcode-svg'
 import * as Clipboard from 'expo-clipboard'
-import { Shuffle } from 'lucide-react-native'
+import {
+  ArrowUpRight,
+  Box,
+  Building2,
+  Calendar,
+  Check,
+  Compass,
+  Download,
+  FileType,
+  LayoutGrid,
+  Palette,
+  QrCode,
+  ShoppingBag,
+  Shuffle,
+  Sparkles,
+  Star,
+  User,
+  Utensils,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react-native'
 
-import { Badge, Button, Input, TextArea } from './ui'
+import { Badge, Button, Input } from './ui'
+import { QrStyleEditor } from './QrStyleEditor'
+import { QrStyledPreview, type QrExportExtension, type QrPreviewHandle } from './QrStyledPreview'
+import { StaticContentFields } from './StaticContentFields'
+import { VerticalFields } from './VerticalFields'
 import {
   VERTICAL_OPTIONS,
   emptyFormState,
@@ -20,34 +44,95 @@ import {
   toLandingPageInput,
   type FormState,
 } from '../lib/form-state'
+import {
+  buildStaticQrPayload,
+  defaultStaticPayload,
+  isStaticPayloadReady,
+  type StaticQrContentType,
+  type StaticQrPayload,
+} from '../lib/qr-payload'
+import {
+  STYLE_TEMPLATES,
+  applyTemplate,
+  type QrStyle,
+  type QrStyleTemplate,
+} from '../lib/qr-style'
 import { generateRandomSlug, getQrTargetUrl, STATUS_LABELS, VERTICAL_LABELS } from '../lib/utils'
 import { colors, spacing } from '../theme/colors'
 import type { LandingPage, LandingPageInput, LandingPageVertical } from '../types/landing-page'
 
-const STEPS = [
+type QrMode = 'smart' | 'static'
+
+const SMART_STEPS = [
   { id: 'identity', label: 'Identité' },
   { id: 'content', label: 'Contenu' },
+  { id: 'design', label: 'Design' },
   { id: 'publish', label: 'Publication' },
 ] as const
+
+const STATIC_STEPS = [
+  { id: 'content', label: 'Contenu' },
+  { id: 'design', label: 'Design' },
+] as const
+
+const INITIAL_TEMPLATE = STYLE_TEMPLATES.find((t) => t.id === 'signal')!
+const INITIAL_STYLE = applyTemplate(INITIAL_TEMPLATE)
+
+const VERTICAL_ICONS: Record<LandingPageVertical, LucideIcon> = {
+  generic: LayoutGrid,
+  redirect: ArrowUpRight,
+  art: Palette,
+  immo: Building2,
+  vcard: User,
+  product: Box,
+  feedback: Star,
+  tourism: Compass,
+  chrd: Utensils,
+  corporate_event: Calendar,
+  ugc_retail: ShoppingBag,
+  field_service: Wrench,
+}
 
 type Props = {
   page?: LandingPage
   initialVertical?: LandingPageVertical
+  initialStaticType?: StaticQrContentType
+  /** Mode invité (éditeur public) : export OK, publication → compte */
+  guestMode?: boolean
   submitLabel: string
   onSubmit: (data: LandingPageInput) => Promise<void>
   onDelete?: () => Promise<void>
 }
 
-export function QrCodeForm({ page, initialVertical, submitLabel, onSubmit, onDelete }: Props) {
+export function QrCodeForm({
+  page,
+  initialVertical,
+  initialStaticType = 'url',
+  guestMode = false,
+  submitLabel,
+  onSubmit,
+  onDelete,
+}: Props) {
   const { width } = useWindowDimensions()
   const wide = width >= 960
+  const [mode, setMode] = useState<QrMode>(guestMode ? 'static' : 'smart')
   const [step, setStep] = useState(0)
   const [state, setState] = useState<FormState>(() =>
     page ? formStateFromPage(page) : emptyFormState(initialVertical || 'generic'),
   )
+  const [staticType, setStaticType] = useState<StaticQrContentType>(initialStaticType)
+  const [staticPayload, setStaticPayload] = useState<StaticQrPayload>(() =>
+    defaultStaticPayload(initialStaticType),
+  )
+  const [qrStyle, setQrStyle] = useState<QrStyle>(INITIAL_STYLE)
+  const [activeTemplateId, setActiveTemplateId] = useState<string | null>(INITIAL_TEMPLATE.id)
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [exporting, setExporting] = useState(false)
+  const previewInstanceRef = useRef<QrPreviewHandle | null>(null)
+
+  const steps = mode === 'smart' ? SMART_STEPS : STATIC_STEPS
 
   const setField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setState((prev) => ({ ...prev, [key]: value }))
@@ -58,6 +143,109 @@ export function QrCodeForm({ page, initialVertical, submitLabel, onSubmit, onDel
     [state.slug],
   )
 
+  const encodedPayload = useMemo(() => {
+    if (mode === 'static') {
+      return isStaticPayloadReady(staticPayload) ? buildStaticQrPayload(staticPayload) : ''
+    }
+    return publicUrl
+  }, [mode, staticPayload, publicUrl])
+
+  const verticalMeta = useMemo(
+    () => VERTICAL_OPTIONS.find((v) => v.value === state.vertical) ?? VERTICAL_OPTIONS[0],
+    [state.vertical],
+  )
+  const ActiveIcon = VERTICAL_ICONS[state.vertical] ?? LayoutGrid
+  const currentStepId = steps[step]?.id
+  const isLastStep = step >= steps.length - 1
+
+  function switchMode(next: QrMode) {
+    setMode(next)
+    setStep(0)
+    setError(null)
+  }
+
+  function handleStyleChange(next: QrStyle) {
+    setQrStyle(next)
+    setActiveTemplateId(null)
+    if (next.dotsColor) setField('primaryColor', next.dotsColor)
+  }
+
+  function handleTemplateApply(tpl: QrStyleTemplate) {
+    setActiveTemplateId(tpl.id)
+  }
+
+  async function handleExport(extension: QrExportExtension) {
+    if (!encodedPayload) {
+      setError('Renseignez le contenu avant d’exporter')
+      return
+    }
+    if (Platform.OS !== 'web' || !previewInstanceRef.current) {
+      setError('Export disponible sur la version web de l’app')
+      return
+    }
+    if (extension === 'jpeg' && qrStyle.transparentBackground) {
+      setError('JPEG ne supporte pas la transparence')
+      return
+    }
+    setExporting(true)
+    setError(null)
+    try {
+      await previewInstanceRef.current.download({
+        name: `qrious-qr-${mode === 'static' ? staticType : state.slug || 'smart'}`,
+        extension,
+      })
+    } catch {
+      setError(`Export ${extension.toUpperCase()} impossible`)
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  async function handleExportPdf() {
+    if (!encodedPayload) {
+      setError('Renseignez le contenu avant d’exporter')
+      return
+    }
+    if (Platform.OS !== 'web' || !previewInstanceRef.current) {
+      setError('Export disponible sur la version web de l’app')
+      return
+    }
+    setExporting(true)
+    setError(null)
+    try {
+      const blob = await previewInstanceRef.current.getRawData('png')
+      if (!blob) throw new Error('no blob')
+      const { jsPDF } = await import('jspdf/dist/jspdf.es.min.js')
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(String(reader.result))
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image()
+        el.onload = () => resolve(el)
+        el.onerror = reject
+        el.src = dataUrl
+      })
+      const maxMm = 90
+      const ratio = img.width / img.height
+      const w = ratio >= 1 ? maxMm : maxMm * ratio
+      const h = ratio >= 1 ? maxMm / ratio : maxMm
+      const pdf = new jsPDF({
+        orientation: w >= h ? 'landscape' : 'portrait',
+        unit: 'mm',
+        format: [w + 20, h + 20],
+      })
+      pdf.addImage(dataUrl, 'PNG', 10, 10, w, h)
+      pdf.save(`qrious-qr-${mode === 'static' ? staticType : state.slug || 'smart'}.pdf`)
+    } catch {
+      setError('Export PDF impossible')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   async function handleSubmit() {
     if (!state.title.trim()) {
       setError('Le titre est obligatoire')
@@ -66,13 +254,19 @@ export function QrCodeForm({ page, initialVertical, submitLabel, onSubmit, onDel
     }
     if (state.vertical === 'redirect' && !state.redirectTargetUrl.trim()) {
       setError('L’URL de redirection est obligatoire')
-      setStep(1)
+      const contentIdx = SMART_STEPS.findIndex((s) => s.id === 'content')
+      setStep(contentIdx >= 0 ? contentIdx : 1)
       return
     }
     setSaving(true)
     setError(null)
     try {
-      await onSubmit(toLandingPageInput(state))
+      await onSubmit(
+        toLandingPageInput({
+          ...state,
+          primaryColor: qrStyle.dotsColor || state.primaryColor,
+        }),
+      )
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur lors de l’enregistrement')
     } finally {
@@ -83,176 +277,136 @@ export function QrCodeForm({ page, initialVertical, submitLabel, onSubmit, onDel
   return (
     <View style={[styles.wrap, wide && styles.wrapWide]}>
       <View style={[styles.main, wide && { flex: 1.4 }]}>
+        <View style={styles.modeRow}>
+          <Pressable
+            onPress={() => switchMode('static')}
+            style={[styles.modeBtn, mode === 'static' && styles.modeBtnActive]}
+          >
+            <QrCode size={15} color={mode === 'static' ? colors.white : colors.slate700} />
+            <Text style={[styles.modeBtnText, mode === 'static' && styles.modeBtnTextActive]}>
+              Statique
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => switchMode('smart')}
+            style={[styles.modeBtn, mode === 'smart' && styles.modeBtnActive]}
+          >
+            <Sparkles size={15} color={mode === 'smart' ? colors.white : colors.slate700} />
+            <Text style={[styles.modeBtnText, mode === 'smart' && styles.modeBtnTextActive]}>
+              Smart Page
+            </Text>
+          </Pressable>
+        </View>
+        <Text style={styles.modeHint}>
+          {mode === 'static'
+            ? 'Contenu figé dans le QR — idéal Wi-Fi, vCard, lien direct.'
+            : guestMode
+              ? 'Landing éditable + analytics — créez un compte pour publier.'
+              : 'Landing éditable + analytics — destination modifiable sans réimprimer.'}
+        </Text>
+        {guestMode && mode === 'smart' ? (
+          <Text style={styles.guestHint}>
+            Mode invité : l’export PNG fonctionne tout de suite. La publication Smart Page
+            nécessite un compte.
+          </Text>
+        ) : null}
+
         <View style={styles.steps}>
-          {STEPS.map((s, index) => (
-            <Pressable
-              key={s.id}
-              onPress={() => setStep(index)}
-              style={[styles.step, step === index && styles.stepActive]}
-            >
-              <Text style={[styles.stepLabel, step === index && styles.stepLabelActive]}>
-                {index + 1}. {s.label}
-              </Text>
-            </Pressable>
-          ))}
+          {steps.map((s, index) => {
+            const active = step === index
+            const done = step > index
+            const isLast = index === steps.length - 1
+            return (
+              <React.Fragment key={s.id}>
+                <Pressable
+                  onPress={() => setStep(index)}
+                  style={styles.stepItem}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
+                >
+                  <View
+                    style={[
+                      styles.stepIndex,
+                      done && styles.stepIndexDone,
+                      active && styles.stepIndexActive,
+                    ]}
+                  >
+                    {done ? (
+                      <Check size={14} color={colors.ink} strokeWidth={3} />
+                    ) : (
+                      <Text
+                        style={[
+                          styles.stepIndexText,
+                          (active || done) && styles.stepIndexTextActive,
+                        ]}
+                      >
+                        {index + 1}
+                      </Text>
+                    )}
+                  </View>
+                  <Text
+                    style={[
+                      styles.stepLabel,
+                      done && styles.stepLabelDone,
+                      active && styles.stepLabelActive,
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {s.label}
+                  </Text>
+                </Pressable>
+                {!isLast ? (
+                  <View style={[styles.stepConnector, step > index && styles.stepConnectorDone]} />
+                ) : null}
+              </React.Fragment>
+            )
+          })}
         </View>
 
         <ScrollView contentContainerStyle={styles.formBody} keyboardShouldPersistTaps="handled">
-          {step === 0 ? (
-            <View style={styles.section}>
-              <Input
-                label="Titre"
-                value={state.title}
-                onChangeText={(v) => setField('title', v)}
-                placeholder="Ex: Menu du jour, Œuvre #12…"
-              />
-              <View style={styles.row}>
-                <View style={{ flex: 1 }}>
-                  <Input
-                    label="Slug URL"
-                    value={state.slug}
-                    onChangeText={(v) => setField('slug', v)}
-                    autoCapitalize="none"
-                  />
-                </View>
-                <Pressable
-                  style={styles.shuffle}
-                  onPress={() => setField('slug', generateRandomSlug(4))}
-                >
-                  <Shuffle size={18} color={colors.slate600} />
-                </Pressable>
-              </View>
+          {mode === 'smart' && currentStepId === 'identity' ? (
+            <SmartIdentityStep
+              state={state}
+              setField={setField}
+              verticalMeta={verticalMeta}
+              ActiveIcon={ActiveIcon}
+            />
+          ) : null}
 
-              <Text style={styles.sectionTitle}>Univers</Text>
-              <View style={styles.verticalGrid}>
-                {VERTICAL_OPTIONS.map((option) => {
-                  const active = state.vertical === option.value
-                  return (
-                    <Pressable
-                      key={option.value}
-                      onPress={() => setField('vertical', option.value)}
-                      style={[styles.verticalCard, active && styles.verticalCardActive]}
-                    >
-                      <Text style={[styles.verticalLabel, active && { color: colors.white }]}>
-                        {option.label}
-                      </Text>
-                      <Text
-                        style={[styles.verticalDesc, active && { color: 'rgba(255,255,255,0.75)' }]}
-                      >
-                        {option.description}
-                      </Text>
-                    </Pressable>
-                  )
-                })}
-              </View>
+          {mode === 'static' && currentStepId === 'content' ? (
+            <StaticContentFields
+              contentType={staticType}
+              payload={staticPayload}
+              onTypeChange={(type) => {
+                setStaticType(type)
+                setStaticPayload(defaultStaticPayload(type))
+              }}
+              onPayloadChange={setStaticPayload}
+            />
+          ) : null}
+
+          {mode === 'smart' && currentStepId === 'content' ? (
+            <VerticalFields state={state} setField={setField} />
+          ) : null}
+
+          {currentStepId === 'design' ? (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Éditeur visuel</Text>
+              <Text style={styles.universHint}>
+                Templates, cadres, formes, couleurs et logo.
+              </Text>
+              <QrStyleEditor
+                value={qrStyle}
+                onChange={handleStyleChange}
+                activeTemplateId={activeTemplateId}
+                onTemplateApply={handleTemplateApply}
+                onError={setError}
+              />
             </View>
           ) : null}
 
-          {step === 1 ? <VerticalFields state={state} setField={setField} /> : null}
-
-          {step === 2 ? (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Statut</Text>
-              <View style={styles.statusRow}>
-                {(['draft', 'published'] as const).map((status) => (
-                  <Pressable
-                    key={status}
-                    onPress={() => setField('status', status)}
-                    style={[
-                      styles.statusChip,
-                      state.status === status && styles.statusChipActive,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.statusChipText,
-                        state.status === status && { color: colors.white },
-                      ]}
-                    >
-                      {STATUS_LABELS[status]}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-
-              <Input
-                label="Couleur de marque"
-                value={state.primaryColor}
-                onChangeText={(v) => setField('primaryColor', v)}
-                autoCapitalize="none"
-                placeholder="#0f172a"
-              />
-
-              <Text style={styles.sectionTitle}>Smart routing</Text>
-              <Input
-                label="Mode (none | time_slots | ab_test)"
-                value={state.smartRoutingMode}
-                onChangeText={(v) => setField('smartRoutingMode', v)}
-                autoCapitalize="none"
-              />
-              {state.smartRoutingMode === 'time_slots' ? (
-                <>
-                  <Input
-                    label="Créneau — label"
-                    value={state.slot1Label}
-                    onChangeText={(v) => setField('slot1Label', v)}
-                  />
-                  <View style={styles.row}>
-                    <View style={{ flex: 1 }}>
-                      <Input
-                        label="Début"
-                        value={state.slot1Start}
-                        onChangeText={(v) => setField('slot1Start', v)}
-                        placeholder="07:00"
-                      />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Input
-                        label="Fin"
-                        value={state.slot1End}
-                        onChangeText={(v) => setField('slot1End', v)}
-                        placeholder="11:00"
-                      />
-                    </View>
-                  </View>
-                  <Input
-                    label="Slug cible"
-                    value={state.slot1Target}
-                    onChangeText={(v) => setField('slot1Target', v)}
-                    autoCapitalize="none"
-                  />
-                </>
-              ) : null}
-              <View style={styles.switchRow}>
-                <Text style={styles.switchLabel}>A/B test</Text>
-                <Switch
-                  value={state.abTestEnabled}
-                  onValueChange={(v) => setField('abTestEnabled', v)}
-                />
-              </View>
-              {state.abTestEnabled ? (
-                <>
-                  <Input
-                    label="Variant A slug"
-                    value={state.variantASlug}
-                    onChangeText={(v) => setField('variantASlug', v)}
-                    autoCapitalize="none"
-                  />
-                  <Input
-                    label="Variant B slug"
-                    value={state.variantBSlug}
-                    onChangeText={(v) => setField('variantBSlug', v)}
-                    autoCapitalize="none"
-                  />
-                  <Input
-                    label="Split %"
-                    value={state.splitRatio}
-                    onChangeText={(v) => setField('splitRatio', v)}
-                    keyboardType="numeric"
-                  />
-                </>
-              ) : null}
-            </View>
+          {mode === 'smart' && currentStepId === 'publish' ? (
+            <PublishStep state={state} setField={setField} />
           ) : null}
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -263,14 +417,20 @@ export function QrCodeForm({ page, initialVertical, submitLabel, onSubmit, onDel
             ) : (
               <View />
             )}
-            {step < STEPS.length - 1 ? (
+            {!isLastStep ? (
               <Button label="Suivant" onPress={() => setStep((s) => s + 1)} />
+            ) : mode === 'static' ? (
+              <Button
+                label={exporting ? 'Export…' : 'Télécharger PNG'}
+                loading={exporting}
+                onPress={() => void handleExportPng()}
+              />
             ) : (
               <Button label={submitLabel} loading={saving} onPress={() => void handleSubmit()} />
             )}
           </View>
 
-          {onDelete ? (
+          {onDelete && mode === 'smart' ? (
             <Button
               label="Supprimer"
               variant="danger"
@@ -282,23 +442,112 @@ export function QrCodeForm({ page, initialVertical, submitLabel, onSubmit, onDel
       </View>
 
       <View style={[styles.preview, wide && { flex: 1 }]}>
-        <Text style={styles.previewTitle}>Aperçu QR</Text>
-        <View style={styles.qrBox}>
-          <QRCode value={publicUrl} size={180} color={state.primaryColor || '#0f172a'} />
+        <View style={styles.previewHead}>
+          <Text style={styles.previewTitle}>Aperçu QR</Text>
+          <Text style={styles.previewSubtitle}>
+            {mode === 'static' ? 'QR statique · payload direct' : 'Smart Page · URL dynamique'}
+          </Text>
         </View>
-        <Badge label={VERTICAL_LABELS[state.vertical]} tone="accent" />
-        <Badge
-          label={STATUS_LABELS[state.status]}
-          tone={state.status === 'published' ? 'success' : 'warning'}
+
+        {mode === 'smart' ? (
+          <View style={styles.previewModelRow}>
+            <View style={styles.previewModelIcon}>
+              <ActiveIcon size={18} color={colors.signal} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.previewModelLabel}>{verticalMeta.label}</Text>
+              <Text style={styles.previewModelMeta}>
+                {verticalMeta.model} · {verticalMeta.category}
+              </Text>
+            </View>
+          </View>
+        ) : (
+          <Badge label={`Statique · ${staticType}`} tone="accent" />
+        )}
+
+        <QrStyledPreview
+          data={encodedPayload}
+          style={qrStyle}
+          displaySize={300}
+          onReadyInstance={(instance) => {
+            previewInstanceRef.current = instance
+          }}
         />
-        <Text style={styles.url} numberOfLines={2}>
-          {publicUrl}
-        </Text>
+
+        {mode === 'smart' ? (
+          <>
+            <Text style={styles.previewPageTitle} numberOfLines={2}>
+              {state.title.trim() || 'Sans titre'}
+            </Text>
+            <View style={styles.previewBadges}>
+              <Badge label={VERTICAL_LABELS[state.vertical]} tone="accent" />
+              <Badge
+                label={STATUS_LABELS[state.status]}
+                tone={state.status === 'published' ? 'success' : 'warning'}
+              />
+            </View>
+            <View style={styles.urlBox}>
+              <Text style={styles.urlLabel}>URL scannée</Text>
+              <Text style={styles.url} numberOfLines={2}>
+                /{state.slug || 'slug'}
+              </Text>
+            </View>
+          </>
+        ) : (
+          <View style={styles.urlBox}>
+            <Text style={styles.urlLabel}>Payload</Text>
+            <Text style={styles.url} numberOfLines={3}>
+              {encodedPayload || '—'}
+            </Text>
+          </View>
+        )}
+
+        {Platform.OS === 'web' ? (
+          <View style={styles.exportBlock}>
+            <Button
+              label={exporting ? 'Export…' : 'PNG HD'}
+              variant="primary"
+              loading={exporting}
+              disabled={!encodedPayload || exporting}
+              icon={<Download size={16} color={colors.white} />}
+              onPress={() => void handleExport('png')}
+            />
+            <View style={styles.exportRow}>
+              <Pressable
+                disabled={!encodedPayload || exporting}
+                onPress={() => void handleExport('svg')}
+                style={[styles.exportChip, (!encodedPayload || exporting) && styles.exportChipDisabled]}
+              >
+                <Text style={styles.exportChipText}>SVG</Text>
+              </Pressable>
+              <Pressable
+                disabled={!encodedPayload || exporting}
+                onPress={() => void handleExportPdf()}
+                style={[styles.exportChip, (!encodedPayload || exporting) && styles.exportChipDisabled]}
+              >
+                <FileType size={14} color={colors.slate700} />
+                <Text style={styles.exportChipText}>PDF</Text>
+              </Pressable>
+              <Pressable
+                disabled={!encodedPayload || exporting || qrStyle.transparentBackground}
+                onPress={() => void handleExport('jpeg')}
+                style={[
+                  styles.exportChip,
+                  (!encodedPayload || exporting || qrStyle.transparentBackground) &&
+                    styles.exportChipDisabled,
+                ]}
+              >
+                <Text style={styles.exportChipText}>JPEG</Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : null}
+
         <Button
-          label={copied ? 'Copié !' : 'Copier l’URL'}
-          variant="secondary"
+          label={copied ? 'Copié !' : mode === 'static' ? 'Copier le payload' : 'Copier l’URL'}
+          variant="ghost"
           onPress={async () => {
-            await Clipboard.setStringAsync(publicUrl)
+            await Clipboard.setStringAsync(encodedPayload || publicUrl)
             setCopied(true)
             setTimeout(() => setCopied(false), 1500)
           }}
@@ -308,249 +557,371 @@ export function QrCodeForm({ page, initialVertical, submitLabel, onSubmit, onDel
   )
 }
 
-function VerticalFields({
+function SmartIdentityStep({
+  state,
+  setField,
+  verticalMeta,
+  ActiveIcon,
+}: {
+  state: FormState
+  setField: <K extends keyof FormState>(key: K, value: FormState[K]) => void
+  verticalMeta: (typeof VERTICAL_OPTIONS)[number]
+  ActiveIcon: LucideIcon
+}) {
+  return (
+    <View style={styles.section}>
+      <Input
+        label="Titre"
+        value={state.title}
+        onChangeText={(v) => setField('title', v)}
+        placeholder="Ex: Menu du jour, Œuvre #12…"
+      />
+      <View style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <Input
+            label="Slug URL"
+            value={state.slug}
+            onChangeText={(v) => setField('slug', v)}
+            autoCapitalize="none"
+          />
+        </View>
+        <Pressable style={styles.shuffle} onPress={() => setField('slug', generateRandomSlug(4))}>
+          <Shuffle size={18} color={colors.slate600} />
+        </Pressable>
+      </View>
+
+      <View style={styles.universHeader}>
+        <Text style={styles.sectionTitle}>Modèle Smart Page</Text>
+        <Text style={styles.universHint}>
+          Définit la structure et les fonctionnalités de la page scannée.
+        </Text>
+      </View>
+
+      <View style={styles.selectedModel}>
+        <View style={styles.selectedModelIcon}>
+          <ActiveIcon size={22} color={colors.signal} />
+        </View>
+        <View style={{ flex: 1, gap: 6 }}>
+          <View style={styles.selectedModelBadges}>
+            <Text style={styles.selectedModelTitle}>{verticalMeta.label}</Text>
+            <View style={styles.modelChip}>
+              <Text style={styles.modelChipText}>{verticalMeta.model}</Text>
+            </View>
+            <View style={[styles.modelChip, styles.modelChipCategory]}>
+              <Text style={[styles.modelChipText, { color: colors.success }]}>
+                {verticalMeta.category}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.selectedModelDesc}>{verticalMeta.description}</Text>
+          <View style={styles.fieldChips}>
+            <Text style={styles.fieldChipsLabel}>Champs inclus</Text>
+            {verticalMeta.fields.map((f) => (
+              <View key={f} style={styles.fieldChip}>
+                <Text style={styles.fieldChipText}>{f}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.verticalGrid}>
+        {VERTICAL_OPTIONS.map((option) => {
+          const active = state.vertical === option.value
+          const Icon = VERTICAL_ICONS[option.value] ?? LayoutGrid
+          return (
+            <Pressable
+              key={option.value}
+              onPress={() => setField('vertical', option.value)}
+              style={[styles.verticalCard, active && styles.verticalCardActive]}
+            >
+              <View style={styles.verticalCardTop}>
+                <View style={[styles.verticalIconWrap, active && styles.verticalIconWrapActive]}>
+                  <Icon size={18} color={active ? colors.signal : colors.slate700} />
+                </View>
+                {active ? (
+                  <View style={styles.selectedPill}>
+                    <Check size={11} color={colors.ink} strokeWidth={3} />
+                    <Text style={styles.selectedPillText}>OK</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.verticalModel}>{option.model}</Text>
+                )}
+              </View>
+              <Text style={[styles.verticalLabel, active && { color: colors.white }]}>
+                {option.label}
+              </Text>
+              <Text
+                style={[styles.verticalDesc, active && { color: 'rgba(255,255,255,0.7)' }]}
+                numberOfLines={2}
+              >
+                {option.description}
+              </Text>
+            </Pressable>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
+function PublishStep({
   state,
   setField,
 }: {
   state: FormState
   setField: <K extends keyof FormState>(key: K, value: FormState[K]) => void
 }) {
-  switch (state.vertical) {
-    case 'redirect':
-      return (
-        <View style={styles.section}>
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Statut</Text>
+      <View style={styles.statusRow}>
+        {(['draft', 'published'] as const).map((status) => (
+          <Pressable
+            key={status}
+            onPress={() => setField('status', status)}
+            style={[styles.statusChip, state.status === status && styles.statusChipActive]}
+          >
+            <Text
+              style={[styles.statusChipText, state.status === status && { color: colors.white }]}
+            >
+              {STATUS_LABELS[status]}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      <Input
+        label="Couleur de marque"
+        value={state.primaryColor}
+        onChangeText={(v) => setField('primaryColor', v)}
+        autoCapitalize="none"
+        placeholder="#0f172a"
+      />
+
+      <Text style={styles.sectionTitle}>Smart routing</Text>
+      <Text style={styles.universHint}>
+        Contenu fixe = mode none. Ou programmez des créneaux / A/B.
+      </Text>
+      <Input
+        label="Mode (none | time_slots | ab_test)"
+        value={state.smartRoutingMode}
+        onChangeText={(v) => setField('smartRoutingMode', v)}
+        autoCapitalize="none"
+      />
+      {state.smartRoutingMode === 'time_slots' ? (
+        <>
           <Input
-            label="URL cible"
-            value={state.redirectTargetUrl}
-            onChangeText={(v) => setField('redirectTargetUrl', v)}
+            label="Créneau — label"
+            value={state.slot1Label}
+            onChangeText={(v) => setField('slot1Label', v)}
+          />
+          <View style={styles.row}>
+            <View style={{ flex: 1 }}>
+              <Input
+                label="Début"
+                value={state.slot1Start}
+                onChangeText={(v) => setField('slot1Start', v)}
+                placeholder="07:00"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Input
+                label="Fin"
+                value={state.slot1End}
+                onChangeText={(v) => setField('slot1End', v)}
+                placeholder="11:00"
+              />
+            </View>
+          </View>
+          <Input
+            label="Slug cible"
+            value={state.slot1Target}
+            onChangeText={(v) => setField('slot1Target', v)}
             autoCapitalize="none"
-            placeholder="https://"
+          />
+        </>
+      ) : null}
+      <View style={styles.switchRow}>
+        <Text style={styles.switchLabel}>A/B test</Text>
+        <Switch value={state.abTestEnabled} onValueChange={(v) => setField('abTestEnabled', v)} />
+      </View>
+      {state.abTestEnabled ? (
+        <>
+          <Input
+            label="Variant A slug"
+            value={state.variantASlug}
+            onChangeText={(v) => setField('variantASlug', v)}
+            autoCapitalize="none"
           />
           <Input
-            label="Label"
-            value={state.redirectLabel}
-            onChangeText={(v) => setField('redirectLabel', v)}
+            label="Variant B slug"
+            value={state.variantBSlug}
+            onChangeText={(v) => setField('variantBSlug', v)}
+            autoCapitalize="none"
           />
-        </View>
-      )
-    case 'art':
-      return (
-        <View style={styles.section}>
-          <Input label="Artiste" value={state.artistName} onChangeText={(v) => setField('artistName', v)} />
-          <TextArea label="Bio" value={state.artistBio} onChangeText={(v) => setField('artistBio', v)} />
-          <Input label="Année" value={state.artYear} onChangeText={(v) => setField('artYear', v)} />
-          <Input label="Technique" value={state.medium} onChangeText={(v) => setField('medium', v)} />
-          <Input label="Dimensions" value={state.dimensions} onChangeText={(v) => setField('dimensions', v)} />
-          <TextArea
-            label="Description"
-            value={state.artDescription}
-            onChangeText={(v) => setField('artDescription', v)}
+          <Input
+            label="Split %"
+            value={state.splitRatio}
+            onChangeText={(v) => setField('splitRatio', v)}
+            keyboardType="numeric"
           />
-          <View style={styles.row}>
-            <View style={{ flex: 1 }}>
-              <Input label="Prix" value={state.artPrice} onChangeText={(v) => setField('artPrice', v)} keyboardType="numeric" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Input label="Devise" value={state.currency} onChangeText={(v) => setField('currency', v)} />
-            </View>
-          </View>
-          <Input label="Exposition" value={state.exhibitionName} onChangeText={(v) => setField('exhibitionName', v)} />
-          <Input label="Vidéo URL" value={state.videoUrl} onChangeText={(v) => setField('videoUrl', v)} autoCapitalize="none" />
-          <Input label="Audio-guide URL" value={state.audioGuideUrl} onChangeText={(v) => setField('audioGuideUrl', v)} autoCapitalize="none" />
-          <Input label="Instagram" value={state.instagramUsername} onChangeText={(v) => setField('instagramUsername', v)} autoCapitalize="none" />
-          <Input label="Site web" value={state.websiteUrl} onChangeText={(v) => setField('websiteUrl', v)} autoCapitalize="none" />
-          <Input label="Email contact" value={state.contactEmail} onChangeText={(v) => setField('contactEmail', v)} autoCapitalize="none" />
-        </View>
-      )
-    case 'immo':
-      return (
-        <View style={styles.section}>
-          <Input label="Prix" value={state.price} onChangeText={(v) => setField('price', v)} keyboardType="numeric" />
-          <View style={styles.row}>
-            <View style={{ flex: 1 }}>
-              <Input label="Surface" value={state.surface} onChangeText={(v) => setField('surface', v)} keyboardType="numeric" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Input label="Pièces" value={state.rooms} onChangeText={(v) => setField('rooms', v)} keyboardType="numeric" />
-            </View>
-          </View>
-          <Input label="DPE" value={state.dpe} onChangeText={(v) => setField('dpe', v)} placeholder="A-G" />
-          <Input label="Type" value={state.propertyType} onChangeText={(v) => setField('propertyType', v)} placeholder="apartment, house…" />
-          <Input label="Adresse" value={state.address} onChangeText={(v) => setField('address', v)} />
-          <Input label="Ville" value={state.city} onChangeText={(v) => setField('city', v)} />
-          <TextArea label="Message d’accueil" value={state.welcomeMessage} onChangeText={(v) => setField('welcomeMessage', v)} />
-          <Input label="Wi-Fi" value={state.wifiName} onChangeText={(v) => setField('wifiName', v)} />
-          <Input label="Mot de passe Wi-Fi" value={state.wifiPassword} onChangeText={(v) => setField('wifiPassword', v)} />
-          <Input label="Hôte" value={state.hostName} onChangeText={(v) => setField('hostName', v)} />
-          <Input label="Tél. hôte" value={state.hostPhone} onChangeText={(v) => setField('hostPhone', v)} />
-          <Input label="URL réservation" value={state.bookingUrl} onChangeText={(v) => setField('bookingUrl', v)} autoCapitalize="none" />
-        </View>
-      )
-    case 'vcard':
-      return (
-        <View style={styles.section}>
-          <Input label="Nom complet" value={state.fullName} onChangeText={(v) => setField('fullName', v)} />
-          <View style={styles.row}>
-            <View style={{ flex: 1 }}>
-              <Input label="Prénom" value={state.firstName} onChangeText={(v) => setField('firstName', v)} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Input label="Nom" value={state.lastName} onChangeText={(v) => setField('lastName', v)} />
-            </View>
-          </View>
-          <Input label="Poste" value={state.jobTitle} onChangeText={(v) => setField('jobTitle', v)} />
-          <Input label="Société" value={state.company} onChangeText={(v) => setField('company', v)} />
-          <TextArea label="Bio" value={state.bio} onChangeText={(v) => setField('bio', v)} />
-          <Input label="Téléphone" value={state.phone} onChangeText={(v) => setField('phone', v)} />
-          <Input label="Email" value={state.email} onChangeText={(v) => setField('email', v)} autoCapitalize="none" />
-          <Input label="Site" value={state.website} onChangeText={(v) => setField('website', v)} autoCapitalize="none" />
-          <Input label="LinkedIn" value={state.linkedinUrl} onChangeText={(v) => setField('linkedinUrl', v)} autoCapitalize="none" />
-        </View>
-      )
-    case 'product':
-      return (
-        <View style={styles.section}>
-          <Input label="Produit" value={state.productName} onChangeText={(v) => setField('productName', v)} />
-          <Input label="Marque" value={state.brandName} onChangeText={(v) => setField('brandName', v)} />
-          <Input label="Modèle" value={state.modelNumber} onChangeText={(v) => setField('modelNumber', v)} />
-          <TextArea label="Description" value={state.productDescription} onChangeText={(v) => setField('productDescription', v)} />
-          <Input label="Manuel URL" value={state.manualUrl} onChangeText={(v) => setField('manualUrl', v)} autoCapitalize="none" />
-          <Input label="Support email" value={state.supportEmail} onChangeText={(v) => setField('supportEmail', v)} autoCapitalize="none" />
-        </View>
-      )
-    case 'feedback':
-      return (
-        <View style={styles.section}>
-          <Input label="Entreprise" value={state.feedbackCompanyName} onChangeText={(v) => setField('feedbackCompanyName', v)} />
-          <Input label="Titre" value={state.feedbackHeading} onChangeText={(v) => setField('feedbackHeading', v)} />
-          <Input label="Google Review URL" value={state.googleReviewUrl} onChangeText={(v) => setField('googleReviewUrl', v)} autoCapitalize="none" />
-          <Input label="TripAdvisor URL" value={state.tripadvisorUrl} onChangeText={(v) => setField('tripadvisorUrl', v)} autoCapitalize="none" />
-        </View>
-      )
-    case 'tourism':
-      return (
-        <View style={styles.section}>
-          <Input label="Lieu" value={state.placeName} onChangeText={(v) => setField('placeName', v)} />
-          <Input label="Localisation" value={state.locationName} onChangeText={(v) => setField('locationName', v)} />
-          <TextArea label="Description" value={state.tourismDescription} onChangeText={(v) => setField('tourismDescription', v)} />
-          <Input label="Audio-guide" value={state.tourismAudioGuideUrl} onChangeText={(v) => setField('tourismAudioGuideUrl', v)} autoCapitalize="none" />
-          <Input label="Horaires" value={state.openingHours} onChangeText={(v) => setField('openingHours', v)} />
-        </View>
-      )
-    case 'chrd':
-      return (
-        <View style={styles.section}>
-          <Input label="Établissement" value={state.establishmentName} onChangeText={(v) => setField('establishmentName', v)} />
-          <Input label="Type" value={state.establishmentType} onChangeText={(v) => setField('establishmentType', v)} placeholder="hotel, restaurant…" />
-          <TextArea label="Message" value={state.chrdWelcomeMessage} onChangeText={(v) => setField('chrdWelcomeMessage', v)} />
-          <Input label="Menu PDF URL" value={state.menuPdfUrl} onChangeText={(v) => setField('menuPdfUrl', v)} autoCapitalize="none" />
-          <Input label="Wi-Fi" value={state.chrdWifiName} onChangeText={(v) => setField('chrdWifiName', v)} />
-          <Input label="Mot de passe Wi-Fi" value={state.chrdWifiPassword} onChangeText={(v) => setField('chrdWifiPassword', v)} />
-        </View>
-      )
-    case 'corporate_event':
-      return (
-        <View style={styles.section}>
-          <Input label="Événement" value={state.eventName} onChangeText={(v) => setField('eventName', v)} />
-          <Input label="Société" value={state.eventCompanyName} onChangeText={(v) => setField('eventCompanyName', v)} />
-          <Input label="Date" value={state.eventDate} onChangeText={(v) => setField('eventDate', v)} />
-          <Input label="Lieu" value={state.eventLocation} onChangeText={(v) => setField('eventLocation', v)} />
-          <TextArea label="Message" value={state.eventWelcomeMessage} onChangeText={(v) => setField('eventWelcomeMessage', v)} />
-          <Input label="Code Wi-Fi" value={state.wifiCode} onChangeText={(v) => setField('wifiCode', v)} />
-        </View>
-      )
-    case 'ugc_retail':
-      return (
-        <View style={styles.section}>
-          <Input label="Marque" value={state.ugcBrandName} onChangeText={(v) => setField('ugcBrandName', v)} />
-          <Input label="Campagne" value={state.campaignTitle} onChangeText={(v) => setField('campaignTitle', v)} />
-          <Input label="Produit" value={state.ugcProductName} onChangeText={(v) => setField('ugcProductName', v)} />
-          <TextArea label="Instructions" value={state.instructions} onChangeText={(v) => setField('instructions', v)} />
-          <Input label="Code promo" value={state.rewardDiscountCode} onChangeText={(v) => setField('rewardDiscountCode', v)} />
-        </View>
-      )
-    case 'field_service':
-      return (
-        <View style={styles.section}>
-          <Input label="Asset" value={state.assetName} onChangeText={(v) => setField('assetName', v)} />
-          <Input label="ID" value={state.assetId} onChangeText={(v) => setField('assetId', v)} />
-          <Input label="Catégorie" value={state.category} onChangeText={(v) => setField('category', v)} />
-          <Input label="Localisation" value={state.fieldLocation} onChangeText={(v) => setField('fieldLocation', v)} />
-          <Input label="Statut" value={state.fieldStatus} onChangeText={(v) => setField('fieldStatus', v)} placeholder="operational…" />
-          <Input label="Documentation URL" value={state.documentationUrl} onChangeText={(v) => setField('documentationUrl', v)} autoCapitalize="none" />
-          <Input label="Tél. technicien" value={state.contactTechnicianPhone} onChangeText={(v) => setField('contactTechnicianPhone', v)} />
-        </View>
-      )
-    default:
-      return (
-        <View style={styles.section}>
-          <Input label="Headline" value={state.genericHeadline} onChangeText={(v) => setField('genericHeadline', v)} />
-          <Input label="Sous-titre" value={state.genericSubheadline} onChangeText={(v) => setField('genericSubheadline', v)} />
-          <TextArea label="Corps" value={state.genericBody} onChangeText={(v) => setField('genericBody', v)} />
-          <Input label="CTA label" value={state.genericCtaLabel} onChangeText={(v) => setField('genericCtaLabel', v)} />
-          <Input label="CTA URL" value={state.genericCtaUrl} onChangeText={(v) => setField('genericCtaUrl', v)} autoCapitalize="none" />
-          <Input label="Site web" value={state.genericWebsiteUrl} onChangeText={(v) => setField('genericWebsiteUrl', v)} autoCapitalize="none" />
-          <Input label="Email" value={state.genericContactEmail} onChangeText={(v) => setField('genericContactEmail', v)} autoCapitalize="none" />
-        </View>
-      )
-  }
+        </>
+      ) : null}
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    gap: spacing.xl,
-  },
-  wrapWide: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  main: {
+  wrap: { gap: spacing.xl },
+  wrapWide: { flexDirection: 'row', alignItems: 'flex-start' },
+  main: { flex: 1, gap: spacing.lg },
+  modeRow: { flexDirection: 'row', gap: 8 },
+  modeBtn: {
     flex: 1,
-    gap: spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    backgroundColor: colors.white,
+    paddingVertical: 12,
+  },
+  modeBtnActive: { backgroundColor: colors.slate900, borderColor: colors.slate900 },
+  modeBtnText: { fontSize: 14, fontWeight: '700', color: colors.slate700 },
+  modeBtnTextActive: { color: colors.white },
+  modeHint: { fontSize: 12, color: colors.slate500, lineHeight: 17, marginTop: -4 },
+  guestHint: {
+    fontSize: 12,
+    color: colors.signal,
+    lineHeight: 17,
+    backgroundColor: colors.slate100,
+    padding: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   steps: {
     flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    gap: 0,
+    paddingVertical: 4,
   },
-  step: {
+  stepItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 8,
+    minWidth: 0,
+  },
+  stepIndex: {
+    width: 32,
+    height: 32,
     borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: colors.white,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colors.slate200,
   },
-  stepActive: {
+  stepIndexActive: {
     backgroundColor: colors.slate900,
     borderColor: colors.slate900,
   },
-  stepLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.slate600,
+  stepIndexDone: {
+    backgroundColor: colors.signal,
+    borderColor: colors.signal,
   },
-  stepLabelActive: {
+  stepIndexText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: colors.slate500,
+  },
+  stepIndexTextActive: {
     color: colors.white,
   },
-  formBody: {
-    gap: spacing.lg,
-    paddingBottom: 40,
+  stepLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.slate500,
+    textAlign: 'center',
   },
-  section: {
-    gap: spacing.md,
-  },
-  sectionTitle: {
-    marginTop: 8,
-    fontSize: 16,
-    fontWeight: '700',
+  stepLabelActive: {
     color: colors.ink,
+    fontWeight: '800',
   },
-  row: {
+  stepLabelDone: {
+    color: colors.slate700,
+  },
+  stepConnector: {
+    flex: 0.55,
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: colors.slate200,
+    marginBottom: 22,
+    marginHorizontal: 2,
+  },
+  stepConnectorDone: {
+    backgroundColor: colors.signal,
+  },
+  formBody: { gap: spacing.lg, paddingBottom: 40 },
+  section: { gap: spacing.md },
+  sectionTitle: { marginTop: 8, fontSize: 16, fontWeight: '700', color: colors.ink },
+  universHeader: { gap: 4, marginTop: 4 },
+  universHint: { fontSize: 12, color: colors.slate500, lineHeight: 17 },
+  selectedModel: {
     flexDirection: 'row',
-    gap: 10,
-    alignItems: 'flex-end',
+    gap: 14,
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    backgroundColor: colors.white,
   },
+  selectedModelIcon: {
+    height: 48,
+    width: 48,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.ink,
+  },
+  selectedModelBadges: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 },
+  selectedModelTitle: { fontSize: 15, fontWeight: '700', color: colors.ink },
+  modelChip: {
+    borderRadius: 999,
+    backgroundColor: colors.slate100,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  modelChipCategory: {
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+  },
+  modelChipText: { fontSize: 11, fontWeight: '600', color: colors.slate700 },
+  selectedModelDesc: { fontSize: 12, color: colors.slate600, lineHeight: 17 },
+  fieldChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 6,
+    paddingTop: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.slate200,
+  },
+  fieldChipsLabel: { fontSize: 11, fontWeight: '600', color: colors.slate400, marginRight: 2 },
+  fieldChip: {
+    borderRadius: 6,
+    backgroundColor: colors.slate100,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+  },
+  fieldChipText: { fontSize: 11, fontWeight: '500', color: colors.slate700 },
+  row: { flexDirection: 'row', gap: 10, alignItems: 'flex-end' },
   shuffle: {
     height: 44,
     width: 44,
@@ -560,40 +931,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.white,
-    marginBottom: 0,
   },
-  verticalGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
+  verticalGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   verticalCard: {
     width: '47%',
-    minWidth: 140,
-    borderRadius: 14,
+    minWidth: 150,
+    flexGrow: 1,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: colors.slate200,
     backgroundColor: colors.white,
-    padding: 12,
-    gap: 4,
+    padding: 14,
+    gap: 6,
   },
-  verticalCardActive: {
-    backgroundColor: colors.slate900,
-    borderColor: colors.slate900,
-  },
-  verticalLabel: {
-    fontWeight: '700',
-    color: colors.ink,
-    fontSize: 14,
-  },
-  verticalDesc: {
-    fontSize: 12,
-    color: colors.slate500,
-  },
-  statusRow: {
+  verticalCardActive: { backgroundColor: colors.slate900, borderColor: colors.slate900 },
+  verticalCardTop: {
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
   },
+  verticalIconWrap: {
+    height: 36,
+    width: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.slate100,
+  },
+  verticalIconWrapActive: { backgroundColor: 'rgba(18, 196, 168, 0.2)' },
+  selectedPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    borderRadius: 999,
+    backgroundColor: colors.signal,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+  },
+  selectedPillText: { fontSize: 10, fontWeight: '800', color: colors.ink },
+  verticalModel: { fontSize: 10, fontWeight: '600', color: colors.slate400 },
+  verticalLabel: { fontWeight: '700', color: colors.ink, fontSize: 13, lineHeight: 17 },
+  verticalDesc: { fontSize: 11, color: colors.slate500, lineHeight: 15 },
+  statusRow: { flexDirection: 'row', gap: 8 },
   statusChip: {
     borderRadius: 999,
     paddingHorizontal: 14,
@@ -602,56 +982,92 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.slate200,
   },
-  statusChipActive: {
-    backgroundColor: colors.slate900,
-    borderColor: colors.slate900,
-  },
-  statusChipText: {
-    fontWeight: '600',
-    color: colors.slate700,
-  },
+  statusChipActive: { backgroundColor: colors.slate900, borderColor: colors.slate900 },
+  statusChipText: { fontWeight: '600', color: colors.slate700 },
   switchRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 4,
   },
-  switchLabel: {
-    fontWeight: '600',
-    color: colors.slate700,
-  },
-  footerActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  error: {
-    color: colors.danger,
-    fontWeight: '600',
-  },
+  switchLabel: { fontWeight: '600', color: colors.slate700 },
+  footerActions: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
+  error: { color: colors.danger, fontWeight: '600' },
   preview: {
     backgroundColor: colors.white,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
     padding: spacing.lg,
     gap: spacing.md,
     alignItems: 'center',
   },
-  previewTitle: {
-    alignSelf: 'flex-start',
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.ink,
-  },
-  qrBox: {
-    padding: 16,
-    borderRadius: 16,
+  previewHead: { alignSelf: 'stretch', gap: 2 },
+  previewTitle: { fontSize: 16, fontWeight: '700', color: colors.ink },
+  previewSubtitle: { fontSize: 12, color: colors.slate500 },
+  previewModelRow: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    padding: 12,
+    borderRadius: 14,
     backgroundColor: colors.slate50,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+  },
+  previewModelIcon: {
+    height: 40,
+    width: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.ink,
+  },
+  previewModelLabel: { fontSize: 13, fontWeight: '700', color: colors.ink },
+  previewModelMeta: { fontSize: 11, color: colors.slate500, marginTop: 2 },
+  previewPageTitle: { fontSize: 15, fontWeight: '700', color: colors.ink, textAlign: 'center' },
+  previewBadges: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 },
+  urlBox: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: colors.slate50,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+  },
+  urlLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: colors.slate400,
   },
   url: {
-    fontSize: 12,
-    color: colors.slate500,
+    fontSize: 13,
+    fontWeight: '600',
+    fontFamily: 'monospace',
+    color: colors.slate800,
     textAlign: 'center',
   },
+  exportBlock: { alignSelf: 'stretch', gap: 8 },
+  exportRow: { flexDirection: 'row', gap: 8 },
+  exportChip: {
+    flex: 1,
+    minHeight: 40,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 4,
+    paddingHorizontal: 8,
+  },
+  exportChipDisabled: { opacity: 0.45 },
+  exportChipText: { fontSize: 12, fontWeight: '700', color: colors.slate700 },
 })

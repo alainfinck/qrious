@@ -346,7 +346,7 @@ export function MarketingHeader() {
       icon: Wifi,
     },
     {
-      href: '/editeur',
+      href: '/newqr',
       label: t('productItems.editor.label'),
       description: t('productItems.editor.description'),
       icon: Wand2,
@@ -473,7 +473,7 @@ export function MarketingHeader() {
                 footer={{
                   text: t('productFooterText'),
                   linkText: t('productFooterLink'),
-                  href: '/editeur',
+                  href: '/newqr',
                 }}
               />
               <NavDropdown
@@ -520,7 +520,7 @@ export function MarketingHeader() {
                 asChild
                 className="h-11 rounded-xl bg-gradient-to-r from-mq-coral to-mq-sun px-5 text-base font-semibold text-mq-ink hover:opacity-90"
               >
-                <Link href="/editeur">{t('createQr')}</Link>
+                <Link href="/newqr">{t('createQr')}</Link>
               </Button>
               <button
                 type="button"

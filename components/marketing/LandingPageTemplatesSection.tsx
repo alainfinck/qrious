@@ -344,7 +344,7 @@ export function LandingPageTemplatesSection() {
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <Link
-                    href="/editeur"
+                    href="/newqr"
                     className="text-[11px] font-semibold text-mq-muted hover:text-mq-ink underline"
                   >
                     {t('tryQr')}

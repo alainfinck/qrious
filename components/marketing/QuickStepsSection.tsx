@@ -317,7 +317,7 @@ export function QuickStepsSection() {
                     ))}
                   </ul>
                   <div className="pt-4 flex flex-wrap gap-4">
-                    <Link href="/editeur">
+                    <Link href="/newqr">
                       <ShimmerButton
                         background="linear-gradient(135deg, #12c4a8 0%, #0b7a6a 100%)"
                         shimmerColor="#ffffff"

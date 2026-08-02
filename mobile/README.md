@@ -9,18 +9,19 @@ App Expo (iOS / Android / Web) qui reprend le dashboard QRious.
 
 ## Lancer
 
-```bash
-cd mobile
-pnpm start          # QR code Expo Go / simulateur
-pnpm web            # Dashboard web Expo (port 8081)
-```
-
-Depuis la racine du monorepo :
+Depuis la racine (recommandé) :
 
 ```bash
-pnpm dev:mobile
-pnpm dev:mobile:web
+./mobile.sh            # aide
+./mobile.sh web        # Expo web → http://localhost:8081/newqr
+./mobile.sh newqr      # Export static → public/newqr (via Next :3000/newqr)
+./mobile.sh start      # Metro / Expo Go
+./mobile.sh site       # Backend Next/Payload (:3000)
+./mobile.sh ios        # Simulateur iOS
+./mobile.sh native     # App Release sur iPhone
 ```
+
+L’éditeur public marketing (`/newqr`) **est** l’app Expo (une seule UI). `/editeur` redirige vers `/newqr`.
 
 ## Auth
 

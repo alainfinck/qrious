@@ -102,7 +102,7 @@ export function QrPrintMediumsSection() {
 
                   <div className="relative mt-6 border-t border-white/12 pt-4">
                     <Link
-                      href="/editeur"
+                      href="/newqr"
                       className="group/link inline-flex items-center gap-2 text-xs font-bold text-mq-signal transition-colors hover:text-white"
                     >
                       <span>{t('cta')}</span>

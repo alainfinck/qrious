@@ -360,7 +360,7 @@ export default function VerticalSolutionPage() {
                     <span>{t('ctaCreate', { badge })}</span>
                   </Link>
                   <Link
-                    href="/editeur"
+                    href="/newqr"
                     className="inline-flex items-center justify-center space-x-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-base font-semibold text-white transition hover:bg-white/10"
                   >
                     <QrCode className="h-5 w-5 text-slate-300" />

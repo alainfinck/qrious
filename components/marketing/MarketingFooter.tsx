@@ -36,7 +36,7 @@ export function MarketingFooter() {
           </div>
           <div className="mt-6 flex flex-wrap items-center gap-4 lg:mt-0 shrink-0">
             <Link
-              href="/editeur"
+              href="/newqr"
               className="inline-flex items-center gap-2 rounded-xl bg-mq-signal px-6 py-3.5 text-base font-bold text-mq-ink transition-all duration-200 hover:bg-mq-signal-deep hover:shadow-lg hover:shadow-mq-signal/20 active:scale-[0.98]"
             >
               <span>{t('ctaCreate')}</span>

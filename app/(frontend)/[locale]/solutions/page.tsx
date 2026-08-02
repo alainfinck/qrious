@@ -95,7 +95,7 @@ export default function SolutionsPage() {
                   {t('heroSubtitle')}
                 </p>
                 <div className="pt-4 flex justify-center gap-4">
-                  <Link href="/editeur">
+                  <Link href="/newqr">
                     <ShimmerButton
                       background="linear-gradient(135deg, #12c4a8 0%, #0b7a6a 100%)"
                       shimmerColor="#e8fff9"
@@ -212,7 +212,7 @@ export default function SolutionsPage() {
                           <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-1" />
                         </Link>
                         <Link
-                          href="/editeur"
+                          href="/newqr"
                           className="text-xs font-semibold text-mq-muted hover:text-mq-ink underline"
                         >
                           {t('createQr')}

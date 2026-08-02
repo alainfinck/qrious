@@ -513,18 +513,108 @@ export function toLandingPageInput(state: FormState): LandingPageInput {
   }
 }
 
-export const VERTICAL_OPTIONS: { value: LandingPageVertical; label: string; description: string }[] =
-  [
-    { value: 'generic', label: 'Générique', description: 'Page libre polyvalente' },
-    { value: 'redirect', label: 'Redirection URL', description: 'Lien direct + stats' },
-    { value: 'art', label: 'Art & Galerie', description: 'Fiche œuvre / artiste' },
-    { value: 'immo', label: 'Immobilier & Gîte', description: 'Bien / livret d’accueil' },
-    { value: 'vcard', label: 'vCard Pro', description: 'Carte de visite' },
-    { value: 'product', label: 'Manuel / Produit', description: 'Support produit' },
-    { value: 'feedback', label: 'Avis / Feedback', description: 'Collecte d’avis' },
-    { value: 'tourism', label: 'Tourisme', description: 'Patrimoine / lieu' },
-    { value: 'chrd', label: 'CHRD', description: 'Hôtel / resto / bar' },
-    { value: 'corporate_event', label: 'Événement Pro', description: 'Conférence / event' },
-    { value: 'ugc_retail', label: 'UGC & Retail', description: 'Campagne contenu' },
-    { value: 'field_service', label: 'Field Service', description: 'Maintenance / asset' },
-  ]
+export const VERTICAL_OPTIONS: {
+  value: LandingPageVertical
+  label: string
+  model: string
+  category: string
+  description: string
+  fields: string[]
+}[] = [
+  {
+    value: 'generic',
+    label: 'Générique',
+    model: 'Page libre',
+    category: 'Général',
+    description: 'Landing page polyvalente avec texte libre, boutons et sections.',
+    fields: ['Titre', 'Texte', 'Boutons', 'Sections'],
+  },
+  {
+    value: 'redirect',
+    label: 'Redirection URL',
+    model: 'Lien direct',
+    category: 'Général',
+    description: 'Redirige vers une URL externe avec comptage automatique des scans.',
+    fields: ['URL cible', 'Label', 'Stats scans'],
+  },
+  {
+    value: 'chrd',
+    label: 'CHRD (Hôtel/Resto)',
+    model: 'Menu & Expérience',
+    category: 'Hospitalité & Commerce',
+    description: 'Menu numérique PDF, Wi-Fi instantané et cartes postales virtuelles.',
+    fields: ['Établissement', 'Menu PDF', 'Wi-Fi', 'Carte Postale'],
+  },
+  {
+    value: 'art',
+    label: 'Art & Galerie',
+    model: 'Fiche œuvre',
+    category: 'Art & Événements',
+    description: 'Fiche d’œuvre, bio artiste, audio-guide et demande d’acquisition.',
+    fields: ['Artiste', 'Œuvre', 'Prix', 'Expo'],
+  },
+  {
+    value: 'immo',
+    label: 'Immobilier & Gîte',
+    model: 'Bien / location',
+    category: 'Immobilier & Services',
+    description: 'Présentation de bien, livret d’accueil, Wi-Fi et contacts.',
+    fields: ['Bien', 'Accueil', 'WiFi', 'Contacts'],
+  },
+  {
+    value: 'vcard',
+    label: 'vCard Pro',
+    model: 'Carte de visite',
+    category: 'Général',
+    description: 'Carte de visite digitale avec sauvegarde contact et prise de RDV.',
+    fields: ['Identité', 'Coords', 'Réseaux', 'RDV'],
+  },
+  {
+    value: 'product',
+    label: 'Produit & Notice',
+    model: 'Manuel produit',
+    category: 'Immobilier & Services',
+    description: 'Notice d’utilisation, garantie, manuels PDF et assistance.',
+    fields: ['Infos', 'Manuels', 'Garantie', 'Support'],
+  },
+  {
+    value: 'feedback',
+    label: 'Avis & Satisfaction',
+    model: 'Collecte d’avis',
+    category: 'Hospitalité & Commerce',
+    description: 'Collecte d’avis Google/TripAdvisor et filtre de réclamations.',
+    fields: ['Messages', 'Plateformes', 'Privé'],
+  },
+  {
+    value: 'tourism',
+    label: 'Tourisme & Guide',
+    model: 'Fiche lieu',
+    category: 'Art & Événements',
+    description: 'Guide touristique enrichi avec points d’intérêt et infos pratiques.',
+    fields: ['Lieu', 'Médias', 'Pratique', 'À voir'],
+  },
+  {
+    value: 'corporate_event',
+    label: 'Événement Corporate',
+    model: 'Séminaire & Live',
+    category: 'Art & Événements',
+    description: 'Programme live, Live Wall photo et Wi-Fi événementiel.',
+    fields: ['Événement', 'Live Wall', 'Programme', 'Wi-Fi'],
+  },
+  {
+    value: 'ugc_retail',
+    label: 'Retail & Concours UGC',
+    model: 'Jeu Photo & Promo',
+    category: 'Hospitalité & Commerce',
+    description: 'Concours photo client, codes promo et collecte de leads.',
+    fields: ['Marque', 'Partage Photo', 'Code Promo', 'Règlement'],
+  },
+  {
+    value: 'field_service',
+    label: 'Field Service & Machine',
+    model: 'Maintenance',
+    category: 'Immobilier & Services',
+    description: 'Fiche maintenance d’équipement, inspections et incidents.',
+    fields: ['Équipement', 'Inspect', 'Documentation', 'Tickets'],
+  },
+]

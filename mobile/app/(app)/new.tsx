@@ -14,7 +14,10 @@ export default function NewQrScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <PageHeader title="Nouveau QR Code" description="Assistant en 3 étapes : identité, contenu, publication." />
+      <PageHeader
+        title="Nouveau QR Code"
+        description="Statique ou Smart Page · contenu · design · publication."
+      />
       <QrCodeForm
         initialVertical={(vertical as LandingPageVertical) || 'generic'}
         submitLabel="Créer le QR Code"

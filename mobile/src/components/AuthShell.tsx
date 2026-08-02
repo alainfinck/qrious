@@ -89,79 +89,82 @@ export function AuthShell({
           style={styles.flex}
         >
           <View style={[styles.layout, desktop && styles.layoutDesktop]}>
-            {desktop ? (
-              <View style={styles.brandPanel}>
-                <FadeIn delay={40}>
-                  <View style={styles.brandRow}>
-                    <BrandMark size={36} />
-                    <BrandWordmark size={30} />
-                  </View>
-                </FadeIn>
-
-                <View style={styles.heroBlock}>
-                  <FadeIn delay={120}>
-                    <Text style={styles.eyebrow}>Tableau de bord</Text>
-                    <Text style={styles.heroTitle}>
-                      Un QR.{'\n'}
-                      <Text style={styles.heroSignal}>Tous les métiers.</Text>
-                      {'\n'}
-                      <Text style={styles.heroCoral}>Zéro friction.</Text>
-                    </Text>
-                    <Text style={styles.heroDesc}>
-                      Gérez vos landings multi-métiers — contenu dynamique, marque blanche, stats en
-                      un clin d’œil.
-                    </Text>
-                  </FadeIn>
-
-                  <FadeIn delay={240}>
-                    <View style={styles.features}>
-                      {FEATURES.map((item) => (
-                        <View key={item.text} style={styles.featureRow}>
-                          <View style={[styles.featureDot, { backgroundColor: item.color }]} />
-                          <Text style={styles.featureText}>{item.text}</Text>
-                        </View>
-                      ))}
+            <View style={[styles.stage, desktop && styles.stageDesktop]}>
+              {desktop ? (
+                <View style={styles.brandPanel}>
+                  <FadeIn delay={40}>
+                    <View style={styles.brandRow}>
+                      <BrandMark size={36} />
+                      <BrandWordmark size={30} />
                     </View>
                   </FadeIn>
-                </View>
 
-                <FadeIn delay={360}>
-                  <Text style={styles.copyright}>© {year} QRious</Text>
-                </FadeIn>
-              </View>
-            ) : null}
+                  <View style={styles.heroBlock}>
+                    <FadeIn delay={120}>
+                      <Text style={styles.eyebrow}>Tableau de bord</Text>
+                      <Text style={styles.heroTitle}>
+                        Un QR.{'\n'}
+                        <Text style={styles.heroSignal}>Tous les métiers.</Text>
+                        {'\n'}
+                        <Text style={styles.heroCoral}>Zéro friction.</Text>
+                      </Text>
+                      <Text style={styles.heroDesc}>
+                        Gérez vos landings multi-métiers — contenu dynamique, marque blanche, stats
+                        en un clin d’œil.
+                      </Text>
+                    </FadeIn>
 
-            <ScrollView
-              contentContainerStyle={[
-                styles.formScroll,
-                desktop && styles.formScrollDesktop,
-              ]}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              {!desktop ? (
-                <FadeIn delay={40} style={styles.mobileBrand}>
-                  <View style={styles.brandRow}>
-                    <BrandMark size={30} />
-                    <BrandWordmark size={26} />
+                    <FadeIn delay={240}>
+                      <View style={styles.features}>
+                        {FEATURES.map((item) => (
+                          <View key={item.text} style={styles.featureRow}>
+                            <View style={[styles.featureDot, { backgroundColor: item.color }]} />
+                            <Text style={styles.featureText}>{item.text}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </FadeIn>
                   </View>
-                </FadeIn>
+
+                  <FadeIn delay={360}>
+                    <Text style={styles.copyright}>© {year} QRious</Text>
+                  </FadeIn>
+                </View>
               ) : null}
 
-              <FadeIn delay={120}>
-                <View style={styles.formCard}>
-                  <LinearGradient
-                    colors={['rgba(18,196,168,0.35)', 'transparent', 'rgba(255,92,77,0.3)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.cardBeam}
-                  />
-                  <Text style={styles.formTitle}>{title}</Text>
-                  <Text style={styles.formDesc}>{description}</Text>
-                  {children}
-                </View>
-              </FadeIn>
-            </ScrollView>
+              <ScrollView
+                contentContainerStyle={[
+                  styles.formScroll,
+                  desktop && styles.formScrollDesktop,
+                ]}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                style={desktop ? styles.formScrollViewDesktop : undefined}
+              >
+                {!desktop ? (
+                  <FadeIn delay={40} style={styles.mobileBrand}>
+                    <View style={styles.brandRow}>
+                      <BrandMark size={30} />
+                      <BrandWordmark size={26} />
+                    </View>
+                  </FadeIn>
+                ) : null}
+
+                <FadeIn delay={120}>
+                  <View style={styles.formCard}>
+                    <LinearGradient
+                      colors={['rgba(18,196,168,0.35)', 'transparent', 'rgba(255,92,77,0.3)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.cardBeam}
+                    />
+                    <Text style={styles.formTitle}>{title}</Text>
+                    <Text style={styles.formDesc}>{description}</Text>
+                    {children}
+                  </View>
+                </FadeIn>
+              </ScrollView>
+            </View>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -215,15 +218,32 @@ const styles = StyleSheet.create({
   },
   layout: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   layoutDesktop: {
+    paddingHorizontal: 32,
+    paddingVertical: 24,
+  },
+  stage: {
+    flex: 1,
+    width: '100%',
+  },
+  stageDesktop: {
+    flex: 0,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 48,
+    width: '100%',
+    maxWidth: 1120,
   },
   brandPanel: {
-    width: '46%',
-    maxWidth: 560,
-    paddingHorizontal: 48,
-    paddingVertical: 40,
+    flex: 1,
+    maxWidth: 460,
+    minHeight: 520,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
     justifyContent: 'space-between',
   },
   brandRow: {
@@ -263,6 +283,10 @@ const styles = StyleSheet.create({
   featureDot: { width: 10, height: 10, borderRadius: 3 },
   featureText: { fontSize: 14, color: 'rgba(255,255,255,0.7)', flex: 1 },
   copyright: { fontSize: 13, color: 'rgba(255,255,255,0.35)' },
+  formScrollViewDesktop: {
+    flex: 1,
+    maxWidth: 460,
+  },
   formScroll: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -270,7 +294,10 @@ const styles = StyleSheet.create({
     paddingVertical: 28,
   },
   formScrollDesktop: {
-    paddingHorizontal: 40,
+    flexGrow: 0,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 0,
   },
   mobileBrand: {
     alignItems: 'center',

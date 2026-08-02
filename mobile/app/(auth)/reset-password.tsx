@@ -33,7 +33,7 @@ export default function ResetPasswordScreen() {
     setError(null)
     try {
       await resetPassword(String(token), password)
-      router.replace('/')
+      router.replace('/home')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Lien expiré ou invalide')
     } finally {

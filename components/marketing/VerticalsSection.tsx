@@ -45,7 +45,7 @@ const verticals = [
   {
     id: 'vcard' as const,
     icon: Contact,
-    href: '/editeur',
+    href: '/newqr',
     visual: 'from-[#06352e] via-[#12c4a8] to-[#042018]',
     accent: 'bg-mq-signal',
     beamFrom: '#12c4a8',

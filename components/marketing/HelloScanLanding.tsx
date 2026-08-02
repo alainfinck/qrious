@@ -111,7 +111,7 @@ export function HelloScanLanding() {
           <p className="mt-3 font-qr text-sm tracking-wide text-mq-signal/90">{t('punchline')}</p>
 
           <div className="mt-10 flex w-full flex-col gap-3 sm:mx-auto sm:max-w-xs">
-            <Link href="/editeur" className="w-full">
+            <Link href="/newqr" className="w-full">
               <ShimmerButton
                 className="h-12 w-full px-6"
                 background="linear-gradient(135deg, #ff5c4d 0%, #ff8a3d 55%, #ffc53d 100%)"

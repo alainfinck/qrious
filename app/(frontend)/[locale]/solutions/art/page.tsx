@@ -380,7 +380,7 @@ export default function ArtSolutionPage() {
                       </ShimmerButton>
                     </Link>
                     <Link
-                      href="/editeur"
+                      href="/newqr"
                       className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border-2 border-mq-ink/15 bg-white/70 px-6 text-sm font-semibold text-mq-ink transition hover:border-mq-ink/30 hover:bg-white"
                     >
                       <QrCode className="h-4 w-4 text-violet-500" />

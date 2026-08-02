@@ -2,6 +2,7 @@ import React from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 
+import { ActivityChart } from '../../src/components/ActivityChart'
 import { Badge, Button, Card, EmptyState, LoadingBlock, PageHeader } from '../../src/components/ui'
 import { useLandingPages } from '../../src/hooks/useLandingPages'
 import {
@@ -20,7 +21,6 @@ export default function OverviewScreen() {
   const recent = pages.slice(0, 5)
   const totalScans = getMockTotalScans(pages)
   const visitors = getMockUniqueVisitors(pages)
-  const maxScans = Math.max(...WEEKLY_ACTIVITY.map((d) => d.scans), 1)
 
   if (loading) return <LoadingBlock />
 
@@ -46,24 +46,7 @@ export default function OverviewScreen() {
       </View>
 
       <View style={styles.grid}>
-        <Card style={styles.chartCard}>
-          <Text style={styles.cardTitle}>Activité hebdomadaire</Text>
-          <View style={styles.bars}>
-            {WEEKLY_ACTIVITY.map((day) => (
-              <View key={day.day} style={styles.barCol}>
-                <View style={styles.barTrack}>
-                  <View
-                    style={[
-                      styles.barFill,
-                      { height: `${Math.max(8, (day.scans / maxScans) * 100)}%` },
-                    ]}
-                  />
-                </View>
-                <Text style={styles.barLabel}>{day.day}</Text>
-              </View>
-            ))}
-          </View>
-        </Card>
+        <ActivityChart data={WEEKLY_ACTIVITY} style={styles.chartCard} />
 
         <Card style={{ flex: 1 }}>
           <Text style={styles.cardTitle}>Récents</Text>
@@ -116,18 +99,6 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 16 },
   chartCard: { flex: 1.4, minWidth: 280 },
   cardTitle: { fontSize: 16, fontWeight: '700', color: colors.ink, marginBottom: 14 },
-  bars: { flexDirection: 'row', alignItems: 'flex-end', height: 160, gap: 10 },
-  barCol: { flex: 1, alignItems: 'center', gap: 8, height: '100%' },
-  barTrack: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: colors.slate100,
-    borderRadius: 8,
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
-  },
-  barFill: { width: '100%', backgroundColor: colors.signal, borderRadius: 8 },
-  barLabel: { fontSize: 11, color: colors.slate500, fontWeight: '600' },
   recentRow: {
     flexDirection: 'row',
     alignItems: 'center',

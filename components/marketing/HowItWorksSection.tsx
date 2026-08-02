@@ -180,7 +180,7 @@ export function HowItWorksSection() {
         <BlurFade delay={0.35} inView>
           <div className="mt-14 flex justify-start md:justify-center">
             <Link
-              href="/editeur"
+              href="/newqr"
               className="inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-to-r from-mq-coral to-mq-sun px-6 text-base font-semibold text-mq-ink transition-opacity hover:opacity-90"
             >
               {t('cta')}
