@@ -6,19 +6,25 @@ import {
   Box,
   Building2,
   Calendar,
+  CalendarDays,
   Check,
   Compass,
   Copy,
   Download,
   ExternalLink,
+  FileText,
   LayoutGrid,
   Link2,
   Mail,
+  MapPin,
+  MessageCircle,
   MessageSquare,
   Palette,
   Phone,
   QrCode,
+  Share2,
   ShoppingBag,
+  Smartphone,
   Sparkles,
   Star,
   Type,
@@ -63,6 +69,12 @@ const CONTENT_ICONS: Record<QrContentType, typeof Link2> = {
   sms: MessageSquare,
   wifi: Wifi,
   vcard: User,
+  whatsapp: MessageCircle,
+  location: MapPin,
+  event: CalendarDays,
+  social: Share2,
+  pdf: FileText,
+  app: Smartphone,
   art: Palette,
   immo: Building2,
   chrd: Utensils,
@@ -102,6 +114,18 @@ function defaultPayload(type: QrContentType): QrPayloadInput {
           website: '',
         },
       }
+    case 'whatsapp':
+      return { type: 'whatsapp', data: { phone: '', message: '' } }
+    case 'location':
+      return { type: 'location', data: { address: '', latitude: '', longitude: '' } }
+    case 'event':
+      return { type: 'event', data: { title: '', location: '', startDate: '', endDate: '', description: '' } }
+    case 'social':
+      return { type: 'social', data: { platform: 'instagram', usernameOrUrl: '' } }
+    case 'pdf':
+      return { type: 'pdf', data: { pdfUrl: '', title: '' } }
+    case 'app':
+      return { type: 'app', data: { appUrl: '', appName: '' } }
     case 'art':
       return {
         type: 'art',
@@ -247,18 +271,24 @@ export function PublicQrEditor() {
           </div>
 
           <Tabs defaultValue="static" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-100/80 p-1">
-              <TabsTrigger value="static" className="text-xs font-medium sm:text-sm">
+            <TabsList className="grid w-full grid-cols-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+              <TabsTrigger
+                value="static"
+                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+              >
                 Codes Statiques Directs
               </TabsTrigger>
-              <TabsTrigger value="smart" className="text-xs font-semibold sm:text-sm text-mq-ink">
+              <TabsTrigger
+                value="smart"
+                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-mq-signal data-[state=active]:shadow-md transition-all"
+              >
                 ✨ Smart QR Pages (Métiers)
               </TabsTrigger>
             </TabsList>
 
             {/* Statiques */}
             <TabsContent value="static" className="mt-4">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
                 {staticTypes.map((opt) => {
                   const Icon = CONTENT_ICONS[opt.value]
                   const active = contentType === opt.value
@@ -268,16 +298,33 @@ export function PublicQrEditor() {
                       type="button"
                       onClick={() => handleTypeChange(opt.value)}
                       className={cn(
-                        'flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all',
+                        'group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all',
                         active
-                          ? 'border-mq-ink bg-mq-ink text-white shadow-sm'
+                          ? 'border-mq-ink bg-mq-ink text-white shadow-md ring-2 ring-mq-ink/30'
                           : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50',
                       )}
                     >
-                      <Icon className={cn('h-5 w-5', active ? 'text-mq-signal' : 'text-slate-500')} />
+                      <div className="flex w-full items-center justify-between">
+                        <span
+                          className={cn(
+                            'flex h-7 w-7 items-center justify-center rounded-lg transition-colors',
+                            active ? 'bg-mq-signal/20 text-mq-signal' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
+                          )}
+                        >
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        {active && (
+                          <span className="h-2 w-2 rounded-full bg-mq-signal animate-pulse" />
+                        )}
+                      </div>
                       <div>
-                        <div className="text-sm font-semibold leading-none">{opt.label}</div>
-                        <div className={cn('mt-1 text-[11px] leading-tight', active ? 'text-white/70' : 'text-slate-400')}>
+                        <div className="text-xs font-bold leading-snug sm:text-sm">{opt.label}</div>
+                        <div
+                          className={cn(
+                            'mt-1 text-[11px] leading-tight line-clamp-2',
+                            active ? 'text-white/80' : 'text-slate-500',
+                          )}
+                        >
                           {opt.description}
                         </div>
                       </div>
@@ -289,7 +336,7 @@ export function PublicQrEditor() {
 
             {/* Smart Landing Pages */}
             <TabsContent value="smart" className="mt-4">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                 {smartTypes.map((opt) => {
                   const Icon = CONTENT_ICONS[opt.value]
                   const active = contentType === opt.value
@@ -299,18 +346,38 @@ export function PublicQrEditor() {
                       type="button"
                       onClick={() => handleTypeChange(opt.value)}
                       className={cn(
-                        'flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all',
+                        'group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all',
                         active
-                          ? 'border-mq-ink bg-mq-ink text-white shadow-sm ring-1 ring-mq-ink'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/80',
+                          ? 'border-mq-ink bg-mq-ink text-white shadow-md ring-2 ring-mq-ink/30'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/90',
                       )}
                     >
-                      <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', active ? 'bg-mq-signal/20 text-mq-signal' : 'bg-slate-100 text-slate-700')}>
-                        <Icon className="h-4 w-4" />
-                      </span>
+                      <div className="flex w-full items-center justify-between">
+                        <span
+                          className={cn(
+                            'flex h-7 w-7 items-center justify-center rounded-lg transition-colors',
+                            active ? 'bg-mq-signal/20 text-mq-signal' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
+                          )}
+                        >
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <span
+                          className={cn(
+                            'text-[10px] font-bold px-1.5 py-0.5 rounded-full',
+                            active ? 'bg-mq-coral text-mq-ink' : 'bg-slate-100 text-slate-500',
+                          )}
+                        >
+                          Page
+                        </span>
+                      </div>
                       <div>
-                        <div className="text-sm font-semibold leading-tight">{opt.label}</div>
-                        <div className={cn('mt-1 text-[11px] leading-tight line-clamp-2', active ? 'text-white/70' : 'text-slate-400')}>
+                        <div className="text-xs font-bold leading-snug sm:text-sm">{opt.label}</div>
+                        <div
+                          className={cn(
+                            'mt-1 text-[11px] leading-tight line-clamp-2',
+                            active ? 'text-white/80' : 'text-slate-500',
+                          )}
+                        >
                           {opt.description}
                         </div>
                       </div>
@@ -419,7 +486,7 @@ export function PublicQrEditor() {
                 Un QR statique ne peut plus être modifié une fois imprimé. Avec QRious, créez des QR dynamiques rééditables avec analytics complets.
               </p>
               <Button asChild size="sm" className="w-full mt-2 rounded-xl bg-mq-ink text-white hover:bg-mq-ink-soft">
-                <Link href="/dashboard">Découvrir le Dashboard</Link>
+                <Link href="/demo">Découvrir le Dashboard</Link>
               </Button>
             </div>
           )}
@@ -676,6 +743,226 @@ function ContentFields({
                 value={payload.data.website ?? ''}
                 onChange={(e) =>
                   onChange({ type: 'vcard', data: { ...payload.data, website: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+        </div>
+      )
+
+    case 'whatsapp':
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Numéro WhatsApp *" htmlFor="qr-wa-phone" hint="Format international ex: +33612345678">
+            <Input
+              id="qr-wa-phone"
+              type="tel"
+              placeholder="+33 6 12 34 56 78"
+              value={payload.data.phone}
+              onChange={(e) =>
+                onChange({ type: 'whatsapp', data: { ...payload.data, phone: e.target.value } })
+              }
+            />
+          </Field>
+          <div className="sm:col-span-2">
+            <Field label="Message WhatsApp prédéfini (Optionnel)" htmlFor="qr-wa-msg">
+              <Textarea
+                id="qr-wa-msg"
+                rows={3}
+                placeholder="Bonjour, je vous contacte suite à votre QR Code..."
+                value={payload.data.message ?? ''}
+                onChange={(e) =>
+                  onChange({ type: 'whatsapp', data: { ...payload.data, message: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+        </div>
+      )
+
+    case 'location':
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <Field label="Adresse ou nom du lieu (Google Maps)" htmlFor="qr-loc-addr" hint="Ex: 10 Place de la Concorde, 75008 Paris">
+              <Input
+                id="qr-loc-addr"
+                placeholder="Ex: 10 Place de la Concorde, Paris"
+                value={payload.data.address ?? ''}
+                onChange={(e) =>
+                  onChange({ type: 'location', data: { ...payload.data, address: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+          <Field label="Latitude (GPS Optionnel)" htmlFor="qr-loc-lat">
+            <Input
+              id="qr-loc-lat"
+              placeholder="48.8566"
+              value={payload.data.latitude ?? ''}
+              onChange={(e) =>
+                onChange({ type: 'location', data: { ...payload.data, latitude: e.target.value } })
+              }
+            />
+          </Field>
+          <Field label="Longitude (GPS Optionnel)" htmlFor="qr-loc-lng">
+            <Input
+              id="qr-loc-lng"
+              placeholder="2.3522"
+              value={payload.data.longitude ?? ''}
+              onChange={(e) =>
+                onChange({ type: 'location', data: { ...payload.data, longitude: e.target.value } })
+              }
+            />
+          </Field>
+        </div>
+      )
+
+    case 'event':
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <Field label="Titre de l'événement *" htmlFor="qr-ev-title">
+              <Input
+                id="qr-ev-title"
+                placeholder="Ex: Soirée de Lancement QRious"
+                value={payload.data.title}
+                onChange={(e) =>
+                  onChange({ type: 'event', data: { ...payload.data, title: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+          <Field label="Lieu" htmlFor="qr-ev-loc">
+            <Input
+              id="qr-ev-loc"
+              placeholder="Ex: Palais des Congrès, Paris"
+              value={payload.data.location ?? ''}
+              onChange={(e) =>
+                onChange({ type: 'event', data: { ...payload.data, location: e.target.value } })
+              }
+            />
+          </Field>
+          <Field label="Date & Heure de début" htmlFor="qr-ev-start">
+            <Input
+              id="qr-ev-start"
+              type="datetime-local"
+              value={payload.data.startDate ?? ''}
+              onChange={(e) =>
+                onChange({ type: 'event', data: { ...payload.data, startDate: e.target.value } })
+              }
+            />
+          </Field>
+          <div className="sm:col-span-2">
+            <Field label="Description (Optionnelle)" htmlFor="qr-ev-desc">
+              <Textarea
+                id="qr-ev-desc"
+                rows={3}
+                placeholder="Détails du programme ou informations aux invités..."
+                value={payload.data.description ?? ''}
+                onChange={(e) =>
+                  onChange({ type: 'event', data: { ...payload.data, description: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+        </div>
+      )
+
+    case 'social':
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Réseau social">
+            <Select
+              value={payload.data.platform}
+              onValueChange={(v) =>
+                onChange({
+                  type: 'social',
+                  data: { ...payload.data, platform: v as 'instagram' | 'tiktok' | 'linkedin' | 'youtube' | 'facebook' | 'twitter' },
+                })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="instagram">Instagram</SelectItem>
+                <SelectItem value="tiktok">TikTok</SelectItem>
+                <SelectItem value="linkedin">LinkedIn</SelectItem>
+                <SelectItem value="youtube">YouTube</SelectItem>
+                <SelectItem value="facebook">Facebook</SelectItem>
+                <SelectItem value="twitter">X / Twitter</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field label="Nom d'utilisateur ou Lien URL *" htmlFor="qr-soc-user" hint="Ex: @moncompte ou URL">
+            <Input
+              id="qr-soc-user"
+              placeholder="@moncompte ou https://..."
+              value={payload.data.usernameOrUrl}
+              onChange={(e) =>
+                onChange({ type: 'social', data: { ...payload.data, usernameOrUrl: e.target.value } })
+              }
+            />
+          </Field>
+        </div>
+      )
+
+    case 'pdf':
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <Field label="Lien URL du fichier PDF *" htmlFor="qr-pdf-url" hint="Ex: https://votresite.com/brochure.pdf">
+              <Input
+                id="qr-pdf-url"
+                type="url"
+                placeholder="https://votresite.com/menu.pdf"
+                value={payload.data.pdfUrl}
+                onChange={(e) =>
+                  onChange({ type: 'pdf', data: { ...payload.data, pdfUrl: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+          <div className="sm:col-span-2">
+            <Field label="Nom du document (Optionnel)" htmlFor="qr-pdf-title">
+              <Input
+                id="qr-pdf-title"
+                placeholder="Ex: Carte des Vins 2026"
+                value={payload.data.title ?? ''}
+                onChange={(e) =>
+                  onChange({ type: 'pdf', data: { ...payload.data, title: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+        </div>
+      )
+
+    case 'app':
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <Field label="Lien App Store / Google Play *" htmlFor="qr-app-url">
+              <Input
+                id="qr-app-url"
+                type="url"
+                placeholder="https://apps.apple.com/app/id123456789"
+                value={payload.data.appUrl}
+                onChange={(e) =>
+                  onChange({ type: 'app', data: { ...payload.data, appUrl: e.target.value } })
+                }
+              />
+            </Field>
+          </div>
+          <div className="sm:col-span-2">
+            <Field label="Nom de l'application (Optionnel)" htmlFor="qr-app-name">
+              <Input
+                id="qr-app-name"
+                placeholder="Ex: QRious Mobile"
+                value={payload.data.appName ?? ''}
+                onChange={(e) =>
+                  onChange({ type: 'app', data: { ...payload.data, appName: e.target.value } })
                 }
               />
             </Field>

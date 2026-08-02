@@ -1,9 +1,35 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Check, ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  ArrowUpRight,
+  Box,
+  Building2,
+  Calendar,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  LayoutGrid,
+  Palette,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Star,
+  User,
+  Utensils,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -13,14 +39,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { cn } from '@/lib/utils'
+import { RichTextEditor } from '@/components/dashboard/RichTextEditor'
 import { slugify } from '@/lib/dashboard/utils'
+import { cn } from '@/lib/utils'
 import type { LandingPage, LandingPageVertical } from '@/types/landing-page'
 
 interface QrCodeFormProps {
   page?: LandingPage
   action: (formData: FormData) => Promise<{ error?: string; success?: boolean } | void>
   submitLabel: string
+  initialVertical?: LandingPageVertical
 }
 
 const STEPS = [
@@ -33,72 +61,117 @@ const VERTICALS: {
   value: LandingPageVertical
   label: string
   model: string
+  category: string
+  icon: LucideIcon
+  description: string
   fields: string[]
 }[] = [
   {
-    value: 'generic',
+    value: 'generic' as const,
     label: 'Générique',
     model: 'Page libre',
+    category: 'Général',
+    icon: LayoutGrid,
+    description: 'Une landing page polyvalente avec texte libre, boutons d’action et sections sur mesure.',
     fields: ['Titre', 'Texte', 'Boutons', 'Sections'],
   },
   {
-    value: 'art',
-    label: 'Art',
-    model: 'Fiche œuvre',
-    fields: ['Artiste', 'Œuvre', 'Prix', 'Expo'],
-  },
-  {
-    value: 'immo',
-    label: 'Immobilier',
-    model: 'Bien / gîte',
-    fields: ['Bien', 'Accueil', 'WiFi', 'Contacts'],
-  },
-  {
-    value: 'vcard',
-    label: 'vCard',
-    model: 'Carte de visite',
-    fields: ['Identité', 'Coords', 'Réseaux', 'RDV'],
-  },
-  {
-    value: 'product',
-    label: 'Produit',
-    model: 'Manuel produit',
-    fields: ['Infos', 'Manuels', 'Garantie', 'Support'],
-  },
-  {
-    value: 'feedback',
-    label: 'Avis',
-    model: 'Collecte d’avis',
-    fields: ['Messages', 'Plateformes', 'Privé'],
-  },
-  {
-    value: 'tourism',
-    label: 'Tourisme',
-    model: 'Fiche lieu',
-    fields: ['Lieu', 'Médias', 'Pratique', 'À voir'],
+    value: 'redirect' as const,
+    label: 'Redirection URL',
+    model: 'Lien direct',
+    category: 'Général',
+    icon: ArrowUpRight,
+    description: 'Redirige directement vers une URL externe. Le nombre de scans est comptabilisé automatiquement.',
+    fields: ['URL cible', 'Label', 'Stats scans'],
   },
   {
     value: 'chrd',
     label: 'CHRD (Hôtel/Resto)',
     model: 'Menu & Expérience',
+    category: 'Hospitalité & Commerce',
+    icon: Utensils,
+    description: 'Menu numérique PDF, accès Wi-Fi instantané et cartes postales virtuelles.',
     fields: ['Établissement', 'Menu PDF', 'Wi-Fi', 'Carte Postale'],
   },
   {
+    value: 'art',
+    label: 'Art & Galerie',
+    model: 'Fiche œuvre',
+    category: 'Art & Événements',
+    icon: Palette,
+    description: 'Fiche d’œuvre d’art, biographie artiste, audio-guide et demande d’acquisition.',
+    fields: ['Artiste', 'Œuvre', 'Prix', 'Expo'],
+  },
+  {
+    value: 'immo',
+    label: 'Immobilier & Gîte',
+    model: 'Bien / location',
+    category: 'Immobilier & Services',
+    icon: Building2,
+    description: 'Présentation de bien à vendre ou louer, livret d’accueil, code Wi-Fi et contacts.',
+    fields: ['Bien', 'Accueil', 'WiFi', 'Contacts'],
+  },
+  {
+    value: 'vcard',
+    label: 'vCard Pro',
+    model: 'Carte de visite',
+    category: 'Général',
+    icon: User,
+    description: 'Carte de visite digitale interactive avec sauvegarde contact et prise de RDV.',
+    fields: ['Identité', 'Coords', 'Réseaux', 'RDV'],
+  },
+  {
+    value: 'product',
+    label: 'Produit & Notice',
+    model: 'Manuel produit',
+    category: 'Immobilier & Services',
+    icon: Box,
+    description: 'Notice d’utilisation, enregistrement de garantie, manuels PDF et assistance.',
+    fields: ['Infos', 'Manuels', 'Garantie', 'Support'],
+  },
+  {
+    value: 'feedback',
+    label: 'Avis & Satisfactions',
+    model: 'Collecte d’avis',
+    category: 'Hospitalité & Commerce',
+    icon: Star,
+    description: 'Collecte d’avis Google/TripAdvisor et filtre de réclamations privées.',
+    fields: ['Messages', 'Plateformes', 'Privé'],
+  },
+  {
+    value: 'tourism',
+    label: 'Tourisme & Guide',
+    model: 'Fiche lieu',
+    category: 'Art & Événements',
+    icon: Compass,
+    description: 'Guide touristique enrichi avec points d’intérêt et infos pratiques.',
+    fields: ['Lieu', 'Médias', 'Pratique', 'À voir'],
+  },
+  {
     value: 'corporate_event',
-    label: 'Événement Pro',
+    label: 'Événement Corporate',
     model: 'Séminaire & Live',
+    category: 'Art & Événements',
+    icon: Calendar,
+    description: 'Programme en direct, Live Wall photo des participants, réseau Wi-Fi événementiel.',
     fields: ['Événement', 'Live Wall', 'Programme', 'Wi-Fi'],
   },
   {
     value: 'ugc_retail',
-    label: 'Retail & UGC',
-    model: 'Concours Photo',
+    label: 'Retail & Concours UGC',
+    model: 'Jeu Photo & Promo',
+    category: 'Hospitalité & Commerce',
+    icon: ShoppingBag,
+    description: 'Jeu concours photo client, partage sur réseaux, codes promo et collecte de leads.',
     fields: ['Marque', 'Partage Photo', 'Code Promo', 'Règlement'],
   },
   {
     value: 'field_service',
-    label: 'Field Service',
-    model: 'Maintenance Machine',
+    label: 'Field Service & Machine',
+    model: 'Maintenance',
+    category: 'Immobilier & Services',
+    icon: Wrench,
+    description: 'Fiche de maintenance d’équipement, journal d’inspection et déclaration d’incidents.',
     fields: ['Équipement', 'Inspect', 'Documentation', 'Tickets'],
   },
 ]
@@ -108,6 +181,9 @@ const CONTENT_TABS: Record<LandingPageVertical, { id: string; label: string }[]>
     { id: 'content', label: 'Contenu' },
     { id: 'actions', label: 'Actions' },
     { id: 'contact', label: 'Contact' },
+  ],
+  redirect: [
+    { id: 'redirect', label: 'Redirection' },
   ],
   art: [
     { id: 'artist', label: 'Artiste' },
@@ -166,21 +242,45 @@ const CONTENT_TABS: Record<LandingPageVertical, { id: string; label: string }[]>
 const selectClassName =
   'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
 
-export function QrCodeForm({ page, action, submitLabel }: QrCodeFormProps) {
+export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCodeFormProps) {
   const [step, setStep] = useState(0)
   const [title, setTitle] = useState(page?.title ?? '')
   const [slug, setSlug] = useState(page?.slug ?? '')
-  const [vertical, setVertical] = useState<LandingPageVertical>(page?.vertical ?? 'generic')
+  const [vertical, setVertical] = useState<LandingPageVertical>(
+    page?.vertical ?? initialVertical ?? 'generic',
+  )
   const [status, setStatus] = useState<'draft' | 'published'>(page?.status ?? 'draft')
   const [dpe, setDpe] = useState(page?.immoData?.dpe ?? '')
-  const [contentTab, setContentTab] = useState(CONTENT_TABS[page?.vertical ?? 'generic'][0].id)
+  const [contentTab, setContentTab] = useState(
+    CONTENT_TABS[page?.vertical ?? initialVertical ?? 'generic'][0].id,
+  )
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [pending, setPending] = useState(false)
 
+  // Selector modal state
+  const [modalOpen, setModalOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<string>('Tous')
+
   const previewSlug = useMemo(() => slugify(slug || title || 'mon-qr-code'), [slug, title])
   const verticalMeta = VERTICALS.find((v) => v.value === vertical)
   const tabs = CONTENT_TABS[vertical]
+  const ActiveIcon = verticalMeta?.icon ?? LayoutGrid
+
+  const filteredVerticals = useMemo(() => {
+    return VERTICALS.filter((v) => {
+      const matchCat = selectedCategory === 'Tous' || v.category === selectedCategory
+      const query = searchQuery.trim().toLowerCase()
+      const matchQuery =
+        !query ||
+        v.label.toLowerCase().includes(query) ||
+        v.model.toLowerCase().includes(query) ||
+        v.description.toLowerCase().includes(query) ||
+        v.fields.some((f) => f.toLowerCase().includes(query))
+      return matchCat && matchQuery
+    })
+  }, [selectedCategory, searchQuery])
 
   function changeVertical(next: LandingPageVertical) {
     setVertical(next)
@@ -278,8 +378,8 @@ export function QrCodeForm({ page, action, submitLabel }: QrCodeFormProps) {
       {/* Step panels — kept mounted to preserve uncontrolled field values */}
       <div className={cn(step !== 0 && 'hidden')}>
         <Section
-          title="Identité du QR"
-          description="Chaque style charge son propre modèle de champs — choisissez celui qui correspond à votre usage."
+          title="Identité du QR Code"
+          description="Renseignez le nom de votre projet et choisissez la landing page adaptée à votre activité."
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2 sm:col-span-2">
@@ -297,8 +397,8 @@ export function QrCodeForm({ page, action, submitLabel }: QrCodeFormProps) {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="slug">Slug URL</Label>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="slug">Slug URL (Lien personnalisé)</Label>
               <Input
                 id="slug"
                 name="slug"
@@ -306,71 +406,233 @@ export function QrCodeForm({ page, action, submitLabel }: QrCodeFormProps) {
                 onChange={(e) => setSlug(slugify(e.target.value))}
                 placeholder="exposition-lumiere-2026"
               />
-              <p className="font-mono text-xs text-muted-foreground">/{previewSlug}</p>
+              <p className="font-mono text-xs text-muted-foreground">
+                URL scannée : /{previewSlug}
+              </p>
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label>Modèle sélectionné</Label>
-              <div className="flex h-9 items-center rounded-md border border-dashed border-slate-200 bg-slate-50 px-3 text-sm text-slate-600">
-                {verticalMeta?.model ?? '—'} · {status === 'published' ? 'Publié' : 'Brouillon'}
+          {/* SÉLECTEUR DE STYLE / MODÈLE AVEC DROPDOWN ET MODAL */}
+          <div className="mt-6 space-y-3 rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 sm:p-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <Label className="text-base font-semibold text-slate-900">
+                  Modèle & Style de QR Code
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Définit la structure et les fonctionnalités de la page scannée.
+                </p>
+              </div>
+
+              {/* DROPDOWN SELECT RAPIDE */}
+              <div className="w-full sm:w-auto min-w-[240px]">
+                <Select
+                  value={vertical}
+                  onValueChange={(v) => changeVertical(v as LandingPageVertical)}
+                >
+                  <SelectTrigger className="bg-white rounded-xl h-10 border-slate-200 shadow-sm font-medium text-sm">
+                    <SelectValue placeholder="Choisir un modèle..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {VERTICALS.map((item) => {
+                      const Icon = item.icon
+                      return (
+                        <SelectItem key={item.value} value={item.value} className="py-2">
+                          <div className="flex items-center gap-2">
+                            <Icon className="h-4 w-4 text-mq-ink shrink-0" />
+                            <span className="font-semibold text-sm">{item.label}</span>
+                            <span className="text-[11px] text-slate-400">({item.model})</span>
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
+
+            {/* CARTE DE PRÉSENTATION DU MODÈLE ACTIF */}
+            {verticalMeta ? (
+              <div className="relative overflow-hidden rounded-xl border border-slate-900/10 bg-white p-4.5 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="flex items-start gap-3.5">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-mq-ink text-mq-signal shadow-sm">
+                      <ActiveIcon className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="font-bold text-slate-900 text-base">
+                          {verticalMeta.label}
+                        </h3>
+                        <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
+                          {verticalMeta.model}
+                        </span>
+                        <span className="rounded-full bg-mq-signal/20 px-2.5 py-0.5 text-[11px] font-semibold text-mq-ink">
+                          {verticalMeta.category}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-slate-600 leading-relaxed max-w-xl">
+                        {verticalMeta.description}
+                      </p>
+                      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                        <span className="text-[11px] font-semibold text-slate-400">
+                          Champs inclus :
+                        </span>
+                        {verticalMeta.fields.map((f) => (
+                          <span
+                            key={f}
+                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700"
+                          >
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BOUTON DECLENCHEUR DU MODAL */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setModalOpen(true)}
+                    className="shrink-0 rounded-xl border-slate-300 hover:border-slate-400 hover:bg-slate-50 font-semibold text-xs h-9"
+                  >
+                    <Sparkles className="mr-1.5 h-3.5 w-3.5 text-mq-coral" />
+                    Catalogue visuel complet
+                  </Button>
+                </div>
+              </div>
+            ) : null}
           </div>
 
-          <div className="mt-5 space-y-2">
-            <Label>Style / modèle</Label>
-            <p className="text-xs text-muted-foreground">
-              Les informations demandées à l’étape suivante changent selon le modèle choisi.
-            </p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {VERTICALS.map((item) => {
-                const selected = vertical === item.value
-                return (
-                  <button
-                    key={item.value}
-                    type="button"
-                    onClick={() => changeVertical(item.value)}
-                    className={cn(
-                      'rounded-xl border px-3.5 py-3 text-left transition-colors',
-                      selected
-                        ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
-                        : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
-                    )}
-                  >
-                    <span className="flex items-baseline justify-between gap-2">
-                      <span className="text-sm font-semibold">{item.label}</span>
-                      <span
-                        className={cn(
-                          'text-[11px] font-medium uppercase tracking-wide',
-                          selected ? 'text-mq-signal' : 'text-slate-400',
-                        )}
-                      >
-                        {item.model}
-                      </span>
-                    </span>
-                    <span
+          {/* MODAL CATALOGUE VISUEL DES MODÈLES */}
+          <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+            <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col p-6 gap-4 overflow-hidden rounded-2xl">
+              <DialogHeader className="space-y-1 text-left">
+                <DialogTitle className="text-xl font-bold flex items-center gap-2 text-slate-900">
+                  <Sparkles className="h-5 w-5 text-mq-coral" />
+                  Catalogue des modèles QRious
+                </DialogTitle>
+                <DialogDescription className="text-sm text-slate-500">
+                  Sélectionnez le type et la structure de landing page adaptés à vos objectifs.
+                </DialogDescription>
+              </DialogHeader>
+
+              {/* RECHERCHE ET RECHERCHE PAR CATÉGORIES */}
+              <div className="space-y-3 pt-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Rechercher par nom, métier ou fonction (ex: resto, art, vCard, avis)..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 h-10 rounded-xl text-sm"
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-1.5 text-xs">
+                  {[
+                    'Tous',
+                    'Général',
+                    'Hospitalité & Commerce',
+                    'Art & Événements',
+                    'Immobilier & Services',
+                  ].map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setSelectedCategory(cat)}
                       className={cn(
-                        'mt-2 flex flex-wrap gap-1',
-                        selected ? 'text-white/70' : 'text-slate-500',
+                        'rounded-lg px-3 py-1.5 font-semibold transition-colors',
+                        selectedCategory === cat
+                          ? 'bg-mq-ink text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
                       )}
                     >
-                      {item.fields.map((field) => (
-                        <span
-                          key={field}
-                          className={cn(
-                            'rounded-md px-1.5 py-0.5 text-[11px]',
-                            selected ? 'bg-white/10' : 'bg-slate-100',
-                          )}
-                        >
-                          {field}
-                        </span>
-                      ))}
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* GRILLE DES MODÈLES */}
+              <div className="flex-1 overflow-y-auto pr-1">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 pb-2">
+                  {filteredVerticals.map((item) => {
+                    const ItemIcon = item.icon
+                    const isSelected = vertical === item.value
+                    return (
+                      <button
+                        key={item.value}
+                        type="button"
+                        onClick={() => {
+                          changeVertical(item.value)
+                          setModalOpen(false)
+                        }}
+                        className={cn(
+                          'group relative flex flex-col justify-between rounded-xl border p-4 text-left transition-all',
+                          isSelected
+                            ? 'border-mq-ink bg-slate-900 text-white shadow-md ring-2 ring-mq-ink'
+                            : 'border-slate-200 bg-white text-slate-800 hover:border-slate-300 hover:bg-slate-50/80 hover:shadow-sm',
+                        )}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <span
+                              className={cn(
+                                'flex h-9 w-9 items-center justify-center rounded-lg',
+                                isSelected
+                                  ? 'bg-mq-signal/20 text-mq-signal'
+                                  : 'bg-slate-100 text-slate-700 group-hover:bg-slate-200',
+                              )}
+                            >
+                              <ItemIcon className="h-5 w-5" />
+                            </span>
+                            {isSelected ? (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-mq-signal px-2 py-0.5 text-[11px] font-bold text-mq-ink">
+                                <Check className="h-3 w-3" /> Sélectionné
+                              </span>
+                            ) : (
+                              <span className="text-[11px] font-medium text-slate-400">
+                                {item.model}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="font-bold text-sm leading-tight">{item.label}</div>
+                          <p
+                            className={cn(
+                              'mt-1 text-xs leading-relaxed line-clamp-2',
+                              isSelected ? 'text-white/70' : 'text-slate-500',
+                            )}
+                          >
+                            {item.description}
+                          </p>
+                        </div>
+
+                        <div className="mt-3 pt-3 border-t border-slate-100/15 flex flex-wrap gap-1">
+                          {item.fields.map((f) => (
+                            <span
+                              key={f}
+                              className={cn(
+                                'rounded px-1.5 py-0.5 text-[10px] font-medium',
+                                isSelected
+                                  ? 'bg-white/10 text-white/80'
+                                  : 'bg-slate-100 text-slate-600',
+                              )}
+                            >
+                              {f}
+                            </span>
+                          ))}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </Section>
       </div>
 
@@ -398,6 +660,7 @@ export function QrCodeForm({ page, action, submitLabel }: QrCodeFormProps) {
           </div>
 
           {vertical === 'generic' ? <GenericFields page={page} tab={contentTab} /> : null}
+          {vertical === 'redirect' ? <RedirectFields page={page} /> : null}
           {vertical === 'art' ? <ArtFields page={page} tab={contentTab} /> : null}
           {vertical === 'immo' ? (
             <ImmoFields page={page} tab={contentTab} dpe={dpe} setDpe={setDpe} />
@@ -676,20 +939,26 @@ function GenericFields({ page, tab }: { page?: LandingPage; tab: string }) {
           id="genericSubheadline"
           label="Sous-titre"
           defaultValue={page?.genericData?.subheadline}
-          placeholder="Une phrase d’accroche"
+          placeholder="Une phrase d'accroche"
           className="sm:col-span-2"
         />
-        <TextAreaField
-          id="genericBody"
-          label="Texte principal"
-          defaultValue={page?.genericData?.body}
-          className="sm:col-span-2"
-          placeholder="Présentez votre contenu…"
-          rows={4}
-        />
+        {/* Champ texte brut caché pour compatibilité */}
+        <input type="hidden" name="genericBody" value="" />
+        {/* Éditeur WYSIWYG */}
+        <div className="sm:col-span-2 space-y-1.5">
+          <Label>Contenu principal (éditeur riche)</Label>
+          <RichTextEditor
+            name="genericBodyHtml"
+            defaultValue={page?.genericData?.bodyHtml || page?.genericData?.body}
+            placeholder="Rédigez votre contenu : titres, listes, liens, citations…"
+          />
+          <p className="text-xs text-muted-foreground">
+            Utilisez la barre d’outils pour formater : gras, italic, titres, listes, liens…
+          </p>
+        </div>
         <TextAreaField
           id="genericSections"
-          label="Sections (Titre : Contenu)"
+          label="Sections supplémentaires (Titre : Contenu)"
           defaultValue={page?.genericData?.sections?.map((s) => `${s.title} : ${s.body}`).join('\n')}
           className="sm:col-span-2"
           placeholder={"Horaires : Ouvert du mar. au sam.\nAccès : Métro ligne 1"}
@@ -710,6 +979,61 @@ function GenericFields({ page, tab }: { page?: LandingPage; tab: string }) {
         <Field id="genericContactPhone" label="Téléphone" defaultValue={page?.genericData?.contactPhone} />
       </Panel>
     </>
+  )
+}
+
+function RedirectFields({ page }: { page?: LandingPage }) {
+  return (
+    <div className="space-y-5">
+      {/* Bannière d'info */}
+      <div className="rounded-xl border border-blue-200/80 bg-blue-50/60 p-4 flex gap-3">
+        <ArrowUpRight className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-semibold text-blue-900">QR Code de Redirection</p>
+          <p className="text-xs text-blue-700 mt-0.5">
+            Ce QR code redirigera directement les visiteurs vers l’URL que vous définissez.
+            Chaque scan est comptabilisé automatiquement dans vos statistiques.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2 space-y-1.5">
+          <Label htmlFor="redirectTargetUrl">URL de destination *</Label>
+          <Input
+            id="redirectTargetUrl"
+            name="redirectTargetUrl"
+            type="url"
+            defaultValue={page?.redirectData?.targetUrl || ''}
+            placeholder="https://mon-site.fr/ma-page"
+            required
+          />
+          <p className="text-xs text-muted-foreground">
+            L’URL complète vers laquelle le QR code redirigera (doit commencer par https://)
+          </p>
+        </div>
+        <div className="sm:col-span-2 space-y-1.5">
+          <Label htmlFor="redirectLabel">Label descriptif (optionnel)</Label>
+          <Input
+            id="redirectLabel"
+            name="redirectLabel"
+            defaultValue={page?.redirectData?.label || ''}
+            placeholder="Ex: Lien d’inscription conférence 2026"
+          />
+          <p className="text-xs text-muted-foreground">
+            Ce libellé apparaît dans vos statistiques pour identifier facilement cette redirection.
+          </p>
+        </div>
+      </div>
+
+      {page?.scanCount !== undefined && page.scanCount !== null && (
+        <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/60 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Scans totaux</p>
+          <p className="text-3xl font-bold text-emerald-900 mt-1">{page.scanCount}</p>
+          <p className="text-xs text-emerald-600 mt-0.5">Compteur réel — mis à jour à chaque scan</p>
+        </div>
+      )}
+    </div>
   )
 }
 

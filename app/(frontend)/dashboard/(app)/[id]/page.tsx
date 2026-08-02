@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 
 import { QrCodeForm } from '@/components/dashboard/QrCodeForm'
 import { QrPreviewCard } from '@/components/dashboard/QrPreviewCard'
+import { QrStatsPanel } from '@/components/dashboard/QrStatsPanel'
 import { Button } from '@/components/ui/button'
 import { updateQrCodeAction } from '@/lib/dashboard/actions'
 import { getLandingPageById } from '@/lib/payload'
@@ -36,10 +37,14 @@ export default async function EditQrCodePage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <QrCodeForm page={page} action={boundUpdate} submitLabel="Enregistrer" />
-        <QrPreviewCard page={page} />
+        <div className="space-y-6">
+          <QrPreviewCard page={page} />
+          <QrStatsPanel page={page} />
+        </div>
       </div>
     </div>
   )
 }
+

@@ -21,6 +21,7 @@ import type { LandingPageVertical } from '@/types/landing-page'
 
 export const VERTICAL_LABELS: Record<LandingPageVertical, string> = {
   generic: 'Générique',
+  redirect: 'Redirection URL',
   art: 'Art',
   immo: 'Immobilier',
   vcard: 'Carte de visite',

@@ -20,6 +20,29 @@ function renderVerticalTemplate(pageData: LandingPage) {
   switch (pageData.vertical) {
     case 'generic':
       return <GenericTemplate pageData={pageData} />
+    case 'redirect':
+      // Les QR codes redirect passent par /api/scan/[slug] et redirigent directement
+      // Si on arrive ici c'est via l'URL directe - afficher une page de redirection
+      return (
+        <div className="flex min-h-screen items-center justify-center p-8">
+          <div className="text-center space-y-4">
+            <div className="text-4xl">↗️</div>
+            <h1 className="text-xl font-bold">{pageData.title}</h1>
+            {pageData.redirectData?.targetUrl && (
+              <>
+                <p className="text-muted-foreground text-sm">Vous allez être redirigé vers :</p>
+                <a
+                  href={pageData.redirectData.targetUrl}
+                  className="text-primary underline break-all"
+                >
+                  {pageData.redirectData.targetUrl}
+                </a>
+                <meta httpEquiv="refresh" content={`0;url=${pageData.redirectData.targetUrl}`} />
+              </>
+            )}
+          </div>
+        </div>
+      )
     case 'art':
       return <ArtTemplate pageData={pageData} />
     case 'immo':

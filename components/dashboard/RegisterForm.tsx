@@ -98,12 +98,12 @@ export function RegisterForm() {
           <ShimmerButton
             type="submit"
             disabled={pending}
-            className="h-14 w-full text-base disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-16 w-full text-lg disabled:cursor-not-allowed disabled:opacity-60"
             background="linear-gradient(135deg, #ff5c4d 0%, #ff8a3d 50%, #ffc53d 100%)"
             shimmerColor="#fff7e8"
-            borderRadius="12px"
+            borderRadius="16px"
           >
-            <span className="flex items-center justify-center gap-2.5 text-base font-semibold text-mq-ink">
+            <span className="flex items-center justify-center gap-2.5 text-lg font-bold text-mq-ink">
               {pending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />

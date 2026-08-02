@@ -133,6 +133,7 @@ export interface LandingPage {
   status: 'draft' | 'published';
   vertical:
     | 'generic'
+    | 'redirect'
     | 'art'
     | 'immo'
     | 'vcard'
@@ -143,6 +144,10 @@ export interface LandingPage {
     | 'corporate_event'
     | 'ugc_retail'
     | 'field_service';
+  /**
+   * Compteur auto-incrémenté lors de chaque scan du QR code
+   */
+  scanCount?: number | null;
   theme?: {
     /**
      * Code hexadécimal (ex: #2563eb)
@@ -154,6 +159,10 @@ export interface LandingPage {
     headline?: string | null;
     subheadline?: string | null;
     body?: string | null;
+    /**
+     * Généré automatiquement par l'éditeur visuel
+     */
+    bodyHtml?: string | null;
     ctaLabel?: string | null;
     ctaUrl?: string | null;
     secondaryCtaLabel?: string | null;
@@ -168,6 +177,16 @@ export interface LandingPage {
           id?: string | null;
         }[]
       | null;
+  };
+  redirectData?: {
+    /**
+     * URL vers laquelle le QR code redirigera (ex: https://mon-site.fr)
+     */
+    targetUrl: string;
+    /**
+     * Libellé interne pour identifier cette redirection dans vos statistiques
+     */
+    label?: string | null;
   };
   artData?: {
     artistName?: string | null;
@@ -589,6 +608,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
   slug?: T;
   status?: T;
   vertical?: T;
+  scanCount?: T;
   theme?:
     | T
     | {
@@ -601,6 +621,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
         headline?: T;
         subheadline?: T;
         body?: T;
+        bodyHtml?: T;
         ctaLabel?: T;
         ctaUrl?: T;
         secondaryCtaLabel?: T;
@@ -615,6 +636,12 @@ export interface LandingPagesSelect<T extends boolean = true> {
               body?: T;
               id?: T;
             };
+      };
+  redirectData?:
+    | T
+    | {
+        targetUrl?: T;
+        label?: T;
       };
   artData?:
     | T

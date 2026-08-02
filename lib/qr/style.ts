@@ -28,6 +28,19 @@ export type QrCornerDotStyle =
 
 export type QrErrorLevel = 'L' | 'M' | 'Q' | 'H'
 export type QrShape = 'square' | 'circle'
+export type QrFrameStyle =
+  | 'none'
+  | 'bottom-text'
+  | 'top-text'
+  | 'balloon'
+  | 'phone-mockup'
+  | 'badge'
+  | 'polaroid'
+  | 'simple-border'
+  | 'circle-frame'
+  | 'ticket'
+  | 'ribbon'
+  | 'arrow'
 
 /** Serializable style config — shared by public editor & admin. */
 export interface QrStyle {
@@ -49,6 +62,12 @@ export interface QrStyle {
   logoSize: number
   logoMargin: number
   hideBackgroundDots: boolean
+  
+  // Frame settings
+  frameStyle: QrFrameStyle
+  frameText: string
+  frameColor: string
+  frameTextColor: string
 }
 
 export const DEFAULT_QR_STYLE: QrStyle = {
@@ -67,6 +86,11 @@ export const DEFAULT_QR_STYLE: QrStyle = {
   logoSize: 0.28,
   logoMargin: 6,
   hideBackgroundDots: true,
+  
+  frameStyle: 'none',
+  frameText: 'SCAN ME',
+  frameColor: '#ea580c', // Tailwind orange-600 as default
+  frameTextColor: '#ffffff',
 }
 
 export const DOT_STYLE_OPTIONS: { value: QrDotStyle; label: string }[] = [

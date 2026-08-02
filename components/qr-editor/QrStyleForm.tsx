@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   BG_PRESETS,
   CORNER_DOT_OPTIONS,
@@ -24,6 +25,7 @@ import {
   type QrCornerSquareStyle,
   type QrDotStyle,
   type QrErrorLevel,
+  type QrFrameStyle,
   type QrShape,
   type QrStyle,
 } from '@/lib/qr/style'
@@ -33,6 +35,7 @@ import {
   CornerDotIcon,
   CornerSquareIcon,
   DotStyleIcon,
+  FrameStyleIcon,
   ShapeButton,
 } from './shape-icons'
 
@@ -58,7 +61,7 @@ function Field({
 }) {
   return (
     <div className="space-y-2">
-      <Label htmlFor={htmlFor} className="text-slate-700">
+      <Label htmlFor={htmlFor} className="text-slate-700 font-medium text-sm">
         {label}
       </Label>
       {children}
@@ -162,8 +165,108 @@ export function QrStyleForm({
     reader.readAsDataURL(file)
   }
 
+  const FRAME_OPTIONS: { value: QrFrameStyle; label: string }[] = [
+    { value: 'none', label: 'Aucun cadre' },
+    { value: 'bottom-text', label: 'Texte en bas' },
+    { value: 'top-text', label: 'Texte en haut' },
+    { value: 'balloon', label: 'Bulle' },
+    { value: 'phone-mockup', label: 'Smartphone' },
+    { value: 'badge', label: 'Badge' },
+    { value: 'polaroid', label: 'Polaroid' },
+    { value: 'simple-border', label: 'Bordure' },
+    { value: 'circle-frame', label: 'Cercle' },
+    { value: 'ticket', label: 'Ticket' },
+    { value: 'ribbon', label: 'Ruban' },
+    { value: 'arrow', label: 'Flèche' },
+  ]
+
   return (
-    <div className={cn('space-y-8', className)}>
+    <Tabs defaultValue="frame" className={cn('w-full space-y-6', className)}>
+      <TabsList className="grid w-full grid-cols-4 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+        <TabsTrigger
+          value="frame"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+        >
+          Cadre
+        </TabsTrigger>
+        <TabsTrigger
+          value="shapes"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+        >
+          Formes
+        </TabsTrigger>
+        <TabsTrigger
+          value="colors"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+        >
+          Couleurs
+        </TabsTrigger>
+        <TabsTrigger
+          value="logo"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+        >
+          Logo & Options
+        </TabsTrigger>
+      </TabsList>
+      
+      <TabsContent value="frame" className="space-y-8 mt-4">
+        <section className="space-y-4">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">Modèles de cadres</h3>
+            <p className="text-xs text-slate-500">Ajoutez un cadre avec un texte d'appel à l'action.</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            {FRAME_OPTIONS.map((opt) => {
+              const selected = value.frameStyle === opt.value
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => patch({ frameStyle: opt.value as QrFrameStyle })}
+                  className={cn(
+                    'flex flex-col items-center justify-center gap-2 rounded-xl border p-3 text-center transition-all',
+                    selected
+                      ? 'border-mq-ink bg-mq-ink text-white shadow-md ring-2 ring-mq-ink/30'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50',
+                  )}
+                >
+                  <FrameStyleIcon style={opt.value} selected={selected} />
+                  <span className="text-xs font-semibold leading-tight">{opt.label}</span>
+                </button>
+              )
+            })}
+          </div>
+          
+          {value.frameStyle !== 'none' ? (
+            <div className="mt-4 grid gap-5 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <Field label="Texte du cadre (Appel à l'action)">
+                  <Input
+                    value={value.frameText}
+                    onChange={(e) => patch({ frameText: e.target.value })}
+                    placeholder="SCAN ME"
+                    maxLength={20}
+                  />
+                </Field>
+              </div>
+              <ColorField
+                label="Couleur du cadre"
+                value={value.frameColor}
+                onChange={(c) => patch({ frameColor: c })}
+                presets={FG_PRESETS}
+              />
+              <ColorField
+                label="Couleur du texte"
+                value={value.frameTextColor}
+                onChange={(c) => patch({ frameTextColor: c })}
+                presets={['#ffffff', '#000000', '#f8fafc', '#0f172a']}
+              />
+            </div>
+          ) : null}
+        </section>
+      </TabsContent>
+
+      <TabsContent value="shapes" className="space-y-8 mt-4">
       {/* Modules */}
       <section className="space-y-4">
         <div>
@@ -182,13 +285,52 @@ export function QrStyleForm({
             </ShapeButton>
           ))}
         </div>
-        <ColorField
-          label="Couleur des modules"
-          value={value.dotsColor}
-          onChange={(dotsColor) => patch({ dotsColor })}
-          presets={FG_PRESETS}
-        />
       </section>
+
+      {/* Background + shape */}
+      <section className="grid gap-5 sm:grid-cols-2">
+        <Field label="Forme globale">
+          <div className="flex gap-2">
+            {(
+              [
+                { value: 'square' as QrShape, label: 'Carrée' },
+                { value: 'circle' as QrShape, label: 'Ronde' },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => patch({ shape: opt.value })}
+                className={cn(
+                  'flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors',
+                  value.shape === opt.value
+                    ? 'border-slate-900 bg-slate-900 text-white'
+                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </Field>
+      </section>
+      </TabsContent>
+
+      <TabsContent value="colors" className="space-y-8 mt-4">
+        <section className="grid gap-5 sm:grid-cols-2">
+          <ColorField
+            label="Couleur des modules"
+            value={value.dotsColor}
+            onChange={(dotsColor) => patch({ dotsColor })}
+            presets={FG_PRESETS}
+          />
+          <ColorField
+            label="Couleur de fond"
+            value={value.backgroundColor}
+            onChange={(backgroundColor) => patch({ backgroundColor })}
+            presets={BG_PRESETS}
+          />
+        </section>
 
       {/* Eyes outer */}
       <section className="space-y-4">
@@ -245,41 +387,9 @@ export function QrStyleForm({
           emptyLabel="Identique à la couleur des modules."
         />
       </section>
+      </TabsContent>
 
-      {/* Background + shape */}
-      <section className="grid gap-5 sm:grid-cols-2">
-        <ColorField
-          label="Couleur de fond"
-          value={value.backgroundColor}
-          onChange={(backgroundColor) => patch({ backgroundColor })}
-          presets={BG_PRESETS}
-        />
-        <Field label="Forme globale">
-          <div className="flex gap-2">
-            {(
-              [
-                { value: 'square' as QrShape, label: 'Carrée' },
-                { value: 'circle' as QrShape, label: 'Ronde' },
-              ] as const
-            ).map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => patch({ shape: opt.value })}
-                className={cn(
-                  'flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors',
-                  value.shape === opt.value
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
-                )}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </Field>
-      </section>
-
+      <TabsContent value="logo" className="space-y-8 mt-4">
       {/* Logo */}
       <section className="space-y-4">
         <div>
@@ -421,6 +531,7 @@ export function QrStyleForm({
           />
         </Field>
       </section>
-    </div>
+      </TabsContent>
+    </Tabs>
   )
 }

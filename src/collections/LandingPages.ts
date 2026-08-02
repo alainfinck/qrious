@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 const isVertical =
-  (vertical: 'generic' | 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism' | 'chrd' | 'corporate_event' | 'ugc_retail' | 'field_service') =>
+  (vertical: 'generic' | 'redirect' | 'art' | 'immo' | 'vcard' | 'product' | 'feedback' | 'tourism' | 'chrd' | 'corporate_event' | 'ugc_retail' | 'field_service') =>
   (data: Record<string, unknown>) =>
     data?.vertical === vertical
 
@@ -54,6 +54,7 @@ export const LandingPages: CollectionConfig = {
       required: true,
       options: [
         { label: 'Générique', value: 'generic' },
+        { label: 'Redirection URL', value: 'redirect' },
         { label: 'Art', value: 'art' },
         { label: 'Immobilier / Gîte', value: 'immo' },
         { label: 'Carte de visite', value: 'vcard' },
@@ -67,6 +68,17 @@ export const LandingPages: CollectionConfig = {
       ],
       admin: {
         position: 'sidebar',
+      },
+    },
+    {
+      name: 'scanCount',
+      type: 'number',
+      label: 'Nombre de scans',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        description: 'Compteur auto-incrémenté lors de chaque scan du QR code',
+        readOnly: true,
       },
     },
     {
@@ -111,7 +123,15 @@ export const LandingPages: CollectionConfig = {
         {
           name: 'body',
           type: 'textarea',
-          label: 'Texte principal',
+          label: 'Texte principal (plain text)',
+        },
+        {
+          name: 'bodyHtml',
+          type: 'textarea',
+          label: 'Texte principal (HTML éditeur riche)',
+          admin: {
+            description: 'Généré automatiquement par l\'éditeur visuel',
+          },
         },
         {
           name: 'ctaLabel',
@@ -166,6 +186,33 @@ export const LandingPages: CollectionConfig = {
               required: true,
             },
           ],
+        },
+      ],
+    },
+    {
+      name: 'redirectData',
+      type: 'group',
+      label: 'Redirection URL',
+      admin: {
+        condition: isVertical('redirect'),
+      },
+      fields: [
+        {
+          name: 'targetUrl',
+          type: 'text',
+          label: 'URL de destination',
+          required: true,
+          admin: {
+            description: 'URL vers laquelle le QR code redirigera (ex: https://mon-site.fr)',
+          },
+        },
+        {
+          name: 'label',
+          type: 'text',
+          label: 'Label descriptif',
+          admin: {
+            description: 'Libellé interne pour identifier cette redirection dans vos statistiques',
+          },
         },
       ],
     },

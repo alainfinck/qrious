@@ -4,6 +4,8 @@ import { OverviewStats } from '@/components/dashboard/OverviewStats'
 import { RecentQrList } from '@/components/dashboard/RecentQrList'
 import { getAllLandingPages, getDashboardStats } from '@/lib/payload'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardHomePage() {
   const [stats, pages] = await Promise.all([getDashboardStats(), getAllLandingPages()])
 

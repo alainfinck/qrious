@@ -1,5 +1,6 @@
 export type LandingPageVertical =
   | 'generic'
+  | 'redirect'
   | 'art'
   | 'immo'
   | 'vcard'
@@ -240,6 +241,7 @@ export interface GenericData {
   headline?: string | null
   subheadline?: string | null
   body?: string | null
+  bodyHtml?: string | null       // Rich HTML from WYSIWYG editor
   ctaLabel?: string | null
   ctaUrl?: string | null
   secondaryCtaLabel?: string | null
@@ -248,6 +250,11 @@ export interface GenericData {
   contactEmail?: string | null
   contactPhone?: string | null
   sections?: { title: string; body: string; id?: string | null }[] | null
+}
+
+export interface RedirectData {
+  targetUrl: string             // URL cible de la redirection
+  label?: string | null         // Label affiché (pour les stats)
 }
 
 export interface TimeRuleSlot {
@@ -290,8 +297,10 @@ export interface LandingPage {
   slug: string
   status: LandingPageStatus
   vertical: LandingPageVertical
+  scanCount?: number | null     // Compteur de scans réel (incrémenté via API)
   theme?: LandingPageTheme | null
   genericData?: GenericData | null
+  redirectData?: RedirectData | null
   artData?: ArtData | null
   immoData?: ImmoData | null
   vcardData?: VCardData | null

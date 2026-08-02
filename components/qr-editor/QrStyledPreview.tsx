@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useImperativeHandle, useRef, forwardRef, useState } from 'react'
+import { useEffect, useImperativeHandle, useRef, forwardRef, useState, useCallback } from 'react'
 import type QRCodeStyling from 'qr-code-styling'
 import { QrCode } from 'lucide-react'
 
 import { styleToOptions, type QrStyle } from '@/lib/qr/style'
+import { compositeCanvasFrame, compositeSvgFrame } from '@/lib/qr/frames'
 import { cn } from '@/lib/utils'
 
 export type QrStyledPreviewHandle = {
@@ -33,23 +34,106 @@ export const QrStyledPreview = forwardRef<QrStyledPreviewHandle, Props>(function
 ) {
   const containerRef = useRef<HTMLDivElement>(null)
   const instanceRef = useRef<QRCodeStyling | null>(null)
+  const cachedQrSvgRef = useRef<string>('')
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useImperativeHandle(ref, () => ({
     async download(extension, name = 'qrious-qr') {
       if (!instanceRef.current) return
-      await instanceRef.current.download({ name, extension })
+
+      if (style.frameStyle === 'none') {
+        await instanceRef.current.download({ name, extension })
+        return
+      }
+
+      // With frame
+      try {
+        if (extension === 'svg') {
+          const raw = cachedQrSvgRef.current || (await (await instanceRef.current.getRawData('svg') as Blob | null)?.text())
+          if (!raw) return
+          const composited = compositeSvgFrame(raw, style)
+          const blob = new Blob([composited], { type: 'image/svg+xml;charset=utf-8' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `${name}.svg`
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+        } else {
+          const raw = await instanceRef.current.getRawData('png')
+          if (!raw) return
+          const canvas = await compositeCanvasFrame(raw as Blob, style)
+          const url = canvas.toDataURL(`image/${extension}`)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `${name}.${extension}`
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (err) {
+        console.error('Download error:', err)
+        setError('Erreur lors du téléchargement.')
+      }
     },
     async getRawData(extension) {
       if (!instanceRef.current) return null
-      const raw = await instanceRef.current.getRawData(extension)
-      if (!raw) return null
-      if (raw instanceof Blob) return raw
-      // Browser builds always return Blob; this branch is for type narrowing only.
-      return new Blob([new Uint8Array(raw as unknown as ArrayBuffer)])
+
+      if (style.frameStyle === 'none') {
+        const raw = await instanceRef.current.getRawData(extension)
+        if (!raw) return null
+        if (raw instanceof Blob) return raw
+        return new Blob([new Uint8Array(raw as unknown as ArrayBuffer)])
+      }
+
+      if (extension === 'svg') {
+        const raw = cachedQrSvgRef.current || (await (await instanceRef.current.getRawData('svg') as Blob | null)?.text())
+        if (!raw) return null
+        const composited = compositeSvgFrame(raw, style)
+        return new Blob([composited], { type: 'image/svg+xml;charset=utf-8' })
+      } else {
+        const raw = await instanceRef.current.getRawData('png')
+        if (!raw) return null
+        const canvas = await compositeCanvasFrame(raw as Blob, style)
+        return await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, `image/${extension}`))
+      }
     },
   }))
+
+  const renderFrameOverlay = useCallback(
+    (rawQrSvg: string, currentStyle: QrStyle) => {
+      if (!containerRef.current || !rawQrSvg) return
+      if (currentStyle.frameStyle === 'none') {
+        containerRef.current.innerHTML = rawQrSvg
+      } else {
+        const composited = compositeSvgFrame(rawQrSvg, currentStyle)
+        containerRef.current.innerHTML = composited
+      }
+      const el = containerRef.current.firstElementChild as HTMLElement | null
+      if (el) {
+        el.style.width = '100%'
+        el.style.height = '100%'
+        el.style.maxWidth = `${displaySize}px`
+        el.style.maxHeight = `${displaySize}px`
+      }
+    },
+    [displaySize],
+  )
+
+  // 1. Instant synchronous frame overlay update when ONLY frame properties change
+  const framePropsKey = `${style.frameStyle}-${style.frameText}-${style.frameColor}-${style.frameTextColor}`
+
+  useEffect(() => {
+    if (cachedQrSvgRef.current) {
+      renderFrameOverlay(cachedQrSvgRef.current, style)
+    }
+  }, [framePropsKey, renderFrameOverlay, style])
+
+  // 2. Debounced QR code generation when core QR parameters change
+  const qrOptionsKey = `${data}-${style.dotsType}-${style.dotsColor}-${style.cornersSquareType}-${style.cornersSquareColor}-${style.cornersDotType}-${style.cornersDotColor}-${style.backgroundColor}-${style.logoDataUrl}-${style.logoSize}-${style.logoMargin}-${style.hideBackgroundDots}-${style.errorCorrectionLevel}-${style.shape}-${style.margin}`
 
   useEffect(() => {
     let cancelled = false
@@ -57,6 +141,7 @@ export const QrStyledPreview = forwardRef<QrStyledPreviewHandle, Props>(function
     async function setup() {
       if (!data.trim()) {
         instanceRef.current = null
+        cachedQrSvgRef.current = ''
         if (containerRef.current) containerRef.current.innerHTML = ''
         setReady(false)
         return
@@ -64,30 +149,30 @@ export const QrStyledPreview = forwardRef<QrStyledPreviewHandle, Props>(function
 
       try {
         const { default: QRCodeStylingCtor } = await import('qr-code-styling')
-        if (cancelled || !containerRef.current) return
+        if (cancelled) return
 
         const options = styleToOptions(data, style)
+        const finalOptions = {
+          ...options,
+          type: 'svg' as const,
+        }
 
         if (!instanceRef.current) {
-          containerRef.current.innerHTML = ''
-          const qr = new QRCodeStylingCtor(options)
-          qr.append(containerRef.current)
-          instanceRef.current = qr
+          instanceRef.current = new QRCodeStylingCtor(finalOptions)
         } else {
-          instanceRef.current.update(options)
+          instanceRef.current.update(finalOptions)
         }
 
-        // Scale canvas/svg to fit display box
-        const el = containerRef.current.firstElementChild as HTMLElement | null
-        if (el) {
-          el.style.width = '100%'
-          el.style.height = '100%'
-          el.style.maxWidth = `${displaySize}px`
-          el.style.maxHeight = `${displaySize}px`
+        const raw = await instanceRef.current.getRawData('svg')
+        if (raw && !cancelled) {
+          const text = await (raw as Blob).text()
+          cachedQrSvgRef.current = text
+          if (containerRef.current) {
+            renderFrameOverlay(text, style)
+          }
+          setReady(true)
+          setError(null)
         }
-
-        setReady(true)
-        setError(null)
       } catch {
         if (!cancelled) {
           setError('Impossible de générer ce QR code.')
@@ -96,12 +181,12 @@ export const QrStyledPreview = forwardRef<QrStyledPreviewHandle, Props>(function
       }
     }
 
-    const timer = window.setTimeout(setup, 120)
+    const timer = window.setTimeout(setup, 40)
     return () => {
       cancelled = true
       window.clearTimeout(timer)
     }
-  }, [data, style, displaySize])
+  }, [data, qrOptionsKey, renderFrameOverlay])
 
   const hasData = Boolean(data.trim())
 
@@ -131,9 +216,6 @@ export const QrStyledPreview = forwardRef<QrStyledPreviewHandle, Props>(function
         ) : null}
       </div>
       {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
-      {hasData && !ready && !error ? (
-        <p className="mt-2 text-center text-xs text-slate-400">Génération…</p>
-      ) : null}
     </div>
   )
 })

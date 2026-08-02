@@ -142,6 +142,7 @@ export type QrCodeFormState = {
     headline: string
     subheadline: string
     body: string
+    bodyHtml: string
     ctaLabel: string
     ctaUrl: string
     secondaryCtaLabel: string
@@ -150,6 +151,10 @@ export type QrCodeFormState = {
     contactEmail: string
     contactPhone: string
     sections: string
+  }
+  redirectData: {
+    targetUrl: string
+    label: string
   }
   chrdData: {
     establishmentName: string
@@ -347,6 +352,7 @@ function parseFormData(formData: FormData): QrCodeFormState {
       headline: String(formData.get('genericHeadline') ?? '').trim(),
       subheadline: String(formData.get('genericSubheadline') ?? '').trim(),
       body: String(formData.get('genericBody') ?? '').trim(),
+      bodyHtml: String(formData.get('genericBodyHtml') ?? '').trim(),
       ctaLabel: String(formData.get('genericCtaLabel') ?? '').trim(),
       ctaUrl: String(formData.get('genericCtaUrl') ?? '').trim(),
       secondaryCtaLabel: String(formData.get('genericSecondaryCtaLabel') ?? '').trim(),
@@ -355,6 +361,10 @@ function parseFormData(formData: FormData): QrCodeFormState {
       contactEmail: String(formData.get('genericContactEmail') ?? '').trim(),
       contactPhone: String(formData.get('genericContactPhone') ?? '').trim(),
       sections: String(formData.get('genericSections') ?? '').trim(),
+    },
+    redirectData: {
+      targetUrl: String(formData.get('redirectTargetUrl') ?? '').trim(),
+      label: String(formData.get('redirectLabel') ?? '').trim(),
     },
     chrdData: {
       establishmentName: String(formData.get('establishmentName') ?? '').trim(),
@@ -517,6 +527,7 @@ function toPayloadData(state: QrCodeFormState): LandingPageInput {
             headline: state.genericData.headline || null,
             subheadline: state.genericData.subheadline || null,
             body: state.genericData.body || null,
+            bodyHtml: state.genericData.bodyHtml || null,
             ctaLabel: state.genericData.ctaLabel || null,
             ctaUrl: state.genericData.ctaUrl || null,
             secondaryCtaLabel: state.genericData.secondaryCtaLabel || null,
@@ -537,6 +548,13 @@ function toPayloadData(state: QrCodeFormState): LandingPageInput {
                   })
                   .filter((section) => section.title)
               : null,
+          }
+        : undefined,
+    redirectData:
+      state.vertical === 'redirect'
+        ? {
+            targetUrl: state.redirectData.targetUrl || '',
+            label: state.redirectData.label || null,
           }
         : undefined,
     immoData:

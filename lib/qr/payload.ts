@@ -6,6 +6,12 @@ export type QrContentType =
   | 'sms'
   | 'wifi'
   | 'vcard'
+  | 'whatsapp'
+  | 'location'
+  | 'event'
+  | 'social'
+  | 'pdf'
+  | 'app'
   | 'art'
   | 'immo'
   | 'chrd'
@@ -61,6 +67,40 @@ export interface VCardPayload {
   city?: string
   zip?: string
   country?: string
+}
+
+export interface WhatsappPayload {
+  phone: string
+  message?: string
+}
+
+export interface LocationPayload {
+  address?: string
+  latitude?: string
+  longitude?: string
+}
+
+export interface EventPayload {
+  title: string
+  location?: string
+  startDate?: string
+  endDate?: string
+  description?: string
+}
+
+export interface SocialPayload {
+  platform: 'instagram' | 'tiktok' | 'linkedin' | 'youtube' | 'facebook' | 'twitter'
+  usernameOrUrl: string
+}
+
+export interface PdfPayload {
+  pdfUrl: string
+  title?: string
+}
+
+export interface AppPayload {
+  appUrl: string
+  appName?: string
 }
 
 export interface ArtPayload {
@@ -150,6 +190,12 @@ export type QrPayloadInput =
   | { type: 'sms'; data: SmsPayload }
   | { type: 'wifi'; data: WifiPayload }
   | { type: 'vcard'; data: VCardPayload }
+  | { type: 'whatsapp'; data: WhatsappPayload }
+  | { type: 'location'; data: LocationPayload }
+  | { type: 'event'; data: EventPayload }
+  | { type: 'social'; data: SocialPayload }
+  | { type: 'pdf'; data: PdfPayload }
+  | { type: 'app'; data: AppPayload }
   | { type: 'art'; data: ArtPayload }
   | { type: 'immo'; data: ImmoPayload }
   | { type: 'chrd'; data: ChrdPayload }
@@ -218,13 +264,56 @@ export function buildQrPayload(input: QrPayloadInput): string {
       if (d.website?.trim()) lines.push(`URL:${normalizeUrl(d.website)}`)
       const adr = [d.street, d.city, d.zip, d.country].some((v) => v?.trim())
       if (adr) {
-        lines.push(
-          `ADR:;;${d.street ?? ''};${d.city ?? ''};;${d.zip ?? ''};${d.country ?? ''}`,
-        )
+        lines.push(`ADR:;;${d.street ?? ''};${d.city ?? ''};;${d.zip ?? ''};${d.country ?? ''}`)
       }
       lines.push('END:VCARD')
       return lines.join('\n')
     }
+    case 'whatsapp': {
+      const phone = input.data.phone.trim().replace(/[^\d+]/g, '')
+      const text = input.data.message?.trim()
+      return text ? `https://wa.me/${phone}?text=${encodeURIComponent(text)}` : `https://wa.me/${phone}`
+    }
+    case 'location': {
+      if (input.data.address?.trim()) {
+        return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(input.data.address.trim())}`
+      }
+      const lat = input.data.latitude?.trim()
+      const lng = input.data.longitude?.trim()
+      return lat && lng ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : ''
+    }
+    case 'event': {
+      const d = input.data
+      const formatDate = (str?: string) => str ? str.replace(/[-:]/g, '') : ''
+      const lines = [
+        'BEGIN:VEVENT',
+        `SUMMARY:${d.title.trim()}`,
+      ]
+      if (d.startDate?.trim()) lines.push(`DTSTART:${formatDate(d.startDate.trim())}`)
+      if (d.endDate?.trim()) lines.push(`DTEND:${formatDate(d.endDate.trim())}`)
+      if (d.location?.trim()) lines.push(`LOCATION:${d.location.trim()}`)
+      if (d.description?.trim()) lines.push(`DESCRIPTION:${d.description.trim()}`)
+      lines.push('END:VEVENT')
+      return lines.join('\n')
+    }
+    case 'social': {
+      const val = input.data.usernameOrUrl.trim()
+      if (/^https?:\/\//i.test(val)) return val
+      const user = val.replace(/^@/, '')
+      switch (input.data.platform) {
+        case 'instagram': return `https://instagram.com/${user}`
+        case 'tiktok': return `https://tiktok.com/@${user}`
+        case 'linkedin': return `https://linkedin.com/in/${user}`
+        case 'youtube': return `https://youtube.com/@${user}`
+        case 'facebook': return `https://facebook.com/${user}`
+        case 'twitter': return `https://x.com/${user}`
+      }
+    }
+    case 'pdf':
+      return normalizeUrl(input.data.pdfUrl)
+    case 'app':
+      return normalizeUrl(input.data.appUrl)
+
     case 'art':
       return input.data.targetUrl?.trim()
         ? normalizeUrl(input.data.targetUrl)
@@ -284,6 +373,18 @@ export function isPayloadReady(input: QrPayloadInput): boolean {
       return Boolean(input.data.ssid.trim())
     case 'vcard':
       return Boolean(input.data.firstName.trim())
+    case 'whatsapp':
+      return Boolean(input.data.phone.trim())
+    case 'location':
+      return Boolean(input.data.address?.trim() || (input.data.latitude?.trim() && input.data.longitude?.trim()))
+    case 'event':
+      return Boolean(input.data.title.trim())
+    case 'social':
+      return Boolean(input.data.usernameOrUrl.trim())
+    case 'pdf':
+      return Boolean(input.data.pdfUrl.trim())
+    case 'app':
+      return Boolean(input.data.appUrl.trim())
     case 'art':
       return Boolean(input.data.artistName.trim() || input.data.title.trim())
     case 'immo':
@@ -307,11 +408,22 @@ export function isPayloadReady(input: QrPayloadInput): boolean {
   }
 }
 
-export const QR_CONTENT_TYPES: { value: QrContentType; label: string; description: string; category: 'static' | 'smart' }[] = [
+export const QR_CONTENT_TYPES: {
+  value: QrContentType
+  label: string
+  description: string
+  category: 'static' | 'smart'
+}[] = [
   // Classiques Statiques
   { value: 'url', label: 'Lien Web', description: 'Lien direct vers un site ou une page', category: 'static' },
-  { value: 'vcard', label: 'vCard', description: 'Fiche contact téléphonique standard', category: 'static' },
+  { value: 'vcard', label: 'vCard Contact', description: 'Fiche contact téléphonique complète (VCF)', category: 'static' },
+  { value: 'whatsapp', label: 'WhatsApp', description: 'Ouvre une discussion WhatsApp direct', category: 'static' },
   { value: 'wifi', label: 'Wi-Fi', description: 'Connexion automatique à un réseau Wi-Fi', category: 'static' },
+  { value: 'location', label: 'Localisation', description: 'Ouvre un itinéraire Google Maps', category: 'static' },
+  { value: 'event', label: 'Événement iCal', description: 'Ajout de rendez-vous dans le calendrier', category: 'static' },
+  { value: 'social', label: 'Réseaux Sociaux', description: 'Profil Instagram, TikTok, LinkedIn, YouTube', category: 'static' },
+  { value: 'pdf', label: 'Document PDF', description: 'Lien direct vers une brochure ou menu PDF', category: 'static' },
+  { value: 'app', label: 'App Store / Play', description: 'Lien de téléchargement d’application', category: 'static' },
   { value: 'text', label: 'Texte', description: 'Texte ou note libre encodée', category: 'static' },
   { value: 'email', label: 'Email', description: 'Ouvre une rédaction d’email prérempli', category: 'static' },
   { value: 'phone', label: 'Téléphone', description: 'Déclenche un appel téléphonique direct', category: 'static' },
@@ -320,7 +432,7 @@ export const QR_CONTENT_TYPES: { value: QrContentType; label: string; descriptio
   // Smart QR Landing Pages
   { value: 'art', label: 'Art & Exposition', description: 'Fiche d’œuvre, biographie d’artiste, certificat et prix', category: 'smart' },
   { value: 'immo', label: 'Immobilier & Gîte', description: 'Notice de bienvenue, Wi-Fi, consignes et DPE', category: 'smart' },
-  { value: 'chrd', label: 'Hôtel & Resto', description: 'Menu digital PDF, accès Wi-Fi et cadeaux postales', category: 'smart' },
+  { value: 'chrd', label: 'Hôtel & Resto', description: 'Menu digital PDF, accès Wi-Fi et cartes postales', category: 'smart' },
   { value: 'product', label: 'Manuel Produit', description: 'Guide de mise en service, tutoriel vidéo et garantie', category: 'smart' },
   { value: 'feedback', label: 'Avis & E-Réputation', description: 'Collecte Google Reviews, Tripadvisor et avis directs', category: 'smart' },
   { value: 'tourism', label: 'Tourisme & Patrimoine', description: 'Audio-guide, coordonnées GPS et histoire du lieu', category: 'smart' },
@@ -329,4 +441,3 @@ export const QR_CONTENT_TYPES: { value: QrContentType; label: string; descriptio
   { value: 'field_service', label: 'Field Service', description: 'Fiche technique matériel, astreinte et contrôles', category: 'smart' },
   { value: 'generic_smart', label: 'Landing Sur-Mesure', description: 'Page dynamique personnalisée avec boutons et média', category: 'smart' },
 ]
-

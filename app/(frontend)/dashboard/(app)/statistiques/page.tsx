@@ -2,6 +2,8 @@ import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader'
 import { StatistiquesClient } from '@/components/dashboard/StatistiquesClient'
 import { getAllLandingPages, getDashboardStats } from '@/lib/payload'
 
+export const dynamic = 'force-dynamic'
+
 export default async function StatistiquesPage() {
   const [stats, pages] = await Promise.all([getDashboardStats(), getAllLandingPages()])
 

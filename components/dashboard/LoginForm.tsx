@@ -83,11 +83,11 @@ export function LoginForm({ notice }: { notice?: string | null }) {
                 autoComplete="current-password"
                 placeholder="••••••••"
                 required
-                className={cn(authFieldClass, 'pr-12')}
+                className={cn(authFieldClass, 'pr-14')}
               />
               <button
                 type="button"
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-white/80"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-white/80"
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
               >
@@ -103,13 +103,13 @@ export function LoginForm({ notice }: { notice?: string | null }) {
           <ShimmerButton
             type="submit"
             disabled={pending}
-            className="h-14 w-full text-base disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-16 w-full text-lg disabled:cursor-not-allowed disabled:opacity-60"
             background="linear-gradient(135deg, #ff5c4d 0%, #ff8a3d 50%, #ffc53d 100%)"
             shimmerColor="#fff7e8"
-            borderRadius="14px"
+            borderRadius="16px"
             shimmerDuration="2.2s"
           >
-            <span className="flex items-center justify-center gap-2.5 text-base font-semibold text-mq-ink">
+            <span className="flex items-center justify-center gap-2.5 text-lg font-bold text-mq-ink">
               {pending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />

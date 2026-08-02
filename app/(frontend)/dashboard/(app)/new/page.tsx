@@ -5,7 +5,14 @@ import { QrCodeForm } from '@/components/dashboard/QrCodeForm'
 import { Button } from '@/components/ui/button'
 import { createQrCodeAction } from '@/lib/dashboard/actions'
 
-export default function NewQrCodePage() {
+import type { LandingPageVertical } from '@/types/landing-page'
+
+export default async function NewQrCodePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ vertical?: string }>
+}) {
+  const params = await searchParams
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div className="flex items-start gap-3">
@@ -23,7 +30,11 @@ export default function NewQrCodePage() {
         </div>
       </div>
 
-      <QrCodeForm action={createQrCodeAction} submitLabel="Créer le QR code" />
+      <QrCodeForm
+        action={createQrCodeAction}
+        submitLabel="Créer le QR code"
+        initialVertical={params.vertical as LandingPageVertical | undefined}
+      />
     </div>
   )
 }

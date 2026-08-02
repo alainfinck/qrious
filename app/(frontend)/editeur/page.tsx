@@ -38,7 +38,7 @@ export default function EditeurPage() {
                   size="sm"
                   className="rounded-xl bg-mq-signal font-semibold text-mq-ink hover:bg-mq-signal/90"
                 >
-                  <Link href="/dashboard">QR dynamiques</Link>
+                  <Link href="/demo">QR dynamiques</Link>
                 </Button>
                 <Button
                   asChild
