@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import {
   Frame,
@@ -99,7 +99,7 @@ export function QrStyleEditor({
 
   return (
     <View style={styles.root}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
+      <View style={styles.tabs}>
         {TABS.map((t) => {
           const Icon = t.icon
           const active = tab === t.id
@@ -114,7 +114,7 @@ export function QrStyleEditor({
             </Pressable>
           )
         })}
-      </ScrollView>
+      </View>
 
       {tab === 'templates' ? (
         <View style={styles.grid}>
@@ -384,7 +384,7 @@ function ColorRow({
 
 const styles = StyleSheet.create({
   root: { gap: spacing.md },
-  tabs: { gap: 8, paddingBottom: 4 },
+  tabs: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingBottom: 4 },
   tab: {
     flexDirection: 'row',
     alignItems: 'center',

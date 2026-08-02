@@ -9,7 +9,7 @@
     "dev:mobile:web": "pnpm --dir mobile exec expo start --web --port 8081",
     "newqr:build": "node scripts/build-newqr.mjs",
     "editeur:build": "node scripts/build-newqr.mjs",
-    "build": "next build",
+    "build": "pnpm --dir mobile install --frozen-lockfile && pnpm newqr:build && next build",
     "start": "next start",
     "payload": "payload",
     "generate:types": "payload generate:types",

@@ -34,6 +34,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     'expo-secure-store',
     [
+      'expo-camera',
+      {
+        cameraPermission:
+          'QRious a besoin de la caméra pour scanner les codes QR.',
+        recordAudioAndroid: false,
+        barcodeScannerEnabled: true,
+      },
+    ],
+    [
       'expo-splash-screen',
       {
         image: './assets/images/splash-icon.png',

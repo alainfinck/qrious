@@ -33,6 +33,11 @@ if (!existsSync(join(mobileDir, 'package.json'))) {
   process.exit(1)
 }
 
+if (!existsSync(join(mobileDir, 'node_modules'))) {
+  console.log('📥 pnpm install (mobile)…')
+  run('pnpm', ['install', '--frozen-lockfile'], mobileDir)
+}
+
 console.log('📦 Expo export -p web (baseUrl=/newqr)…')
 run('pnpm', ['exec', 'expo', 'export', '-p', 'web'], mobileDir)
 

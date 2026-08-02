@@ -18,6 +18,7 @@ import {
   LogOut,
   Plus,
   QrCode,
+  ScanLine,
   User,
   X,
 } from 'lucide-react-native'
@@ -32,6 +33,7 @@ const STORAGE_KEY = 'qrious_sidebar_collapsed'
 
 const NAV = [
   { href: '/home', label: 'Vue d’ensemble', icon: LayoutDashboard, exact: true },
+  { href: '/scanner', label: 'Scanner', icon: ScanLine },
   { href: '/qr-codes', label: 'Mes QR Codes', icon: QrCode },
   { href: '/pages', label: 'Smart Pages', icon: FileText },
   { href: '/medias', label: 'Médias', icon: ImageIcon },
@@ -46,7 +48,9 @@ function isActive(pathname: string, href: string, exact?: boolean) {
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions()
+  const pathname = usePathname()
   const desktop = width >= 900
+  const isScanner = pathname === '/scanner' || pathname.startsWith('/scanner/')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
   const [ready, setReady] = useState(false)
@@ -79,8 +83,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <Pressable onPress={() => setDrawerOpen(true)} style={styles.menuBtn}>
                 <Text style={styles.menuBtnText}>☰</Text>
               </Pressable>
-              <Text style={styles.brand}>QRious</Text>
-              <NewButton compact />
+              <Text style={styles.brand}>{isScanner ? 'Scanner' : 'QRious'}</Text>
+              {isScanner ? <View style={styles.headerSpacer} /> : <NewButton compact />}
             </View>
             {drawerOpen ? (
               <View style={styles.drawerOverlay}>
@@ -98,7 +102,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             ) : null}
           </>
         )}
-        <View style={styles.content}>{children}</View>
+        <View style={[styles.content, isScanner && styles.contentScanner]}>{children}</View>
       </View>
     </SafeAreaView>
   )
@@ -231,6 +235,8 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   rootDesktop: { flexDirection: 'row' },
   content: { flex: 1, padding: spacing.lg, minWidth: 0 },
+  contentScanner: { padding: 0 },
+  headerSpacer: { width: 36, height: 36 },
   mobileHeader: {
     height: 56,
     paddingHorizontal: spacing.lg,

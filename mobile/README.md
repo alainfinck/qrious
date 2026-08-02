@@ -30,7 +30,7 @@ Login via `POST /api/users/login` (JWT Payload). Le token est stocké dans Secur
 ## Fonctionnalités
 
 - Auth : login, register, forgot/reset password
-- Vue d’ensemble, QR codes, Smart Pages, Médias, Statistiques, Profil
+- Vue d’ensemble, Scanner QR (iOS/Android), QR codes, Smart Pages, Médias, Statistiques, Profil
 - Création / édition / suppression de landing pages (tous les verticals)
 - Aperçu QR + copie d’URL
 - Upload médias
