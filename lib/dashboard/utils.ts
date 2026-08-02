@@ -17,6 +17,15 @@ export function slugify(value: string): string {
     .slice(0, 64)
 }
 
+export function generateRandomSlug(length = 4): string {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
+}
+
 import type { LandingPageVertical } from '@/types/landing-page'
 
 export const VERTICAL_LABELS: Record<LandingPageVertical, string> = {

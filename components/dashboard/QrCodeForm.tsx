@@ -14,6 +14,7 @@ import {
   Palette,
   Search,
   ShoppingBag,
+  Shuffle,
   Sparkles,
   Star,
   User,
@@ -40,7 +41,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { RichTextEditor } from '@/components/dashboard/RichTextEditor'
-import { slugify } from '@/lib/dashboard/utils'
+import { generateRandomSlug, slugify } from '@/lib/dashboard/utils'
 import { cn } from '@/lib/utils'
 import type { LandingPage, LandingPageVertical } from '@/types/landing-page'
 
@@ -242,13 +243,28 @@ const CONTENT_TABS: Record<LandingPageVertical, { id: string; label: string }[]>
 const selectClassName =
   'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring'
 
+import { createQrCodeAction, generateUniqueSlugAction } from '@/lib/dashboard/actions'
+
 export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCodeFormProps) {
   const [step, setStep] = useState(0)
   const [title, setTitle] = useState(page?.title ?? '')
-  const [slug, setSlug] = useState(page?.slug ?? '')
+  const [slug, setSlug] = useState(() => page?.slug ?? generateRandomSlug(4))
+  const [generatingSlug, setGeneratingSlug] = useState(false)
   const [vertical, setVertical] = useState<LandingPageVertical>(
     page?.vertical ?? initialVertical ?? 'generic',
   )
+
+  async function handleGenerateRandomSlug() {
+    setGeneratingSlug(true)
+    try {
+      const newSlug = await generateUniqueSlugAction()
+      setSlug(newSlug)
+    } catch {
+      setSlug(generateRandomSlug(4))
+    } finally {
+      setGeneratingSlug(false)
+    }
+  }
   const [status, setStatus] = useState<'draft' | 'published'>(page?.status ?? 'draft')
   const [dpe, setDpe] = useState(page?.immoData?.dpe ?? '')
   const [contentTab, setContentTab] = useState(
@@ -437,16 +453,56 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
             </div>
 
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="slug">Slug URL (Lien personnalisé)</Label>
-              <Input
-                id="slug"
-                name="slug"
-                value={slug}
-                onChange={(e) => setSlug(slugify(e.target.value))}
-                placeholder="exposition-lumiere-2026"
-              />
-              <p className="font-mono text-xs text-muted-foreground">
-                URL scannée : /{previewSlug}
+              <div className="flex items-center justify-between">
+                <Label htmlFor="slug" className="font-semibold text-slate-900">
+                  Slug URL (Lien personnalisé)
+                </Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={generatingSlug}
+                  onClick={handleGenerateRandomSlug}
+                  className="h-7 px-2.5 text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 gap-1.5 rounded-lg border-slate-200 bg-white shadow-2xs transition-all"
+                  title="Générer un code aléatoire de 4 caractères unique (vérifié)"
+                >
+                  <Shuffle className={cn("h-3.5 w-3.5 text-mq-ink shrink-0", generatingSlug && "animate-spin")} />
+                  <span>Aléatoire (4 car.)</span>
+                </Button>
+              </div>
+
+              <div className="relative flex items-center">
+                <Input
+                  id="slug"
+                  name="slug"
+                  value={slug}
+                  onChange={(e) => setSlug(slugify(e.target.value))}
+                  placeholder="ex: a7k9"
+                  className="pr-10 font-mono text-sm uppercase tracking-wider"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={generatingSlug}
+                  onClick={handleGenerateRandomSlug}
+                  className="absolute right-1 h-8 w-8 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg"
+                  title="Générer un slug aléatoire unique"
+                >
+                  <Shuffle className={cn("h-4 w-4", generatingSlug && "animate-spin")} />
+                </Button>
+              </div>
+
+              <p className="font-mono text-xs text-muted-foreground flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span>URL scannée :</span>
+                <span className="font-bold text-slate-800 bg-slate-100/90 px-2 py-0.5 rounded border border-slate-200/80">
+                  /{previewSlug}
+                </span>
+                {slug.length === 4 ? (
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200/60 ml-1">
+                    ✓ Code court unique (4 car.)
+                  </span>
+                ) : null}
               </p>
             </div>
           </div>

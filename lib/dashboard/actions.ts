@@ -3,10 +3,11 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { slugify } from '@/lib/dashboard/utils'
+import { generateRandomSlug, slugify } from '@/lib/dashboard/utils'
 import {
   createLandingPage,
   deleteLandingPage,
+  getLandingPageBySlugAny,
   updateLandingPage,
 } from '@/lib/payload'
 import type { DpeRating, LandingPageInput, LandingPageVertical } from '@/types/landing-page'
@@ -16,6 +17,24 @@ async function requireAuth() {
   if (!(await isAuthenticated())) {
     throw new Error('Non autorisé')
   }
+}
+
+export async function generateUniqueSlugAction(): Promise<string> {
+  let slug = generateRandomSlug(4)
+  let isUnique = false
+  let attempts = 0
+
+  while (!isUnique && attempts < 30) {
+    const existing = await getLandingPageBySlugAny(slug)
+    if (!existing) {
+      isUnique = true
+      break
+    }
+    slug = generateRandomSlug(4)
+    attempts++
+  }
+
+  return slug
 }
 
 export type QrCodeFormState = {
