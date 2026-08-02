@@ -103,14 +103,14 @@ export function AuthShell({
                     <FadeIn delay={120}>
                       <Text style={styles.eyebrow}>Tableau de bord</Text>
                       <Text style={styles.heroTitle}>
-                        Un QR.{'\n'}
-                        <Text style={styles.heroSignal}>Tous les métiers.</Text>
+                        Des QR codes{'\n'}
+                        <Text style={styles.heroSignal}>pour chaque usage.</Text>
                         {'\n'}
-                        <Text style={styles.heroCoral}>Zéro friction.</Text>
+                        <Text style={styles.heroCoral}>Facile et rapide.</Text>
                       </Text>
                       <Text style={styles.heroDesc}>
-                        Gérez vos landings multi-métiers — contenu dynamique, marque blanche, stats
-                        en un clin d’œil.
+                        Créez, personnalisez et exportez en quelques clics — ou publiez une Smart
+                        Page dynamique.
                       </Text>
                     </FadeIn>
 

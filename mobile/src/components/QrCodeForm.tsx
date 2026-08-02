@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
 } from 'react-native'
 import * as Clipboard from 'expo-clipboard'
+import { Link } from 'expo-router'
 import {
   ArrowUpRight,
   Box,
@@ -277,39 +278,63 @@ export function QrCodeForm({
   return (
     <View style={[styles.wrap, wide && styles.wrapWide]}>
       <View style={[styles.main, wide && { flex: 1.4 }]}>
-        <View style={styles.modeRow}>
-          <Pressable
-            onPress={() => switchMode('static')}
-            style={[styles.modeBtn, mode === 'static' && styles.modeBtnActive]}
-          >
-            <QrCode size={15} color={mode === 'static' ? colors.white : colors.slate700} />
-            <Text style={[styles.modeBtnText, mode === 'static' && styles.modeBtnTextActive]}>
-              Statique
+        {guestMode ? (
+          <>
+            <View style={styles.guestModeBanner}>
+              <QrCode size={16} color={colors.signal} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={styles.guestModeTitle}>QR statique — prêt à exporter</Text>
+                <Text style={styles.guestModeHint}>
+                  Contenu figé dans le code · Wi‑Fi, vCard, lien, texte…
+                </Text>
+              </View>
+            </View>
+            <View style={styles.smartUpsell}>
+              <View style={styles.smartUpsellIcon}>
+                <Sparkles size={16} color={colors.ink} />
+              </View>
+              <View style={{ flex: 1, gap: 4 }}>
+                <Text style={styles.smartUpsellTitle}>Besoin d’une Smart Page ?</Text>
+                <Text style={styles.smartUpsellText}>
+                  URL dynamique, contenu éditable, analytics — disponible après connexion.
+                </Text>
+              </View>
+              <Link href="/register" asChild>
+                <Pressable style={styles.smartUpsellCta}>
+                  <Text style={styles.smartUpsellCtaText}>Créer un compte</Text>
+                </Pressable>
+              </Link>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.modeRow}>
+              <Pressable
+                onPress={() => switchMode('static')}
+                style={[styles.modeBtn, mode === 'static' && styles.modeBtnActive]}
+              >
+                <QrCode size={15} color={mode === 'static' ? colors.white : colors.slate700} />
+                <Text style={[styles.modeBtnText, mode === 'static' && styles.modeBtnTextActive]}>
+                  Statique
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => switchMode('smart')}
+                style={[styles.modeBtn, mode === 'smart' && styles.modeBtnActive]}
+              >
+                <Sparkles size={15} color={mode === 'smart' ? colors.white : colors.slate700} />
+                <Text style={[styles.modeBtnText, mode === 'smart' && styles.modeBtnTextActive]}>
+                  Smart Page
+                </Text>
+              </Pressable>
+            </View>
+            <Text style={styles.modeHint}>
+              {mode === 'static'
+                ? 'Contenu figé dans le QR — idéal Wi-Fi, vCard, lien direct.'
+                : 'Landing éditable + analytics — destination modifiable sans réimprimer.'}
             </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => switchMode('smart')}
-            style={[styles.modeBtn, mode === 'smart' && styles.modeBtnActive]}
-          >
-            <Sparkles size={15} color={mode === 'smart' ? colors.white : colors.slate700} />
-            <Text style={[styles.modeBtnText, mode === 'smart' && styles.modeBtnTextActive]}>
-              Smart Page
-            </Text>
-          </Pressable>
-        </View>
-        <Text style={styles.modeHint}>
-          {mode === 'static'
-            ? 'Contenu figé dans le QR — idéal Wi-Fi, vCard, lien direct.'
-            : guestMode
-              ? 'Landing éditable + analytics — créez un compte pour publier.'
-              : 'Landing éditable + analytics — destination modifiable sans réimprimer.'}
-        </Text>
-        {guestMode && mode === 'smart' ? (
-          <Text style={styles.guestHint}>
-            Mode invité : l’export PNG fonctionne tout de suite. La publication Smart Page
-            nécessite un compte.
-          </Text>
-        ) : null}
+          </>
+        )}
 
         <View style={styles.steps}>
           {steps.map((s, index) => {
@@ -423,7 +448,7 @@ export function QrCodeForm({
               <Button
                 label={exporting ? 'Export…' : 'Télécharger PNG'}
                 loading={exporting}
-                onPress={() => void handleExportPng()}
+                onPress={() => void handleExport('png')}
               />
             ) : (
               <Button label={submitLabel} loading={saving} onPress={() => void handleSubmit()} />
@@ -793,6 +818,45 @@ const styles = StyleSheet.create({
   modeBtnText: { fontSize: 14, fontWeight: '700', color: colors.slate700 },
   modeBtnTextActive: { color: colors.white },
   modeHint: { fontSize: 12, color: colors.slate500, lineHeight: 17, marginTop: -4 },
+  guestModeBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    backgroundColor: colors.white,
+  },
+  guestModeTitle: { fontSize: 14, fontWeight: '700', color: colors.ink },
+  guestModeHint: { fontSize: 12, color: colors.slate500, lineHeight: 16 },
+  smartUpsell: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(18, 196, 168, 0.35)',
+    backgroundColor: 'rgba(18, 196, 168, 0.08)',
+  },
+  smartUpsellIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.signal,
+  },
+  smartUpsellTitle: { fontSize: 13, fontWeight: '700', color: colors.ink },
+  smartUpsellText: { fontSize: 12, color: colors.slate600, lineHeight: 16 },
+  smartUpsellCta: {
+    borderRadius: 10,
+    backgroundColor: colors.ink,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  smartUpsellCtaText: { fontSize: 12, fontWeight: '700', color: colors.white },
   guestHint: {
     fontSize: 12,
     color: colors.signal,

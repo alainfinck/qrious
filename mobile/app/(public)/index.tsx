@@ -32,8 +32,8 @@ export default function PublicEditorScreen() {
         <View style={styles.intro}>
           <Text style={styles.title}>Éditeur QR</Text>
           <Text style={styles.subtitle}>
-            Même éditeur que l’app — design, contenu, export. Publiez une Smart Page après
-            connexion.
+            Créez et exportez un QR statique gratuitement. Connectez-vous pour publier une Smart
+            Page dynamique.
           </Text>
         </View>
         <QrCodeForm
