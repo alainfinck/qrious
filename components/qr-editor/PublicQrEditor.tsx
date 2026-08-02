@@ -122,8 +122,8 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                 Sélectionnez le format statique direct ou une Landing Page Métier dynamique.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-mq-ink/5 px-2.5 py-1 text-xs font-semibold text-mq-ink">
-              <QrCode className="h-4 w-4" /> Universel
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
+              <QrCode className="h-4 w-4 text-slate-600" /> Universel
             </span>
           </div>
 
@@ -131,13 +131,13 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
             <TabsList className="grid w-full grid-cols-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
               <TabsTrigger
                 value="static"
-                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
               >
                 Codes Statiques Directs
               </TabsTrigger>
               <TabsTrigger
                 value="smart"
-                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-mq-signal data-[state=active]:shadow-md transition-all"
+                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
               >
                 ✨ Smart QR Pages (Métiers)
               </TabsTrigger>
@@ -157,7 +157,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                       className={cn(
                         'group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all',
                         active
-                          ? 'border-mq-ink bg-mq-ink text-white shadow-md ring-2 ring-mq-ink/30'
+                          ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 shadow-xs ring-2 ring-slate-900/10'
                           : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50',
                       )}
                     >
@@ -165,13 +165,13 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                         <span
                           className={cn(
                             'flex h-7 w-7 items-center justify-center rounded-lg transition-colors',
-                            active ? 'bg-mq-signal/20 text-mq-signal' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
+                            active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
                           )}
                         >
                           <Icon className="h-4 w-4" />
                         </span>
                         {active && (
-                          <span className="h-2 w-2 rounded-full bg-mq-signal animate-pulse" />
+                          <span className="h-2 w-2 rounded-full bg-slate-900 animate-pulse" />
                         )}
                       </div>
                       <div>
@@ -179,7 +179,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                         <div
                           className={cn(
                             'mt-1 text-[11px] leading-tight line-clamp-2',
-                            active ? 'text-white/80' : 'text-slate-500',
+                            active ? 'text-slate-600 font-medium' : 'text-slate-500',
                           )}
                         >
                           {opt.description}
@@ -205,7 +205,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                       className={cn(
                         'group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all',
                         active
-                          ? 'border-mq-ink bg-mq-ink text-white shadow-md ring-2 ring-mq-ink/30'
+                          ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 shadow-xs ring-2 ring-slate-900/10'
                           : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/90',
                       )}
                     >
@@ -213,7 +213,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                         <span
                           className={cn(
                             'flex h-7 w-7 items-center justify-center rounded-lg transition-colors',
-                            active ? 'bg-mq-signal/20 text-mq-signal' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
+                            active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
                           )}
                         >
                           <Icon className="h-4 w-4" />
@@ -221,7 +221,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                         <span
                           className={cn(
                             'text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                            active ? 'bg-mq-coral text-mq-ink' : 'bg-slate-100 text-slate-500',
+                            active ? 'bg-slate-200 text-slate-900' : 'bg-slate-100 text-slate-500',
                           )}
                         >
                           Page
@@ -232,7 +232,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                         <div
                           className={cn(
                             'mt-1 text-[11px] leading-tight line-clamp-2',
-                            active ? 'text-white/80' : 'text-slate-500',
+                            active ? 'text-slate-600 font-medium' : 'text-slate-500',
                           )}
                         >
                           {opt.description}
@@ -251,7 +251,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
           <div className="mb-5 flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-slate-900">
-                2. Données encodées : <span className="text-mq-ink">{currentConfig?.label}</span>
+                2. Données encodées : <span className="text-slate-900 font-bold">{currentConfig?.label}</span>
               </h2>
               <p className="text-sm text-slate-500">{currentConfig?.description}</p>
             </div>
@@ -278,8 +278,8 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-lg font-semibold text-slate-900">Aperçu en direct</h2>
             {isSmart && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-mq-coral/15 px-2.5 py-0.5 text-xs font-semibold text-mq-ink">
-                <Sparkles className="h-3.5 w-3.5 text-mq-coral" /> Dynamic Page
+              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-semibold text-slate-800">
+                <Sparkles className="h-3.5 w-3.5 text-slate-700" /> Dynamic Page
               </span>
             )}
           </div>
@@ -294,7 +294,7 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
           <div className="mt-5 grid gap-2">
             <Button
               type="button"
-              className="bg-mq-ink text-white hover:bg-mq-ink-soft h-11 text-sm font-semibold rounded-xl"
+              className="bg-slate-900 text-white hover:bg-slate-800 h-11 text-sm font-semibold rounded-xl transition-all shadow-xs"
               disabled={!ready}
               onClick={downloadPng}
             >
@@ -321,15 +321,15 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
 
           {/* Banner d'encouragement pour les Smart Landing Pages */}
           {isSmart ? (
-            <div className="rounded-xl border border-mq-coral/30 bg-gradient-to-br from-mq-coral/5 to-mq-sun/10 p-4 text-sm text-slate-700 space-y-3">
-              <div className="flex items-center gap-2 text-mq-ink font-semibold">
-                <Sparkles className="h-4 w-4 text-mq-coral" />
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 space-y-3">
+              <div className="flex items-center gap-2 text-slate-900 font-semibold">
+                <Sparkles className="h-4 w-4 text-slate-700" />
                 Landing Page {currentConfig?.label}
               </div>
               <p className="text-xs leading-relaxed text-slate-600">
                 Vous créez un QR Code pour <strong>{currentConfig?.label}</strong>. Publiez une page responsive complète dédiée sans coder. Vous pourrez mettre à jour le contenu et suivre les scans en temps réel sans réimprimer le QR code !
               </p>
-              <Button asChild size="sm" className="w-full rounded-xl bg-gradient-to-r from-mq-coral to-mq-sun font-semibold text-mq-ink hover:opacity-90">
+              <Button asChild size="sm" className="w-full rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition-all">
                 <Link href={`/dashboard/new?vertical=${contentType}`}>
                   Publier ma page complète (Gratuit)
                   <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
@@ -337,12 +337,12 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
               </Button>
             </div>
           ) : (
-            <div className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600 space-y-2">
+            <div className="rounded-xl bg-slate-50 border border-slate-200/60 p-4 text-sm text-slate-600 space-y-2">
               <p className="font-medium text-slate-900">Passez au QR Code Dynamique !</p>
               <p className="text-xs leading-relaxed text-slate-600">
                 Un QR statique ne peut plus être modifié une fois imprimé. Avec QRious, créez des QR dynamiques rééditables avec analytics complets.
               </p>
-              <Button asChild size="sm" className="w-full mt-2 rounded-xl bg-mq-ink text-white hover:bg-mq-ink-soft">
+              <Button asChild size="sm" className="w-full mt-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-all">
                 <Link href="/demo">Découvrir le Dashboard</Link>
               </Button>
             </div>

@@ -166,9 +166,9 @@ export default function FeaturesPage() {
                     gradientColor="#0f9f8a14"
                     gradientOpacity={0.45}
                   >
-                    <div className="flex h-full flex-col gap-3 p-6">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-mq-ink text-white">
-                        <feature.icon className="h-5 w-5" />
+                    <div className="flex h-full flex-col gap-4 p-7">
+                      <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-mq-signal/20 border border-mq-signal/30 text-mq-ink shadow-sm">
+                        <feature.icon className="h-7 w-7" />
                       </span>
                       <h3 className="font-display text-lg font-semibold text-mq-ink">
                         {feature.title}

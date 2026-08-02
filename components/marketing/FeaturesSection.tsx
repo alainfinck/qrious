@@ -51,7 +51,7 @@ const features = [
     title: 'Gestion centralisée',
     description:
       'Tous vos QR codes dans un tableau de bord unique. Statut brouillon ou publié en un clic.',
-    iconBg: 'bg-mq-ink text-mq-signal',
+    iconBg: 'bg-mq-signal/20 text-mq-ink border border-mq-signal/30',
     from: '#12c4a8',
     to: '#ffc53d',
     wash: '#12c4a816',
@@ -61,7 +61,7 @@ const features = [
     title: 'Pensé pour le mobile',
     description:
       'Design type link-in-bio, optimisé pour le scan smartphone. Rapide, lisible, élégant.',
-    iconBg: 'bg-[#1a3a55] text-mq-sky',
+    iconBg: 'bg-mq-sky/20 text-mq-ink border border-mq-sky/30',
     from: '#3dbbff',
     to: '#ff5c4d',
     wash: '#3dbbff18',
@@ -110,11 +110,11 @@ export function FeaturesSection() {
                 gradientOpacity={0.55}
                 gradientSize={280}
               >
-                <div className="flex h-full flex-col gap-4 p-6">
+                <div className="flex h-full flex-col gap-4 p-7">
                   <span
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${feature.iconBg}`}
+                    className={`flex h-13 w-13 items-center justify-center rounded-2xl shadow-sm ${feature.iconBg}`}
                   >
-                    <feature.icon className="h-5 w-5" />
+                    <feature.icon className="h-7 w-7" />
                   </span>
                   <h3 className="font-display text-xl font-semibold text-mq-ink">{feature.title}</h3>
                   <p className="text-sm leading-relaxed text-mq-muted">{feature.description}</p>

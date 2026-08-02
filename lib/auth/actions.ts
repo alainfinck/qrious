@@ -25,6 +25,7 @@ function validatePassword(password: string): string | null {
 export async function loginAction(formData: FormData): Promise<AuthActionResult | void> {
   const email = normalizeEmail(String(formData.get('email') ?? ''))
   const password = String(formData.get('password') ?? '')
+  const redirectTo = String(formData.get('redirectTo') ?? '').trim()
 
   if (!email || !password) {
     return { error: 'E-mail et mot de passe requis' }
@@ -41,7 +42,8 @@ export async function loginAction(formData: FormData): Promise<AuthActionResult 
     return { error: 'E-mail ou mot de passe incorrect' }
   }
 
-  redirect('/dashboard')
+  const target = redirectTo && redirectTo.startsWith('/dashboard') ? redirectTo : '/dashboard'
+  redirect(target)
 }
 
 export async function logoutAction(): Promise<void> {
@@ -57,6 +59,7 @@ export async function registerAction(formData: FormData): Promise<AuthActionResu
   const email = normalizeEmail(String(formData.get('email') ?? ''))
   const password = String(formData.get('password') ?? '')
   const confirmPassword = String(formData.get('confirmPassword') ?? '')
+  const redirectTo = String(formData.get('redirectTo') ?? '').trim()
 
   if (!email || !password) {
     return { error: 'E-mail et mot de passe requis' }
@@ -111,7 +114,8 @@ export async function registerAction(formData: FormData): Promise<AuthActionResu
     redirect('/dashboard/login?registered=1')
   }
 
-  redirect('/dashboard')
+  const target = redirectTo && redirectTo.startsWith('/dashboard') ? redirectTo : '/dashboard'
+  redirect(target)
 }
 
 export async function forgotPasswordAction(formData: FormData): Promise<AuthActionResult> {

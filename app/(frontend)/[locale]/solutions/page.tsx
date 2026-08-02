@@ -238,10 +238,10 @@ export default function SolutionsPage() {
                       <div className="space-y-6">
                         <div className="flex items-center justify-between">
                           <span
-                            className="flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-md"
+                            className="flex h-13 w-13 items-center justify-center rounded-2xl text-white shadow-md transition-transform duration-300 group-hover:scale-105"
                             style={{ backgroundColor: v.accentColor }}
                           >
-                            <Icon className="h-6 w-6" />
+                            <Icon className="h-7 w-7" />
                           </span>
                           <span className="text-xs font-bold text-mq-ink bg-mq-mist px-3 py-1 rounded-full border border-mq-ink/10">
                             {v.badge}

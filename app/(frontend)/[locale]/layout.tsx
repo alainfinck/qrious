@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Bricolage_Grotesque, Figtree } from 'next/font/google'
 
-import '../globals.css'
+import '@/app/globals.css'
 
 const display = Bricolage_Grotesque({
   subsets: ['latin'],
@@ -31,7 +31,8 @@ export const metadata: Metadata = {
 import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 import {notFound} from 'next/navigation';
-import {routing} from '@/i18n/routing';
+import {routing} from '@/src/i18n/routing';
+import { ScrollToTop } from '@/components/ui/scroll-to-top'
 
 export default async function FrontendLayout({ 
   children,
@@ -53,6 +54,7 @@ export default async function FrontendLayout({
       <body className="font-body antialiased">
         <NextIntlClientProvider messages={messages}>
           {children}
+          <ScrollToTop />
         </NextIntlClientProvider>
       </body>
     </html>

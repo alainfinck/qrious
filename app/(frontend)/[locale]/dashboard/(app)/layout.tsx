@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import { DashboardShell } from '@/components/dashboard/DashboardShell'
@@ -13,8 +14,12 @@ export default async function DashboardAppLayout({ children }: { children: React
   const authenticated = await isAuthenticated()
 
   if (!authenticated) {
-    redirect('/dashboard/login')
+    const headersList = await headers()
+    const rawPath = headersList.get('x-pathname') || '/dashboard'
+    const normalizedPath = rawPath.replace(/^\/(fr|en|de|it|es|pl)/, '') || '/dashboard'
+    redirect(`/dashboard/login?redirectTo=${encodeURIComponent(normalizedPath)}`)
   }
 
   return <DashboardShell>{children}</DashboardShell>
 }
+

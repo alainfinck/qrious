@@ -242,13 +242,13 @@ export function ShapeButton({ selected, label, onClick, children }: ShapeButtonP
       aria-label={label}
       aria-pressed={selected}
       className={cn(
-        'flex flex-col items-center gap-1.5 rounded-xl border p-2 text-slate-600 transition-colors',
+        'flex flex-col items-center gap-1.5 rounded-xl border p-2 text-slate-600 transition-all',
         selected
-          ? 'border-slate-900 bg-slate-900 text-white'
-          : 'border-slate-200 bg-white hover:border-slate-300 hover:text-slate-900',
+          ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 shadow-xs ring-2 ring-slate-900/10'
+          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 hover:bg-slate-50',
       )}
     >
-      <span className={cn(selected ? 'text-white' : 'text-slate-700')}>{children}</span>
+      <span className={cn(selected ? 'text-slate-900 font-bold' : 'text-slate-700')}>{children}</span>
       <span className="max-w-[4.5rem] truncate text-[10px] font-medium leading-tight">{label}</span>
     </button>
   )
@@ -367,9 +367,9 @@ export function MiniQrMatrix({
 }
 
 export function FrameStyleIcon({ style, selected }: { style: QrFrameStyle; selected: boolean }) {
-  const fg = selected ? '#ffffff' : '#0f172a'
-  const bg = selected ? '#334155' : '#f1f5f9'
-  const accent = selected ? '#38bdf8' : '#ea580c'
+  const fg = '#0f172a'
+  const bg = '#ffffff'
+  const accent = selected ? '#0f172a' : '#475569'
 
   switch (style) {
     case 'none':

@@ -89,7 +89,7 @@ export const DEFAULT_QR_STYLE: QrStyle = {
   
   frameStyle: 'none',
   frameText: 'SCAN ME',
-  frameColor: '#ea580c', // Tailwind orange-600 as default
+  frameColor: '#0f172a', // Sober dark slate
   frameTextColor: '#ffffff',
 }
 
@@ -122,8 +122,8 @@ export const CORNER_DOT_OPTIONS: { value: QrCornerDotStyle; label: string }[] = 
   { value: 'extra-rounded', label: 'Très arrondi' },
 ]
 
-export const FG_PRESETS = ['#0f172a', '#1e3a5f', '#0f766e', '#b45309', '#9f1239', '#5b21b6']
-export const BG_PRESETS = ['#ffffff', '#f8fafc', '#fef3c7', '#ecfeff', '#fce7f3', '#f1f5f9']
+export const FG_PRESETS = ['#0f172a', '#1e293b', '#334155', '#1e3a5f', '#0f766e', '#4338ca', '#312e81', '#7c2d12']
+export const BG_PRESETS = ['#ffffff', '#f8fafc', '#f1f5f9', '#fef3c7', '#ecfeff', '#fce7f3']
 
 export const SIZE_OPTIONS = [256, 512, 1024, 2048] as const
 

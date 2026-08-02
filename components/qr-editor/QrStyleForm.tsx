@@ -185,25 +185,25 @@ export function QrStyleForm({
       <TabsList className="grid w-full grid-cols-4 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
         <TabsTrigger
           value="frame"
-          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
         >
           Cadre
         </TabsTrigger>
         <TabsTrigger
           value="shapes"
-          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
         >
           Formes
         </TabsTrigger>
         <TabsTrigger
           value="colors"
-          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
         >
           Couleurs
         </TabsTrigger>
         <TabsTrigger
           value="logo"
-          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-mq-ink data-[state=active]:text-white data-[state=active]:shadow-md transition-all"
+          className="rounded-lg py-2 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
         >
           Logo & Options
         </TabsTrigger>
@@ -226,12 +226,12 @@ export function QrStyleForm({
                   className={cn(
                     'flex flex-col items-center justify-center gap-2 rounded-xl border p-3 text-center transition-all',
                     selected
-                      ? 'border-mq-ink bg-mq-ink text-white shadow-md ring-2 ring-mq-ink/30'
+                      ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 shadow-xs ring-2 ring-slate-900/10'
                       : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50',
                   )}
                 >
                   <FrameStyleIcon style={opt.value} selected={selected} />
-                  <span className="text-xs font-semibold leading-tight">{opt.label}</span>
+                  <span className={cn('text-xs leading-tight', selected ? 'font-bold text-slate-900' : 'font-medium text-slate-700')}>{opt.label}</span>
                 </button>
               )
             })}
@@ -302,10 +302,10 @@ export function QrStyleForm({
                 type="button"
                 onClick={() => patch({ shape: opt.value })}
                 className={cn(
-                  'flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors',
+                  'flex-1 rounded-xl border px-3 py-2.5 text-sm transition-all',
                   value.shape === opt.value
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
+                    ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 font-bold shadow-xs ring-2 ring-slate-900/10'
+                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50',
                 )}
               >
                 {opt.label}

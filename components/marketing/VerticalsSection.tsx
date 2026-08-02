@@ -120,11 +120,11 @@ export function VerticalsSection() {
                 {vertical.pattern}
 
                 <div className="relative mt-auto space-y-4 bg-gradient-to-t from-black/85 via-black/45 to-transparent p-7 pt-24">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3.5">
                     <span
-                      className={`flex h-9 w-9 items-center justify-center rounded-lg ${vertical.accent} text-mq-ink`}
+                      className={`flex h-12 w-12 items-center justify-center rounded-2xl shadow-md ${vertical.accent} text-mq-ink`}
                     >
-                      <vertical.icon className="h-4 w-4" />
+                      <vertical.icon className="h-6 w-6" />
                     </span>
                     <h3 className="font-display text-xl font-semibold">{vertical.label}</h3>
                     <ArrowUpRight className="ml-auto h-5 w-5 text-white/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-mq-sun" />
