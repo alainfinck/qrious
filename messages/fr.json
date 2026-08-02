@@ -69,6 +69,11 @@
         "label": "Démo Interactive",
         "description": "Testez la solution QRious en temps réel",
         "badge": "Gratuit"
+      },
+      "scanner": {
+        "label": "Scanner un QR",
+        "description": "Lisez un QR depuis une image et voyez l’aperçu",
+        "badge": "Gratuit"
       }
     },
     "metierItems": {
@@ -147,7 +152,8 @@
     "linkLogin": "Se connecter",
     "linkDashboard": "Tableau de bord",
     "linkRegister": "Créer un compte",
-    "copyright": "© {year} QRious. Tous droits réservés."
+    "copyright": "© {year} QRious. Tous droits réservés.",
+    "linkScanner": "Scanner un QR"
   },
   "LanguageSwitcher": {
     "label": "Langue",
@@ -1098,5 +1104,46 @@
       "description": "Modifier le contenu et le statut de publication.",
       "submit": "Enregistrer"
     }
+  },
+  "Scanner": {
+    "metaTitle": "Scanner un QR code — QRious",
+    "metaDescription": "Déposez une image de QR code pour lire son contenu, prévisualiser la page et voir l’aperçu de partage social.",
+    "badge": "Outil gratuit",
+    "title": "Scanner un QR code",
+    "subtitle": "Déposez une capture ou une photo de QR code. On lit le contenu, on ouvre l’aperçu mobile et les métadonnées Open Graph.",
+    "dropTitle": "Déposer une image de QR code",
+    "dropActive": "Relâchez pour analyser",
+    "dropHint": "PNG, JPG, WebP — ou cliquez pour parcourir",
+    "decoding": "Lecture du QR…",
+    "errorNotImage": "Choisissez une image (PNG, JPG, WebP…).",
+    "errorNoQr": "Aucun QR code détecté dans cette image.",
+    "errorDecode": "Impossible de lire l’image.",
+    "errorCopy": "Impossible de copier dans le presse-papiers.",
+    "scannedBadge": "QR scanné",
+    "payloadLabel": "Contenu",
+    "kindUrl": "URL",
+    "kindWifi": "Wi-Fi",
+    "kindVcard": "Contact (vCard)",
+    "kindEmail": "E-mail",
+    "kindPhone": "Téléphone",
+    "kindSms": "SMS",
+    "kindGeo": "Géolocalisation",
+    "kindText": "Texte",
+    "clientPreview": "Aperçu client",
+    "ogTitle": "Partage social (OG)",
+    "ogLoading": "Lecture des métadonnées…",
+    "ogNoImage": "Pas d’image OG",
+    "ogUntitled": "Sans titre",
+    "ogNoDescription": "Aucune description Open Graph",
+    "ogEmpty": "Aucune métadonnée disponible",
+    "ogFetchError": "Impossible de récupérer les métadonnées",
+    "openLink": "Ouvrir le lien",
+    "copy": "Copier",
+    "copied": "Copié",
+    "scanAgain": "Scanner à nouveau",
+    "ctaTitle": "Créez vos propres QR dynamiques",
+    "ctaSubtitle": "Éditez la destination sans réimprimer — Smart Pages, stats et marque blanche.",
+    "ctaCreate": "Créer un QR code",
+    "ctaDashboard": "Ouvrir le dashboard"
   }
 }

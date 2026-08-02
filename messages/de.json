@@ -69,6 +69,11 @@
         "label": "Interaktive Demo",
         "description": "Testen Sie die QRious-Lösung in Echtzeit",
         "badge": "Kostenlos"
+      },
+      "scanner": {
+        "label": "QR scannen",
+        "description": "QR aus Bild lesen und Seite vorschauen",
+        "badge": "Gratis"
       }
     },
     "metierItems": {
@@ -147,7 +152,8 @@
     "linkLogin": "Anmelden",
     "linkDashboard": "Dashboard",
     "linkRegister": "Konto erstellen",
-    "copyright": "© {year} QRious. Alle Rechte vorbehalten."
+    "copyright": "© {year} QRious. Alle Rechte vorbehalten.",
+    "linkScanner": "QR scannen"
   },
   "LanguageSwitcher": {
     "label": "Sprache",
@@ -1098,5 +1104,46 @@
       "description": "Inhalt und Veröffentlichungsstatus bearbeiten.",
       "submit": "Speichern"
     }
+  },
+  "Scanner": {
+    "metaTitle": "QR-Code scannen — QRious",
+    "metaDescription": "Laden Sie ein QR-Bild hoch, um den Inhalt zu lesen, die Seite vorzuschauen und die Social-Card zu sehen.",
+    "badge": "Kostenloses Tool",
+    "title": "QR-Code scannen",
+    "subtitle": "Ziehen Sie einen Screenshot oder ein Foto eines QR-Codes hierher. Wir lesen den Inhalt, zeigen die mobile Vorschau und Open-Graph-Metadaten.",
+    "dropTitle": "QR-Bild ablegen",
+    "dropActive": "Loslassen zum Analysieren",
+    "dropHint": "PNG, JPG, WebP — oder klicken zum Auswählen",
+    "decoding": "QR wird gelesen…",
+    "errorNotImage": "Bitte ein Bild wählen (PNG, JPG, WebP…).",
+    "errorNoQr": "In diesem Bild wurde kein QR-Code gefunden.",
+    "errorDecode": "Bild konnte nicht gelesen werden.",
+    "errorCopy": "Kopieren in die Zwischenablage fehlgeschlagen.",
+    "scannedBadge": "QR gescannt",
+    "payloadLabel": "Inhalt",
+    "kindUrl": "URL",
+    "kindWifi": "Wi-Fi",
+    "kindVcard": "Kontakt (vCard)",
+    "kindEmail": "E-Mail",
+    "kindPhone": "Telefon",
+    "kindSms": "SMS",
+    "kindGeo": "Geolokalisierung",
+    "kindText": "Text",
+    "clientPreview": "Kundenvorschau",
+    "ogTitle": "Social Share (OG)",
+    "ogLoading": "Metadaten werden gelesen…",
+    "ogNoImage": "Kein OG-Bild",
+    "ogUntitled": "Ohne Titel",
+    "ogNoDescription": "Keine Open-Graph-Beschreibung",
+    "ogEmpty": "Keine Metadaten verfügbar",
+    "ogFetchError": "Metadaten konnten nicht geladen werden",
+    "openLink": "Link öffnen",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "scanAgain": "Erneut scannen",
+    "ctaTitle": "Erstellen Sie eigene dynamische QR-Codes",
+    "ctaSubtitle": "Ziel ändern ohne Nachdruck — Smart Pages, Stats und White Label.",
+    "ctaCreate": "QR-Code erstellen",
+    "ctaDashboard": "Dashboard öffnen"
   }
 }

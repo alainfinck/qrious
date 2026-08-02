@@ -69,6 +69,11 @@
         "label": "Interaktywne demo",
         "description": "Przetestuj rozwiązanie QRious w czasie rzeczywistym",
         "badge": "Bezpłatne"
+      },
+      "scanner": {
+        "label": "Skanuj QR",
+        "description": "Odczytaj QR z obrazu i zobacz podgląd",
+        "badge": "Za darmo"
       }
     },
     "metierItems": {
@@ -147,7 +152,8 @@
     "linkLogin": "Zaloguj się",
     "linkDashboard": "Panel",
     "linkRegister": "Utwórz konto",
-    "copyright": "© {year} QRious. Wszelkie prawa zastrzeżone."
+    "copyright": "© {year} QRious. Wszelkie prawa zastrzeżone.",
+    "linkScanner": "Skanuj QR"
   },
   "LanguageSwitcher": {
     "label": "Język",
@@ -1098,5 +1104,46 @@
       "description": "Edytuj treść i status publikacji.",
       "submit": "Zapisz"
     }
+  },
+  "Scanner": {
+    "metaTitle": "Skanuj kod QR — QRious",
+    "metaDescription": "Upuść obraz kodu QR, aby odczytać treść, podgląd strony i kartę udostępniania.",
+    "badge": "Darmowe narzędzie",
+    "title": "Skanuj kod QR",
+    "subtitle": "Upuść zrzut lub zdjęcie kodu QR. Odczytamy treść, pokażemy podgląd mobilny i metadane Open Graph.",
+    "dropTitle": "Upuść obraz kodu QR",
+    "dropActive": "Puść, aby przeanalizować",
+    "dropHint": "PNG, JPG, WebP — lub kliknij, aby wybrać",
+    "decoding": "Odczytywanie QR…",
+    "errorNotImage": "Wybierz obraz (PNG, JPG, WebP…).",
+    "errorNoQr": "Nie wykryto kodu QR na tym obrazie.",
+    "errorDecode": "Nie można odczytać obrazu.",
+    "errorCopy": "Nie można skopiować do schowka.",
+    "scannedBadge": "QR zeskanowany",
+    "payloadLabel": "Treść",
+    "kindUrl": "URL",
+    "kindWifi": "Wi-Fi",
+    "kindVcard": "Kontakt (vCard)",
+    "kindEmail": "E-mail",
+    "kindPhone": "Telefon",
+    "kindSms": "SMS",
+    "kindGeo": "Geolokalizacja",
+    "kindText": "Tekst",
+    "clientPreview": "Podgląd klienta",
+    "ogTitle": "Udostępnianie (OG)",
+    "ogLoading": "Odczyt metadanych…",
+    "ogNoImage": "Brak obrazu OG",
+    "ogUntitled": "Bez tytułu",
+    "ogNoDescription": "Brak opisu Open Graph",
+    "ogEmpty": "Brak dostępnych metadanych",
+    "ogFetchError": "Nie udało się pobrać metadanych",
+    "openLink": "Otwórz link",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano",
+    "scanAgain": "Skanuj ponownie",
+    "ctaTitle": "Twórz własne dynamiczne QR",
+    "ctaSubtitle": "Zmieniaj cel bez ponownego druku — Smart Pages, statystyki i white label.",
+    "ctaCreate": "Utwórz kod QR",
+    "ctaDashboard": "Otwórz dashboard"
   }
 }

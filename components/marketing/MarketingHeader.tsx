@@ -11,6 +11,7 @@ import {
   Menu,
   Palette,
   QrCode,
+  ScanLine,
   Sparkles,
   Wand2,
   X,
@@ -368,6 +369,14 @@ export function MarketingHeader() {
       icon: Sparkles,
       badge: t('productItems.demo.badge'),
       badgeTone: 'bg-sky-50 text-sky-700 border-sky-200',
+    },
+    {
+      href: '/scanner',
+      label: t('productItems.scanner.label'),
+      description: t('productItems.scanner.description'),
+      icon: ScanLine,
+      badge: t('productItems.scanner.badge'),
+      badgeTone: 'bg-emerald-50 text-emerald-700 border-emerald-200',
     },
   ]
 

@@ -12,7 +12,14 @@ export type OgPreview = {
 
 export async function fetchOgPreview(url: string): Promise<OgPreview> {
   const endpoint = `${getApiBaseUrl()}/api/og-preview?url=${encodeURIComponent(url)}`
-  const response = await fetch(endpoint)
+  let response: Response
+  try {
+    response = await fetch(endpoint)
+  } catch {
+    throw new Error(
+      `Impossible de joindre l’API (${getApiBaseUrl()}). Vérifiez que le serveur tourne.`,
+    )
+  }
   const data = (await response.json()) as OgPreview & { error?: string }
   if (!response.ok) {
     throw new Error(data.error || `Erreur ${response.status}`)

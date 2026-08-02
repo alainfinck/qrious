@@ -15,12 +15,17 @@ const RESERVED_SLUGS = new Set([
   'admin',
   'cms',
   'editeur',
+  'newqr',
   'features',
   'demo',
+  'scanner',
   'galeries',
   'about',
   'contact',
   'solutions',
+  'pricing',
+  'tarifs',
+  'generateur',
 ])
 
 function landingDescription(page: NonNullable<Awaited<ReturnType<typeof getLandingPageBySlug>>>): string {

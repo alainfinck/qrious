@@ -119,6 +119,11 @@ export function MarketingFooter() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/scanner" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
+                    {t('linkScanner')}
+                  </Link>
+                </li>
+                <li>
                   <Link href="/contact" className="transition-all duration-150 hover:text-mq-signal hover:translate-x-0.5 inline-block">
                     {t('linkContact')}
                   </Link>

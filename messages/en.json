@@ -69,6 +69,11 @@
         "label": "Interactive Demo",
         "description": "Try the QRious solution in real time",
         "badge": "Free"
+      },
+      "scanner": {
+        "label": "Scan a QR",
+        "description": "Read a QR from an image and preview the page",
+        "badge": "Free"
       }
     },
     "metierItems": {
@@ -147,7 +152,8 @@
     "linkLogin": "Log in",
     "linkDashboard": "Dashboard",
     "linkRegister": "Create an account",
-    "copyright": "© {year} QRious. All rights reserved."
+    "copyright": "© {year} QRious. All rights reserved.",
+    "linkScanner": "Scan a QR"
   },
   "LanguageSwitcher": {
     "label": "Language",
@@ -1098,5 +1104,46 @@
       "description": "Edit content and publication status.",
       "submit": "Save"
     }
+  },
+  "Scanner": {
+    "metaTitle": "Scan a QR code — QRious",
+    "metaDescription": "Drop a QR code image to read its content, preview the page, and see the social share card.",
+    "badge": "Free tool",
+    "title": "Scan a QR code",
+    "subtitle": "Drop a screenshot or photo of a QR code. We read the payload, show a mobile preview, and fetch Open Graph metadata.",
+    "dropTitle": "Drop a QR code image",
+    "dropActive": "Release to analyze",
+    "dropHint": "PNG, JPG, WebP — or click to browse",
+    "decoding": "Reading QR…",
+    "errorNotImage": "Choose an image (PNG, JPG, WebP…).",
+    "errorNoQr": "No QR code found in this image.",
+    "errorDecode": "Could not read the image.",
+    "errorCopy": "Could not copy to the clipboard.",
+    "scannedBadge": "QR scanned",
+    "payloadLabel": "Content",
+    "kindUrl": "URL",
+    "kindWifi": "Wi-Fi",
+    "kindVcard": "Contact (vCard)",
+    "kindEmail": "Email",
+    "kindPhone": "Phone",
+    "kindSms": "SMS",
+    "kindGeo": "Geolocation",
+    "kindText": "Text",
+    "clientPreview": "Client preview",
+    "ogTitle": "Social share (OG)",
+    "ogLoading": "Reading metadata…",
+    "ogNoImage": "No OG image",
+    "ogUntitled": "Untitled",
+    "ogNoDescription": "No Open Graph description",
+    "ogEmpty": "No metadata available",
+    "ogFetchError": "Could not fetch metadata",
+    "openLink": "Open link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "scanAgain": "Scan again",
+    "ctaTitle": "Create your own dynamic QR codes",
+    "ctaSubtitle": "Change the destination without reprinting — Smart Pages, stats, and white label.",
+    "ctaCreate": "Create a QR code",
+    "ctaDashboard": "Open dashboard"
   }
 }

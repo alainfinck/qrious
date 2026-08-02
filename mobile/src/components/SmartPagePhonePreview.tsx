@@ -141,8 +141,11 @@ const PHONE_W = 300
 const PHONE_H = 620
 /** borderWidth×2 + padding×2 */
 const PHONE_CHROME = 8 * 2 + 4 * 2
-/** Real phone CSS width so responsive pages layout as on mobile. */
+/** Real phone CSS size so responsive pages layout as on mobile. */
 const MOBILE_VIEWPORT_W = 390
+const MOBILE_VIEWPORT_H = 844
+/** Status bar + Dynamic Island band (frame px). */
+const SAFE_TOP = 44
 
 export function SmartPagePhonePreview({ state, liveUrl, preferLive = false }: Props) {
   const copy = useMemo(() => previewCopyFromState(state), [state])
@@ -151,23 +154,27 @@ export function SmartPagePhonePreview({ state, liveUrl, preferLive = false }: Pr
 
   const screenW = PHONE_W - PHONE_CHROME
   const screenH = PHONE_H - PHONE_CHROME
+  const contentH = screenH - SAFE_TOP
   const scale = screenW / MOBILE_VIEWPORT_W
-  const viewportH = screenH / scale
+  const viewportH = Math.max(MOBILE_VIEWPORT_H, Math.ceil(contentH / scale))
 
   return (
     <View style={styles.wrap} accessibilityLabel="Aperçu smartphone de la Smart Page">
       <View style={styles.phone}>
-        <View style={styles.islandRow} pointerEvents="none">
+        <View style={[styles.phoneSafeArea, { height: SAFE_TOP }]} pointerEvents="none">
           <View style={styles.dynamicIsland} />
         </View>
-        <View style={styles.screen}>
+        <View style={[styles.screen, { height: contentH }]}>
           {showLive ? (
-            <View style={styles.viewport}>
+            <View style={[styles.viewport, { width: screenW, height: contentH }]}>
               {/* @ts-expect-error iframe is web-only */}
               <iframe
                 title="Aperçu Smart Page"
                 src={liveUrl!}
                 style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
                   width: MOBILE_VIEWPORT_W,
                   height: viewportH,
                   border: 'none',
@@ -180,15 +187,6 @@ export function SmartPagePhonePreview({ state, liveUrl, preferLive = false }: Pr
             </View>
           ) : (
             <View style={[styles.page, { backgroundColor: '#F8FAFC' }]}>
-              <View style={styles.statusBar}>
-                <Text style={styles.statusTime}>9:41</Text>
-                <View style={styles.statusDots}>
-                  <View style={styles.statusDot} />
-                  <View style={styles.statusDot} />
-                  <View style={[styles.statusDot, { opacity: 0.4 }]} />
-                </View>
-              </View>
-
               <View style={[styles.hero, { backgroundColor: primary }]}>
                 <Text style={styles.eyebrow}>{copy.eyebrow}</Text>
                 <Text style={styles.heroTitle} numberOfLines={3}>
@@ -259,60 +257,42 @@ const styles = StyleSheet.create({
     borderColor: '#0F172A',
     backgroundColor: '#0F172A',
     padding: 4,
+    overflow: 'hidden',
     shadowColor: '#0F172A',
     shadowOpacity: 0.25,
     shadowRadius: 24,
     shadowOffset: { width: 0, height: 12 },
     elevation: 12,
   },
-  islandRow: {
-    position: 'absolute',
-    top: 14,
-    left: 0,
-    right: 0,
+  phoneSafeArea: {
+    width: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0F172A',
     zIndex: 2,
   },
   dynamicIsland: {
     width: 108,
-    height: 24,
+    height: 26,
     borderRadius: 14,
     backgroundColor: '#000',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
   },
   screen: {
-    flex: 1,
-    borderRadius: 32,
+    width: '100%',
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
     overflow: 'hidden',
     backgroundColor: colors.white,
   },
   viewport: {
-    flex: 1,
     overflow: 'hidden',
+    position: 'relative',
   },
   page: {
     flex: 1,
-  },
-  statusBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 32,
-    paddingBottom: 8,
-  },
-  statusTime: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.slate700,
-  },
-  statusDots: { flexDirection: 'row', gap: 4 },
-  statusDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: colors.slate700,
+    height: '100%',
   },
   hero: {
     paddingHorizontal: 20,

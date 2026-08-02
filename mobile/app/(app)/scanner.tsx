@@ -72,30 +72,38 @@ function hostnameOf(url: string): string {
   }
 }
 
-/** Real phone CSS width so responsive pages render as on mobile, then scaled into the frame. */
+/** Real phone CSS size so responsive pages render as on mobile, then scaled into the frame. */
 const MOBILE_VIEWPORT_W = 390
+const MOBILE_VIEWPORT_H = 844
+/** Status bar + Dynamic Island band inside the bezel (frame px). */
+const SAFE_TOP = 44
 
 function UrlPhonePreview({ url }: { url: string }) {
   const screenW = PHONE_W - PHONE_CHROME
   const screenH = PHONE_H - PHONE_CHROME
+  const contentH = screenH - SAFE_TOP
   const scale = screenW / MOBILE_VIEWPORT_W
-  const viewportH = screenH / scale
+  // Fill the content area under the safe-area band (cover height).
+  const viewportH = Math.max(MOBILE_VIEWPORT_H, Math.ceil(contentH / scale))
 
   return (
     <View style={styles.phoneWrap} accessibilityLabel="Aperçu client de la page">
       <Text style={styles.previewSectionLabel}>Aperçu client</Text>
       <View style={styles.phone}>
-        <View style={styles.islandRow} pointerEvents="none">
+        <View style={[styles.phoneSafeArea, { height: SAFE_TOP }]} pointerEvents="none">
           <View style={styles.dynamicIsland} />
         </View>
-        <View style={styles.phoneScreen}>
+        <View style={[styles.phoneScreen, { height: contentH }]}>
           {Platform.OS === 'web' ? (
-            <View style={styles.phoneViewport}>
+            <View style={[styles.phoneViewport, { width: screenW, height: contentH }]}>
               {/* @ts-expect-error iframe is web-only */}
               <iframe
                 title="Aperçu page scannée"
                 src={url}
                 style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
                   width: MOBILE_VIEWPORT_W,
                   height: viewportH,
                   border: 'none',
@@ -756,46 +764,45 @@ const styles = StyleSheet.create({
     borderColor: '#0F172A',
     backgroundColor: '#0F172A',
     padding: 3,
+    overflow: 'hidden',
     shadowColor: '#0F172A',
     shadowOpacity: 0.22,
     shadowRadius: 18,
     shadowOffset: { width: 0, height: 10 },
     elevation: 10,
   },
-  islandRow: {
-    position: 'absolute',
-    top: 14,
-    left: 0,
-    right: 0,
+  phoneSafeArea: {
+    width: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0F172A',
     zIndex: 2,
   },
   dynamicIsland: {
-    width: 100,
-    height: 22,
-    borderRadius: 12,
+    width: 96,
+    height: 26,
+    borderRadius: 14,
     backgroundColor: '#000',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
   },
   phoneScreen: {
-    flex: 1,
-    borderRadius: 32,
+    width: '100%',
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
     overflow: 'hidden',
     backgroundColor: colors.white,
   },
   phoneViewport: {
-    flex: 1,
     overflow: 'hidden',
+    position: 'relative',
   },
   phoneFallback: {
     flex: 1,
     padding: spacing.md,
-    paddingTop: 36,
     gap: spacing.sm,
     justifyContent: 'center',
-  },
-  phoneFallbackTitle: {
+  },  phoneFallbackTitle: {
     fontSize: 14,
     fontWeight: '800',
     color: colors.ink,
