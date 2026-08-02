@@ -267,6 +267,13 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
   }
   const [status, setStatus] = useState<'draft' | 'published'>(page?.status ?? 'draft')
   const [dpe, setDpe] = useState(page?.immoData?.dpe ?? '')
+  const initialRoutingMode = page?.smartRouting?.mode ?? 'none'
+  const [smartRoutingEnabled, setSmartRoutingEnabled] = useState(
+    initialRoutingMode !== 'none',
+  )
+  const [smartRoutingMode, setSmartRoutingMode] = useState<string>(
+    initialRoutingMode === 'none' ? 'time_slots' : initialRoutingMode,
+  )
   const [contentTab, setContentTab] = useState(
     CONTENT_TABS[page?.vertical ?? initialVertical ?? 'generic'][0].id,
   )
@@ -369,8 +376,8 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
       className="space-y-6"
     >
       {/* Step indicator */}
-      <nav aria-label="Étapes" className="rounded-xl border border-slate-200/80 bg-white p-2 shadow-sm">
-        <ol className="grid grid-cols-3 gap-1">
+      <nav aria-label="Étapes" className="rounded-2xl border border-slate-200/90 bg-white p-2 sm:p-2.5 shadow-sm">
+        <ol className="grid grid-cols-3 gap-2 sm:gap-3">
           {STEPS.map((item, index) => {
             const active = index === step
             const done = index < step
@@ -389,28 +396,28 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
                     setStep(index)
                   }}
                   className={cn(
-                    'flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left transition-colors',
-                    active && 'bg-slate-900 text-white',
-                    !active && done && 'bg-slate-50 text-slate-700 hover:bg-slate-100',
-                    !active && !done && 'text-slate-400 hover:bg-slate-50 hover:text-slate-600',
+                    'flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left transition-all relative overflow-hidden',
+                    active && 'bg-slate-900 text-white shadow-md ring-2 ring-slate-900/20',
+                    !active && done && 'bg-emerald-50 text-slate-800 border border-emerald-200/80 hover:bg-emerald-100/70',
+                    !active && !done && 'bg-slate-50 text-slate-500 border border-slate-200/60 hover:bg-slate-100 hover:text-slate-700',
                   )}
                 >
                   <span
                     className={cn(
-                      'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
-                      active && 'bg-white/20 text-white',
-                      done && !active && 'bg-emerald-100 text-emerald-700',
-                      !active && !done && 'bg-slate-100 text-slate-500',
+                      'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all shadow-xs',
+                      active && 'bg-white/20 text-white ring-1 ring-white/30',
+                      done && !active && 'bg-emerald-600 text-white',
+                      !active && !done && 'bg-slate-200/80 text-slate-600',
                     )}
                   >
-                    {done && !active ? <Check className="h-3.5 w-3.5" /> : index + 1}
+                    {done && !active ? <Check className="h-4 w-4 stroke-[3]" /> : index + 1}
                   </span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-medium">{item.label}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm sm:text-base font-bold leading-tight">{item.label}</span>
                     <span
                       className={cn(
-                        'hidden truncate text-xs sm:block',
-                        active ? 'text-white/70' : 'text-slate-400',
+                        'hidden truncate text-xs sm:block font-medium mt-0.5',
+                        active ? 'text-slate-300' : 'text-slate-400',
                       )}
                     >
                       {item.hint}
@@ -735,22 +742,26 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
           title={`Contenu — ${verticalMeta?.model ?? verticalMeta?.label ?? ''}`}
           description="Champs propres à ce modèle. Remplissez uniquement ce qui est utile."
         >
-          <div className="mb-4 flex flex-wrap gap-1 rounded-lg bg-slate-100 p-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setContentTab(tab.id)}
-                className={cn(
-                  'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                  contentTab === tab.id
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800',
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="mb-6 flex flex-wrap gap-2 rounded-xl bg-slate-100/90 p-2 border border-slate-200/80 shadow-xs">
+            {tabs.map((tab) => {
+              const active = contentTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setContentTab(tab.id)}
+                  className={cn(
+                    'flex-1 min-w-[130px] rounded-lg px-4 py-2.5 text-sm font-bold transition-all text-center flex items-center justify-center gap-2',
+                    active
+                      ? 'bg-mq-ink text-white shadow-md ring-1 ring-mq-ink/20 scale-[1.01]'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/80',
+                  )}
+                >
+                  <span className={cn('h-2 w-2 rounded-full transition-all', active ? 'bg-mq-signal animate-pulse' : 'bg-slate-300')} />
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
           </div>
 
           {vertical === 'generic' ? <GenericFields page={page} tab={contentTab} /> : null}
@@ -822,88 +833,146 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
 
           {/* Section Smart Routing Dynamique */}
           <div className="mt-8 pt-6 border-t border-slate-200">
-            <div className="mb-4">
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <span>⏰ Smart Routing & Programmation Dynamique</span>
-              </h3>
-              <p className="text-xs text-muted-foreground mt-1">
-                Changez automatiquement le contenu ou redirigez les personnes scannant ce QR selon l’heure, la date ou pour un test A/B.
-              </p>
-            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-xl border border-slate-200/90 bg-slate-50/70">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                    ⏰ Smart Routing & Programmation Dynamique
+                  </h3>
+                  {smartRoutingEnabled ? (
+                    <span className="rounded-full bg-emerald-100 border border-emerald-200/80 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800">
+                      Activé
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-slate-200/70 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+                      Désactivé
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Redirigez dynamiquement les scans selon l'heure de la journée, le calendrier d'un événement ou pour effectuer un test A/B.
+                </p>
+              </div>
 
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="smartRoutingMode">Mode de routage dynamique</Label>
-                <select
-                  id="smartRoutingMode"
-                  name="smartRoutingMode"
-                  defaultValue={page?.smartRouting?.mode ?? 'none'}
-                  className={selectClassName}
+              {/* Interrupteur Toggle Activation */}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs font-bold text-slate-700">
+                  {smartRoutingEnabled ? 'Actif' : 'Activer'}
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={smartRoutingEnabled}
+                  onClick={() => {
+                    const nextState = !smartRoutingEnabled
+                    setSmartRoutingEnabled(nextState)
+                    if (!nextState) {
+                      setSmartRoutingMode('none')
+                    } else if (smartRoutingMode === 'none') {
+                      setSmartRoutingMode('time_slots')
+                    }
+                  }}
+                  className={cn(
+                    'relative inline-flex h-6.5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2',
+                    smartRoutingEnabled ? 'bg-emerald-600' : 'bg-slate-300',
+                  )}
                 >
-                  <option value="none">Désactivé — Toujours afficher ce modèle fixe</option>
-                  <option value="time_slots">Règles Horaires — Ex: Petit-Déjeuner / Déjeuner / Soir</option>
-                  <option value="event_timeline">Chronologie Événement — Ex: Avant / Pendant / Après</option>
-                  <option value="ab_test">A/B Testing 50/50 — Ex: Split de trafic entre 2 variantes</option>
-                </select>
-              </div>
-
-              {/* Créneaux Horaires */}
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">1. Plages Horaires (Restauration / Bar / CHRD)</h4>
-                <div className="grid gap-3 sm:grid-cols-4 text-xs">
-                  <Field id="slot1Label" label="Créneau 1 (ex: Petit-déj)" defaultValue={page?.smartRouting?.timeRules?.[0]?.label ?? 'Petit-déjeuner'} />
-                  <Field id="slot1Start" label="Début (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[0]?.startTime ?? '07:00'} />
-                  <Field id="slot1End" label="Fin (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[0]?.endTime ?? '11:00'} />
-                  <Field id="slot1Target" label="Slug ou Redirection" defaultValue={page?.smartRouting?.timeRules?.[0]?.targetSlug} placeholder="menu-matin" />
-                </div>
-                <div className="grid gap-3 sm:grid-cols-4 text-xs">
-                  <Field id="slot2Label" label="Créneau 2 (ex: Déjeuner)" defaultValue={page?.smartRouting?.timeRules?.[1]?.label ?? 'Déjeuner'} />
-                  <Field id="slot2Start" label="Début (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[1]?.startTime ?? '12:00'} />
-                  <Field id="slot2End" label="Fin (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[1]?.endTime ?? '15:00'} />
-                  <Field id="slot2Target" label="Slug ou Redirection" defaultValue={page?.smartRouting?.timeRules?.[1]?.targetSlug} placeholder="menu-midi" />
-                </div>
-                <div className="grid gap-3 sm:grid-cols-4 text-xs">
-                  <Field id="slot3Label" label="Créneau 3 (ex: Cocktails)" defaultValue={page?.smartRouting?.timeRules?.[2]?.label ?? 'Soir / Cocktails'} />
-                  <Field id="slot3Start" label="Début (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[2]?.startTime ?? '19:00'} />
-                  <Field id="slot3End" label="Fin (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[2]?.endTime ?? '23:30'} />
-                  <Field id="slot3Target" label="Slug ou Redirection" defaultValue={page?.smartRouting?.timeRules?.[2]?.targetSlug} placeholder="carte-soir" />
-                </div>
-              </div>
-
-              {/* Chronologie Événement */}
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">2. Chronologie Événementielle (Séminaire / Soirée)</h4>
-                <div className="grid gap-3 sm:grid-cols-2 text-xs">
-                  <Field id="eventStartDate" label="Date/Heure de début" defaultValue={page?.smartRouting?.eventSchedule?.eventStartDate} placeholder="2025-10-15T09:00" />
-                  <Field id="eventEndDate" label="Date/Heure de fin" defaultValue={page?.smartRouting?.eventSchedule?.eventEndDate} placeholder="2025-10-17T18:00" />
-                </div>
-                <div className="grid gap-3 sm:grid-cols-3 text-xs">
-                  <Field id="beforeEventTargetSlug" label="Avant événement (Compte à rebours)" defaultValue={page?.smartRouting?.eventSchedule?.beforeEventTargetSlug} placeholder="programme-preview" />
-                  <Field id="duringEventTargetSlug" label="Pendant (Live Wall Photo)" defaultValue={page?.smartRouting?.eventSchedule?.duringEventTargetSlug} placeholder="galerie-live" />
-                  <Field id="afterEventTargetSlug" label="Après (Formulaire Avis)" defaultValue={page?.smartRouting?.eventSchedule?.afterEventTargetSlug} placeholder="sondage-satisfaction" />
-                </div>
-              </div>
-
-              {/* A/B Testing */}
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">3. A/B Testing (Split de Trafic)</h4>
-                <label className="flex items-center gap-2 text-xs font-semibold text-slate-800">
-                  <input
-                    type="checkbox"
-                    id="abTestEnabled"
-                    name="abTestEnabled"
-                    defaultChecked={page?.smartRouting?.abTest?.enabled ?? false}
-                    className="h-4 w-4 rounded border-slate-300"
+                  <span
+                    className={cn(
+                      'pointer-events-none inline-block h-5.5 w-5.5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out',
+                      smartRoutingEnabled ? 'translate-x-5.5' : 'translate-x-0',
+                    )}
                   />
-                  Activer le split A/B aléatoire sur les scans
-                </label>
-                <div className="grid gap-3 sm:grid-cols-3 text-xs">
-                  <Field id="variantASlug" label="Slug Variante A (50%)" defaultValue={page?.smartRouting?.abTest?.variantASlug} placeholder="landing-promo-a" />
-                  <Field id="variantBSlug" label="Slug Variante B (50%)" defaultValue={page?.smartRouting?.abTest?.variantBSlug} placeholder="landing-promo-b" />
-                  <Field id="splitRatio" label="Ratio Variante A (%)" type="number" defaultValue={page?.smartRouting?.abTest?.splitRatio?.toString() ?? '50'} />
-                </div>
+                </button>
               </div>
             </div>
+
+            {/* Réglages Smart Routing — Affichés uniquement si activé */}
+            {smartRoutingEnabled ? (
+              <div className="mt-4 space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-fadeIn">
+                <div className="space-y-1.5">
+                  <Label htmlFor="smartRoutingMode" className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Mode de routage dynamique
+                  </Label>
+                  <select
+                    id="smartRoutingMode"
+                    name="smartRoutingMode"
+                    value={smartRoutingMode}
+                    onChange={(e) => setSmartRoutingMode(e.target.value)}
+                    className={selectClassName}
+                  >
+                    <option value="time_slots">Règles Horaires — Ex: Petit-Déjeuner / Déjeuner / Soir</option>
+                    <option value="event_timeline">Chronologie Événement — Ex: Avant / Pendant / Après</option>
+                    <option value="ab_test">A/B Testing 50/50 — Ex: Split de trafic entre 2 variantes</option>
+                  </select>
+                </div>
+
+                {/* Plages Horaires */}
+                {smartRoutingMode === 'time_slots' && (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Plages Horaires (Restauration / Bar / CHRD)</h4>
+                    <div className="grid gap-3 sm:grid-cols-4 text-xs">
+                      <Field id="slot1Label" label="Créneau 1 (ex: Petit-déj)" defaultValue={page?.smartRouting?.timeRules?.[0]?.label ?? 'Petit-déjeuner'} />
+                      <Field id="slot1Start" label="Début (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[0]?.startTime ?? '07:00'} />
+                      <Field id="slot1End" label="Fin (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[0]?.endTime ?? '11:00'} />
+                      <Field id="slot1Target" label="Slug ou Redirection" defaultValue={page?.smartRouting?.timeRules?.[0]?.targetSlug} placeholder="menu-matin" />
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-4 text-xs">
+                      <Field id="slot2Label" label="Créneau 2 (ex: Déjeuner)" defaultValue={page?.smartRouting?.timeRules?.[1]?.label ?? 'Déjeuner'} />
+                      <Field id="slot2Start" label="Début (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[1]?.startTime ?? '12:00'} />
+                      <Field id="slot2End" label="Fin (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[1]?.endTime ?? '15:00'} />
+                      <Field id="slot2Target" label="Slug ou Redirection" defaultValue={page?.smartRouting?.timeRules?.[1]?.targetSlug} placeholder="menu-midi" />
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-4 text-xs">
+                      <Field id="slot3Label" label="Créneau 3 (ex: Cocktails)" defaultValue={page?.smartRouting?.timeRules?.[2]?.label ?? 'Soir / Cocktails'} />
+                      <Field id="slot3Start" label="Début (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[2]?.startTime ?? '19:00'} />
+                      <Field id="slot3End" label="Fin (HH:mm)" defaultValue={page?.smartRouting?.timeRules?.[2]?.endTime ?? '23:30'} />
+                      <Field id="slot3Target" label="Slug ou Redirection" defaultValue={page?.smartRouting?.timeRules?.[2]?.targetSlug} placeholder="carte-soir" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Chronologie Événement */}
+                {smartRoutingMode === 'event_timeline' && (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Chronologie Événementielle (Séminaire / Soirée)</h4>
+                    <div className="grid gap-3 sm:grid-cols-2 text-xs">
+                      <Field id="eventStartDate" label="Date/Heure de début" defaultValue={page?.smartRouting?.eventSchedule?.eventStartDate} placeholder="2025-10-15T09:00" />
+                      <Field id="eventEndDate" label="Date/Heure de fin" defaultValue={page?.smartRouting?.eventSchedule?.eventEndDate} placeholder="2025-10-17T18:00" />
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-3 text-xs">
+                      <Field id="beforeEventTargetSlug" label="Avant événement (Compte à rebours)" defaultValue={page?.smartRouting?.eventSchedule?.beforeEventTargetSlug} placeholder="programme-preview" />
+                      <Field id="duringEventTargetSlug" label="Pendant (Live Wall Photo)" defaultValue={page?.smartRouting?.eventSchedule?.duringEventTargetSlug} placeholder="galerie-live" />
+                      <Field id="afterEventTargetSlug" label="Après (Formulaire Avis)" defaultValue={page?.smartRouting?.eventSchedule?.afterEventTargetSlug} placeholder="sondage-satisfaction" />
+                    </div>
+                  </div>
+                )}
+
+                {/* A/B Testing */}
+                {smartRoutingMode === 'ab_test' && (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">A/B Testing (Split de Trafic)</h4>
+                    <label className="flex items-center gap-2 text-xs font-semibold text-slate-800">
+                      <input
+                        type="checkbox"
+                        id="abTestEnabled"
+                        name="abTestEnabled"
+                        defaultChecked={page?.smartRouting?.abTest?.enabled ?? true}
+                        className="h-4 w-4 rounded border-slate-300"
+                      />
+                      Activer le split A/B aléatoire sur les scans
+                    </label>
+                    <div className="grid gap-3 sm:grid-cols-3 text-xs">
+                      <Field id="variantASlug" label="Slug Variante A (50%)" defaultValue={page?.smartRouting?.abTest?.variantASlug} placeholder="landing-promo-a" />
+                      <Field id="variantBSlug" label="Slug Variante B (50%)" defaultValue={page?.smartRouting?.abTest?.variantBSlug} placeholder="landing-promo-b" />
+                      <Field id="splitRatio" label="Ratio Variante A (%)" type="number" defaultValue={page?.smartRouting?.abTest?.splitRatio?.toString() ?? '50'} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <input type="hidden" name="smartRoutingMode" value="none" />
+            )}
           </div>
         </Section>
       </div>
@@ -972,10 +1041,10 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
-      <div className="mb-5">
-        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-        <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
+    <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-sm space-y-6">
+      <div className="pb-4 border-b border-slate-100">
+        <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+        <p className="mt-1 text-sm text-slate-500 leading-relaxed">{description}</p>
       </div>
       {children}
     </div>
