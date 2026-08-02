@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowRight, Loader2, LogOut } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import {
@@ -12,14 +12,23 @@ import {
   authMutedLinkClass,
 } from '@/components/dashboard/auth-styles'
 import { AuthShell } from '@/components/dashboard/AuthShell'
+import { OAuthButtons } from '@/components/dashboard/OAuthButtons'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
-import { registerAction } from '@/lib/auth/actions'
+import { logoutAction, registerAction } from '@/lib/auth/actions'
 import { Link } from '@/src/i18n/routing'
 
-export function RegisterForm() {
+export function RegisterForm({
+  hasSession = false,
+  googleEnabled = false,
+  appleEnabled = false,
+}: {
+  hasSession?: boolean
+  googleEnabled?: boolean
+  appleEnabled?: boolean
+}) {
   const t = useTranslations('Dashboard.register')
   const tAuth = useTranslations('Dashboard.auth')
   const [error, setError] = useState<string | null>(null)
@@ -35,8 +44,57 @@ export function RegisterForm() {
     }
   }
 
+  if (hasSession) {
+    return (
+      <AuthShell title={t('title')} description={t('sessionDescription')}>
+        <div className="space-y-4">
+          <BlurFade delay={0.08} inView>
+            <p className="rounded-2xl border border-mq-sun/30 bg-mq-sun/10 px-4 py-3 text-center text-sm leading-relaxed text-white/80">
+              {t('sessionHint')}
+            </p>
+          </BlurFade>
+
+          <BlurFade delay={0.12} inView>
+            <form action={logoutAction}>
+              <input type="hidden" name="redirectTo" value="/dashboard/register" />
+              <ShimmerButton
+                type="submit"
+                className="h-14 w-full text-base"
+                background="linear-gradient(135deg, #ff5c4d 0%, #ff8a3d 50%, #ffc53d 100%)"
+                shimmerColor="#fff7e8"
+                borderRadius="16px"
+              >
+                <span className="flex items-center justify-center gap-2.5 font-bold text-mq-ink">
+                  <LogOut className="h-5 w-5" />
+                  {t('logoutToRegister')}
+                </span>
+              </ShimmerButton>
+            </form>
+          </BlurFade>
+
+          <BlurFade delay={0.18} inView>
+            <Link
+              href="/dashboard"
+              className="inline-flex h-12 w-full items-center justify-center rounded-xl border border-white/20 bg-white/5 text-sm font-medium text-white/85 transition-colors hover:bg-white/10"
+            >
+              {t('goToDashboard')}
+            </Link>
+          </BlurFade>
+        </div>
+      </AuthShell>
+    )
+  }
+
   return (
     <AuthShell title={t('title')} description={t('description')}>
+      <BlurFade delay={0.05} inView>
+        <OAuthButtons
+          className="mb-6"
+          googleEnabled={googleEnabled}
+          appleEnabled={appleEnabled}
+        />
+      </BlurFade>
+
       <form action={handleSubmit} className="space-y-6">
         <BlurFade delay={0.08} inView>
           <div className="space-y-2">

@@ -64,8 +64,8 @@ export function DashboardSidebar({ className, onNavigate }: DashboardSidebarProp
             <BrandMark className="relative h-6 w-6 text-white" />
           </span>
           <span className="min-w-0">
-            <span className="block text-xl font-bold leading-none tracking-tight">
-              <BrandWordmark rainbow />
+            <span className="block text-xl font-bold leading-none tracking-tight text-mq-ink">
+              <BrandWordmark className="text-mq-ink" />
             </span>
             <span className="mt-1.5 block text-sm font-medium text-slate-500">
               {t('brandSubtitle')}

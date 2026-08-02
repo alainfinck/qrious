@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
 import { LoginForm } from '@/components/dashboard/LoginForm'
+import { appleOAuthEnabled, googleOAuthEnabled } from '@/lib/auth/oauth'
 import { isAuthenticated } from '@/lib/auth/session'
 
 export const dynamic = 'force-dynamic'
@@ -9,7 +10,12 @@ export const dynamic = 'force-dynamic'
 export default async function DashboardLoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ reset?: string; registered?: string; redirectTo?: string }>
+  searchParams: Promise<{
+    reset?: string
+    registered?: string
+    redirectTo?: string
+    error?: string
+  }>
 }) {
   const [params, t] = await Promise.all([
     searchParams,
@@ -33,5 +39,13 @@ export default async function DashboardLoginPage({
     notice = t('noticeRedirect')
   }
 
-  return <LoginForm notice={notice} redirectTo={params.redirectTo} />
+  return (
+    <LoginForm
+      notice={notice}
+      redirectTo={params.redirectTo}
+      oauthError={params.error === 'oauth'}
+      googleEnabled={googleOAuthEnabled}
+      appleEnabled={appleOAuthEnabled}
+    />
+  )
 }

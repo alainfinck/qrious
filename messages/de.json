@@ -964,7 +964,12 @@
       "createAccount": "Konto erstellen",
       "noticeReset": "Passwort aktualisiert. Sie können sich anmelden.",
       "noticeRegistered": "Konto erstellt. Melden Sie sich mit Ihren Zugangsdaten an.",
-      "noticeRedirect": "Melden Sie sich an, um Ihre Landing Page anzupassen und zu veröffentlichen."
+      "noticeRedirect": "Melden Sie sich an, um Ihre Landing Page anzupassen und zu veröffentlichen.",
+      "orContinueWith": "Oder weiter mit",
+      "continueGoogle": "Google",
+      "continueApple": "Apple",
+      "oauthError": "Social-Login fehlgeschlagen. Erneut versuchen oder E-Mail / Passwort nutzen.",
+      "oauthNotConfigured": "GOOGLE_CLIENT_ID / APPLE_CLIENT_ID in .env.local setzen"
     },
     "register": {
       "title": "Konto erstellen",
@@ -974,7 +979,11 @@
       "submit": "Mein Konto erstellen",
       "submitting": "Wird erstellt…",
       "hasAccount": "Bereits ein Konto?",
-      "signIn": "Anmelden"
+      "signIn": "Anmelden",
+      "sessionDescription": "Auf diesem Gerät ist bereits eine Sitzung aktiv",
+      "sessionHint": "Um ein neues Konto zu erstellen, melden Sie sich zuerst ab — oder kehren Sie zum Dashboard zurück.",
+      "logoutToRegister": "Abmelden und Konto erstellen",
+      "goToDashboard": "Zum Dashboard"
     },
     "forgotPassword": {
       "title": "Passwort vergessen",

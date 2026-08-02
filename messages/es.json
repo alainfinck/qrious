@@ -964,7 +964,12 @@
       "createAccount": "Crear una cuenta",
       "noticeReset": "Contraseña actualizada. Ya puedes iniciar sesión.",
       "noticeRegistered": "Cuenta creada. Inicia sesión con tus credenciales.",
-      "noticeRedirect": "Inicia sesión para personalizar y publicar tu Landing Page."
+      "noticeRedirect": "Inicia sesión para personalizar y publicar tu Landing Page.",
+      "orContinueWith": "O continuar con",
+      "continueGoogle": "Google",
+      "continueApple": "Apple",
+      "oauthError": "Falló el acceso social. Inténtalo de nuevo o usa email / contraseña.",
+      "oauthNotConfigured": "Configure GOOGLE_CLIENT_ID / APPLE_CLIENT_ID en .env.local"
     },
     "register": {
       "title": "Crear una cuenta",
@@ -974,7 +979,11 @@
       "submit": "Crear mi cuenta",
       "submitting": "Creando…",
       "hasAccount": "¿Ya tienes una cuenta?",
-      "signIn": "Iniciar sesión"
+      "signIn": "Iniciar sesión",
+      "sessionDescription": "Ya hay una sesión activa en este dispositivo",
+      "sessionHint": "Para crear una cuenta nueva, cierra sesión primero — o vuelve a tu panel.",
+      "logoutToRegister": "Cerrar sesión y crear una cuenta",
+      "goToDashboard": "Ir al panel"
     },
     "forgotPassword": {
       "title": "Contraseña olvidada",

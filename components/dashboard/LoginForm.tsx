@@ -5,6 +5,7 @@ import { ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { AuthShell } from '@/components/dashboard/AuthShell'
+import { OAuthButtons } from '@/components/dashboard/OAuthButtons'
 import {
   authErrorClass,
   authFieldClass,
@@ -24,13 +25,21 @@ import { Link } from '@/src/i18n/routing'
 export function LoginForm({
   notice,
   redirectTo,
+  oauthError,
+  googleEnabled = false,
+  appleEnabled = false,
 }: {
   notice?: string | null
   redirectTo?: string
+  oauthError?: boolean
+  googleEnabled?: boolean
+  appleEnabled?: boolean
 }) {
   const t = useTranslations('Dashboard.login')
   const tAuth = useTranslations('Dashboard.auth')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(
+    oauthError ? t('oauthError') : null,
+  )
   const [pending, setPending] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -46,6 +55,14 @@ export function LoginForm({
 
   return (
     <AuthShell title={t('title')} description={t('description')}>
+      <BlurFade delay={0.05} inView>
+        <OAuthButtons
+          className="mb-6"
+          googleEnabled={googleEnabled}
+          appleEnabled={appleEnabled}
+        />
+      </BlurFade>
+
       <form action={handleSubmit} className="space-y-6">
         {redirectTo ? <input type="hidden" name="redirectTo" value={redirectTo} /> : null}
         {notice ? (

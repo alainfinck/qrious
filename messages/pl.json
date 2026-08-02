@@ -964,7 +964,12 @@
       "createAccount": "Utwórz konto",
       "noticeReset": "Hasło zaktualizowane. Możesz się zalogować.",
       "noticeRegistered": "Konto utworzone. Zaloguj się swoimi danymi.",
-      "noticeRedirect": "Zaloguj się, aby spersonalizować i opublikować Landing Page."
+      "noticeRedirect": "Zaloguj się, aby spersonalizować i opublikować Landing Page.",
+      "orContinueWith": "Lub kontynuuj z",
+      "continueGoogle": "Google",
+      "continueApple": "Apple",
+      "oauthError": "Logowanie społecznościowe nie powiodło się. Spróbuj ponownie lub użyj e-mail / hasła.",
+      "oauthNotConfigured": "Ustaw GOOGLE_CLIENT_ID / APPLE_CLIENT_ID w .env.local"
     },
     "register": {
       "title": "Utwórz konto",
@@ -974,7 +979,11 @@
       "submit": "Utwórz moje konto",
       "submitting": "Tworzenie…",
       "hasAccount": "Masz już konto?",
-      "signIn": "Zaloguj się"
+      "signIn": "Zaloguj się",
+      "sessionDescription": "Na tym urządzeniu jest już aktywna sesja",
+      "sessionHint": "Aby utworzyć nowe konto, najpierw wyloguj się — albo wróć do panelu.",
+      "logoutToRegister": "Wyloguj się i utwórz konto",
+      "goToDashboard": "Przejdź do panelu"
     },
     "forgotPassword": {
       "title": "Nie pamiętam hasła",

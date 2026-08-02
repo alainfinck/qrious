@@ -46,13 +46,16 @@ export async function loginAction(formData: FormData): Promise<AuthActionResult 
   redirect(target)
 }
 
-export async function logoutAction(): Promise<void> {
+export async function logoutAction(formData?: FormData): Promise<void> {
   try {
     await logout({ allSessions: true, config })
   } catch {
     // Cookie may already be cleared
   }
-  redirect('/dashboard/login')
+  const redirectTo = formData ? String(formData.get('redirectTo') ?? '').trim() : ''
+  redirect(
+    redirectTo.startsWith('/dashboard') ? redirectTo : '/dashboard/login',
+  )
 }
 
 export async function registerAction(formData: FormData): Promise<AuthActionResult | void> {

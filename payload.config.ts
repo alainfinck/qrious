@@ -10,6 +10,7 @@ import { buildConfig } from 'payload'
 import { LandingPages } from './src/collections/LandingPages'
 import { Users } from './src/collections/Users'
 import { migrations } from './src/migrations'
+import { appleOAuth, googleOAuth } from './lib/auth/oauth'
 import { getDatabaseUrl } from './lib/database-url'
 
 const filename = fileURLToPath(import.meta.url)
@@ -57,6 +58,8 @@ export default buildConfig({
     Users,
   ],
   plugins: [
+    googleOAuth,
+    appleOAuth,
     s3Storage({
       collections: {
         media: true,

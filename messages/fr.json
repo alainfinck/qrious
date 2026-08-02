@@ -964,7 +964,12 @@
       "createAccount": "Créer un compte",
       "noticeReset": "Mot de passe mis à jour. Vous pouvez vous connecter.",
       "noticeRegistered": "Compte créé. Connectez-vous avec vos identifiants.",
-      "noticeRedirect": "Connectez-vous pour personnaliser et publier votre Landing Page."
+      "noticeRedirect": "Connectez-vous pour personnaliser et publier votre Landing Page.",
+      "orContinueWith": "Ou continuer avec",
+      "continueGoogle": "Google",
+      "continueApple": "Apple",
+      "oauthError": "La connexion sociale a échoué. Réessayez ou utilisez e-mail / mot de passe.",
+      "oauthNotConfigured": "Configurez GOOGLE_CLIENT_ID / APPLE_CLIENT_ID dans .env.local"
     },
     "register": {
       "title": "Créer un compte",
@@ -974,7 +979,11 @@
       "submit": "Créer mon compte",
       "submitting": "Création…",
       "hasAccount": "Déjà un compte ?",
-      "signIn": "Se connecter"
+      "signIn": "Se connecter",
+      "sessionDescription": "Une session est déjà active sur cet appareil",
+      "sessionHint": "Pour créer un nouveau compte, déconnectez-vous d’abord — ou retournez à votre tableau de bord.",
+      "logoutToRegister": "Se déconnecter et créer un compte",
+      "goToDashboard": "Aller au tableau de bord"
     },
     "forgotPassword": {
       "title": "Mot de passe oublié",

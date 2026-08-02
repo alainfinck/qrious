@@ -964,7 +964,12 @@
       "createAccount": "Create an account",
       "noticeReset": "Password updated. You can sign in.",
       "noticeRegistered": "Account created. Sign in with your credentials.",
-      "noticeRedirect": "Sign in to customize and publish your Landing Page."
+      "noticeRedirect": "Sign in to customize and publish your Landing Page.",
+      "orContinueWith": "Or continue with",
+      "continueGoogle": "Google",
+      "continueApple": "Apple",
+      "oauthError": "Social sign-in failed. Try again or use email / password.",
+      "oauthNotConfigured": "Set GOOGLE_CLIENT_ID / APPLE_CLIENT_ID in .env.local"
     },
     "register": {
       "title": "Create an account",
@@ -974,7 +979,11 @@
       "submit": "Create my account",
       "submitting": "Creating…",
       "hasAccount": "Already have an account?",
-      "signIn": "Log in"
+      "signIn": "Log in",
+      "sessionDescription": "A session is already active on this device",
+      "sessionHint": "To create a new account, sign out first — or go back to your dashboard.",
+      "logoutToRegister": "Sign out and create an account",
+      "goToDashboard": "Go to dashboard"
     },
     "forgotPassword": {
       "title": "Forgot password",
