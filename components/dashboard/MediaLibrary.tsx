@@ -20,7 +20,7 @@ export type MediaLibraryItem = {
 }
 
 const ACCEPT = 'image/*,application/pdf'
-const MAX_BYTES = 10 * 1024 * 1024
+const MAX_BYTES = 50 * 1024 * 1024
 
 function isAllowedFile(file: File) {
   return (

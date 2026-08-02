@@ -57,9 +57,11 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       'errors' in data &&
       Array.isArray((data as { errors: { message?: string }[] }).errors)
         ? (data as { errors: { message?: string }[] }).errors[0]?.message
-        : typeof data === 'object' && data && 'message' in data
-          ? String((data as { message: unknown }).message)
-          : `Erreur ${response.status}`
+        : typeof data === 'object' && data && 'error' in data
+          ? String((data as { error: unknown }).error)
+          : typeof data === 'object' && data && 'message' in data
+            ? String((data as { message: unknown }).message)
+            : `Erreur ${response.status}`
     throw new ApiError(message || `Erreur ${response.status}`, response.status)
   }
 

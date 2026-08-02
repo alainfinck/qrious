@@ -850,7 +850,7 @@ export async function saveWeeklyReportSettings(settings: {
   return { success: true }
 }
 
-const MEDIA_MAX_BYTES = 10 * 1024 * 1024
+const MEDIA_MAX_BYTES = 50 * 1024 * 1024
 const MEDIA_ALLOWED_PREFIXES = ['image/', 'application/pdf'] as const
 
 function isAllowedMediaType(mimeType: string) {
@@ -877,7 +877,7 @@ export async function uploadMediaAction(
   try {
     for (const file of files) {
       if (file.size > MEDIA_MAX_BYTES) {
-        return { error: `« ${file.name} » dépasse la limite de 10 Mo` }
+        return { error: `« ${file.name} » dépasse la limite de 50 Mo` }
       }
       if (!isAllowedMediaType(file.type)) {
         return { error: `Type non supporté : ${file.name}` }

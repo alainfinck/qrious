@@ -23,6 +23,29 @@ const RESERVED_SLUGS = new Set([
   'solutions',
 ])
 
+function landingDescription(page: NonNullable<Awaited<ReturnType<typeof getLandingPageBySlug>>>): string {
+  const candidates = [
+    page.genericData?.subheadline,
+    page.genericData?.body,
+    page.artData?.description,
+    page.immoData?.welcomeMessage,
+    page.vcardData?.bio,
+    page.vcardData?.jobTitle,
+    page.productData?.description,
+    page.feedbackData?.subheading,
+    page.feedbackData?.heading,
+    page.tourismData?.description,
+    page.chrdData?.welcomeMessage,
+    page.corporateEventData?.welcomeMessage,
+    page.ugcRetailData?.instructions,
+    page.redirectData?.label,
+    page.redirectData?.targetUrl,
+  ]
+  const found = candidates.find((v) => typeof v === 'string' && v.trim().length > 0)
+  if (found) return found.trim().slice(0, 200)
+  return `${page.title} — page dynamique QRious`
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const pageData = await getLandingPageBySlug(slug)
@@ -31,9 +54,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Page introuvable' }
   }
 
+  const description = landingDescription(pageData)
+  const baseUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(/\/$/, '')
+  const pageUrl = `${baseUrl}/${pageData.slug}`
+  const logo =
+    pageData.theme?.logo && typeof pageData.theme.logo === 'object'
+      ? pageData.theme.logo.url
+      : null
+
   return {
     title: pageData.title,
-    description: `Landing page ${pageData.vertical} — ${pageData.title}`,
+    description,
+    openGraph: {
+      title: pageData.title,
+      description,
+      url: pageUrl,
+      type: 'website',
+      siteName: 'QRious',
+      ...(logo ? { images: [{ url: logo }] } : {}),
+    },
+    twitter: {
+      card: logo ? 'summary_large_image' : 'summary',
+      title: pageData.title,
+      description,
+      ...(logo ? { images: [logo] } : {}),
+    },
   }
 }
 

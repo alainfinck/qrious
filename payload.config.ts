@@ -82,6 +82,9 @@ export default buildConfig({
         media: true,
       },
       bucket: process.env.S3_BUCKET || 'qrious',
+      // Direct browser/app uploads via presigned PUT (bypass Next body limits).
+      // Bucket CORS must allow PUT from the app origins.
+      clientUploads: true,
       config: {
         endpoint: process.env.S3_ENDPOINT || 'https://s3.fr-par.scw.cloud',
         credentials: {

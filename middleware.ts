@@ -38,6 +38,7 @@ function resolveExpoStaticRewrite(pathname: string): string | null {
     '/medias',
     '/statistiques',
     '/profil',
+    '/scanner',
   ])
 
   if (staticRoutes.has(rest)) {

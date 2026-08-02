@@ -1055,10 +1055,10 @@
       "open": "Otwórz",
       "dropTitle": "Przeciągnij i upuść media tutaj",
       "dropHere": "Upuść, aby przesłać",
-      "dropHint": "Obrazy lub PDF · max 10 MB · wiele plików dozwolonych",
+      "dropHint": "Obrazy lub PDF · max 50 MB · wiele plików dozwolonych",
       "browse": "Przeglądaj pliki",
       "uploading": "Przesyłanie {count, plural, one {# pliku} other {# plików}}…",
-      "invalidFiles": "Akceptowane są tylko obrazy i PDF do 10 MB."
+      "invalidFiles": "Akceptowane są tylko obrazy i PDF do 50 MB."
     },
     "artists": {
       "title": "Artyści",

@@ -1055,10 +1055,10 @@
       "open": "Apri",
       "dropTitle": "Trascina e rilascia i media qui",
       "dropHere": "Rilascia per caricare",
-      "dropHint": "Immagini o PDF · max 10 MB · più file consentiti",
+      "dropHint": "Immagini o PDF · max 50 MB · più file consentiti",
       "browse": "Sfoglia file",
       "uploading": "Caricamento di {count, plural, one {# file} other {# file}}…",
-      "invalidFiles": "Sono accettati solo immagini e PDF fino a 10 MB."
+      "invalidFiles": "Sono accettati solo immagini e PDF fino a 50 MB."
     },
     "artists": {
       "title": "Artisti",

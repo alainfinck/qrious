@@ -21,7 +21,7 @@ import Animated, {
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { goToSiteHome } from '../lib/utils'
-import { BrandMark, BrandWordmark } from './Brand'
+import { BrandLogo } from './Brand'
 
 const FEATURES = [
   { color: '#12C4A8', text: 'QR dynamiques sans réimpression' },
@@ -119,8 +119,7 @@ export function AuthShell({
                       accessibilityLabel="Retour à l’accueil QRious"
                       style={styles.brandRow}
                     >
-                      <BrandMark size={36} />
-                      <BrandWordmark size={30} />
+                      <BrandLogo size={30} markSize={36} tone="dark" />
                     </Pressable>
                   </FadeIn>
 
@@ -174,8 +173,7 @@ export function AuthShell({
                       accessibilityLabel="Retour à l’accueil QRious"
                       style={styles.brandRow}
                     >
-                      <BrandMark size={30} />
-                      <BrandWordmark size={26} />
+                      <BrandLogo size={26} markSize={30} tone="dark" />
                     </Pressable>
                   </FadeIn>
                 ) : null}

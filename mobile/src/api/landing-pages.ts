@@ -94,22 +94,92 @@ export async function fetchMedia() {
   }>('/api/media?limit=200&sort=-createdAt')
 }
 
-export async function uploadMedia(file: {
-  uri: string
-  name: string
-  type: string
-}): Promise<void> {
-  const formData = new FormData()
-  formData.append('file', {
-    uri: file.uri,
-    name: file.name,
-    type: file.type,
-  } as unknown as Blob)
-  formData.append('alt', file.name.replace(/\.[^.]+$/, ''))
+const MEDIA_MAX_BYTES = 50 * 1024 * 1024
 
-  await apiRequest('/api/media', {
+async function resolveUploadBody(
+  file: File | { uri: string; name: string; type: string },
+): Promise<{ name: string; type: string; size: number; body: Blob }> {
+  if (typeof File !== 'undefined' && file instanceof File) {
+    return {
+      name: file.name,
+      type: file.type || 'application/octet-stream',
+      size: file.size,
+      body: file,
+    }
+  }
+
+  const asset = file as { uri: string; name: string; type: string }
+  const response = await fetch(asset.uri)
+  if (!response.ok) {
+    throw new ApiError('Impossible de lire le fichier local', response.status)
+  }
+  const body = await response.blob()
+  return {
+    name: asset.name,
+    type: asset.type || body.type || 'application/octet-stream',
+    size: body.size,
+    body,
+  }
+}
+
+/**
+ * Upload direct vers S3 (URL présignée), puis enregistrement metadata Payload.
+ * Le fichier ne transite pas par le serveur Next.
+ */
+export async function uploadMedia(
+  file: File | { uri: string; name: string; type: string },
+): Promise<void> {
+  const { name, type, size, body } = await resolveUploadBody(file)
+
+  if (size <= 0) {
+    throw new ApiError('Fichier vide', 400)
+  }
+  if (size > MEDIA_MAX_BYTES) {
+    throw new ApiError('Le fichier dépasse la limite de 50 Mo', 400)
+  }
+  if (!type.startsWith('image/') && type !== 'application/pdf') {
+    throw new ApiError('Type non supporté (images ou PDF)', 400)
+  }
+
+  const signed = await apiRequest<{
+    uploadUrl: string
+    key: string
+    filename: string
+    mimeType: string
+    filesize: number
+  }>('/api/media/presign', {
     method: 'POST',
-    formData,
+    body: {
+      filename: name,
+      filesize: size,
+      mimeType: type,
+    },
+  })
+
+  const putResponse = await fetch(signed.uploadUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': type,
+    },
+    body,
+  })
+
+  if (!putResponse.ok) {
+    throw new ApiError(
+      `Échec de l’envoi S3 (${putResponse.status}). Vérifiez le CORS du bucket.`,
+      putResponse.status,
+    )
+  }
+
+  await apiRequest('/api/media/complete', {
+    method: 'POST',
+    body: {
+      key: signed.key,
+      filename: signed.filename,
+      mimeType: type,
+      filesize: size,
+      alt: name.replace(/\.[^.]+$/, ''),
+    },
   })
 }
 

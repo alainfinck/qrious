@@ -12,6 +12,7 @@ import { ChevronLeft } from 'lucide-react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { QrCodeForm } from '../../src/components/QrCodeForm'
+import { BrandLogo } from '../../src/components/Brand'
 import { goToSiteHome } from '../../src/lib/utils'
 import { colors, spacing } from '../../src/theme/colors'
 import type { LandingPageVertical } from '../../src/types/landing-page'
@@ -33,7 +34,7 @@ export default function PublicEditorScreen() {
           style={styles.brandLink}
         >
           <ChevronLeft size={18} color={colors.slate600} />
-          <Text style={styles.brand}>QRious</Text>
+          <BrandLogo size={20} markSize={24} tone="light" />
           {showHomeHint ? <Text style={styles.homeHint}>Accueil</Text> : null}
         </Pressable>
         <View style={styles.topActions}>
@@ -85,17 +86,16 @@ const styles = StyleSheet.create({
   brandLink: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 6,
     paddingVertical: 4,
     paddingRight: 8,
     minWidth: 0,
   },
-  brand: { fontSize: 20, fontWeight: '800', color: colors.ink },
   homeHint: {
     fontSize: 13,
     fontWeight: '600',
     color: colors.slate500,
-    marginLeft: 4,
+    marginLeft: 2,
   },
   topActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   linkBtn: { paddingHorizontal: 12, paddingVertical: 8 },

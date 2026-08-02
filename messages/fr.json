@@ -1055,10 +1055,10 @@
       "open": "Ouvrir",
       "dropTitle": "Glissez-déposez vos médias ici",
       "dropHere": "Déposez pour uploader",
-      "dropHint": "Images ou PDF · max 10 Mo · plusieurs fichiers acceptés",
+      "dropHint": "Images ou PDF · max 50 Mo · plusieurs fichiers acceptés",
       "browse": "Parcourir les fichiers",
       "uploading": "Upload de {count, plural, one {# fichier} other {# fichiers}}…",
-      "invalidFiles": "Seules les images et PDF jusqu'à 10 Mo sont acceptés."
+      "invalidFiles": "Seules les images et PDF jusqu'à 50 Mo sont acceptés."
     },
     "artists": {
       "title": "Artistes",

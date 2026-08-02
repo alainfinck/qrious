@@ -1,5 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
+  ActivityIndicator,
+  Image,
   Linking,
   Platform,
   Pressable,
@@ -17,15 +19,26 @@ import {
   ExternalLink,
   Flashlight,
   FlashlightOff,
+  ImagePlus,
   ScanLine,
+  Share2,
+  Upload,
 } from 'lucide-react-native'
 
+import { fetchOgPreview, type OgPreview } from '../../src/api/og-preview'
 import { Button, Card } from '../../src/components/ui'
+import { decodeQrFromImageFile } from '../../src/lib/decode-qr-image'
 import { colors, spacing } from '../../src/theme/colors'
 
 type ScanResult = {
   data: string
   type: string
+}
+
+type DragEventLike = {
+  preventDefault?: () => void
+  stopPropagation?: () => void
+  dataTransfer?: { files?: FileList }
 }
 
 function isHttpUrl(value: string) {
@@ -51,6 +64,345 @@ function describePayload(data: string): { kind: string; detail?: string } {
   return { kind: 'Texte' }
 }
 
+function hostnameOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return url
+  }
+}
+
+/** Real phone CSS width so responsive pages render as on mobile, then scaled into the frame. */
+const MOBILE_VIEWPORT_W = 390
+
+function UrlPhonePreview({ url }: { url: string }) {
+  const screenW = PHONE_W - PHONE_CHROME
+  const screenH = PHONE_H - PHONE_CHROME
+  const scale = screenW / MOBILE_VIEWPORT_W
+  const viewportH = screenH / scale
+
+  return (
+    <View style={styles.phoneWrap} accessibilityLabel="Aperçu client de la page">
+      <Text style={styles.previewSectionLabel}>Aperçu client</Text>
+      <View style={styles.phone}>
+        <View style={styles.islandRow} pointerEvents="none">
+          <View style={styles.dynamicIsland} />
+        </View>
+        <View style={styles.phoneScreen}>
+          {Platform.OS === 'web' ? (
+            <View style={styles.phoneViewport}>
+              {/* @ts-expect-error iframe is web-only */}
+              <iframe
+                title="Aperçu page scannée"
+                src={url}
+                style={{
+                  width: MOBILE_VIEWPORT_W,
+                  height: viewportH,
+                  border: 'none',
+                  background: '#fff',
+                  transform: `scale(${scale})`,
+                  transformOrigin: 'top left',
+                  display: 'block',
+                }}
+              />
+            </View>
+          ) : (
+            <View style={styles.phoneFallback}>
+              <Text style={styles.phoneFallbackTitle}>Aperçu web</Text>
+              <Text style={styles.phoneFallbackText} numberOfLines={4}>
+                {url}
+              </Text>
+              <Text style={styles.phoneFallbackHint}>
+                Ouvrez le lien pour voir la page complète.
+              </Text>
+            </View>
+          )}
+        </View>
+      </View>
+    </View>
+  )
+}
+
+function OgShareCard({
+  preview,
+  loading,
+  error,
+}: {
+  preview: OgPreview | null
+  loading: boolean
+  error: string | null
+}) {
+  return (
+    <View style={styles.ogWrap} accessibilityLabel="Aperçu partage social Open Graph">
+      <View style={styles.ogHead}>
+        <Share2 size={16} color={colors.signal} />
+        <Text style={styles.previewSectionLabel}>Partage social (OG)</Text>
+      </View>
+
+      {loading ? (
+        <View style={styles.ogLoading}>
+          <ActivityIndicator color={colors.signal} />
+          <Text style={styles.ogLoadingText}>Lecture des métadonnées…</Text>
+        </View>
+      ) : null}
+
+      {error && !loading ? <Text style={styles.ogError}>{error}</Text> : null}
+
+      {!loading && preview ? (
+        <View style={styles.ogCard}>
+          {preview.image ? (
+            <Image source={{ uri: preview.image }} style={styles.ogImage} resizeMode="cover" />
+          ) : (
+            <View style={styles.ogImagePlaceholder}>
+              <Text style={styles.ogImagePlaceholderText}>Pas d’image OG</Text>
+            </View>
+          )}
+          <View style={styles.ogBody}>
+            <Text style={styles.ogSite} numberOfLines={1}>
+              {(preview.siteName || hostnameOf(preview.finalUrl || preview.url)).toUpperCase()}
+            </Text>
+            <Text style={styles.ogTitle} numberOfLines={2}>
+              {preview.title || 'Sans titre'}
+            </Text>
+            {preview.description ? (
+              <Text style={styles.ogDesc} numberOfLines={3}>
+                {preview.description}
+              </Text>
+            ) : (
+              <Text style={styles.ogDescMuted}>Aucune description Open Graph</Text>
+            )}
+          </View>
+        </View>
+      ) : null}
+
+      {!loading && !preview && !error ? (
+        <Text style={styles.ogDescMuted}>Aucune métadonnée disponible</Text>
+      ) : null}
+    </View>
+  )
+}
+
+function ScanResultView({
+  scanned,
+  copied,
+  onCopy,
+  onOpen,
+  onReset,
+}: {
+  scanned: ScanResult
+  copied: boolean
+  onCopy: () => void
+  onOpen: () => void
+  onReset: () => void
+}) {
+  const info = describePayload(scanned.data)
+  const canOpen = isHttpUrl(scanned.data)
+  const [og, setOg] = useState<OgPreview | null>(null)
+  const [ogLoading, setOgLoading] = useState(false)
+  const [ogError, setOgError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!canOpen) {
+      setOg(null)
+      setOgError(null)
+      setOgLoading(false)
+      return
+    }
+
+    let cancelled = false
+    setOgLoading(true)
+    setOgError(null)
+    setOg(null)
+
+    void fetchOgPreview(scanned.data.trim())
+      .then((data) => {
+        if (!cancelled) setOg(data)
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setOgError(err instanceof Error ? err.message : 'Métadonnées indisponibles')
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setOgLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [canOpen, scanned.data])
+
+  return (
+    <ScrollView contentContainerStyle={styles.resultContainer}>
+      <Card style={styles.resultCard}>
+        <View style={styles.resultBadge}>
+          <Check size={16} color={colors.success} />
+          <Text style={styles.resultBadgeText}>QR scanné</Text>
+        </View>
+        <Text style={styles.resultKind}>{info.kind}</Text>
+        <Text style={styles.resultData} selectable>
+          {scanned.data}
+        </Text>
+
+        {canOpen ? (
+          <View style={styles.previewsRow}>
+            <UrlPhonePreview url={scanned.data.trim()} />
+            <OgShareCard preview={og} loading={ogLoading} error={ogError} />
+          </View>
+        ) : null}
+
+        <View style={styles.resultActions}>
+          {canOpen ? (
+            <Button
+              label="Ouvrir le lien"
+              onPress={onOpen}
+              icon={<ExternalLink size={16} color="#fff" />}
+            />
+          ) : null}
+          <Button
+            label={copied ? 'Copié' : 'Copier'}
+            variant="secondary"
+            onPress={onCopy}
+            icon={<Copy size={16} color={colors.slate700} />}
+          />
+          <Button label="Scanner à nouveau" variant="ghost" onPress={onReset} />
+        </View>
+      </Card>
+    </ScrollView>
+  )
+}
+
+function WebImageDropScanner({ onDecoded }: { onDecoded: (data: string) => void }) {
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [dragging, setDragging] = useState(false)
+  const [decoding, setDecoding] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const dragDepth = useRef(0)
+
+  const processFile = useCallback(
+    async (file: File | undefined | null) => {
+      if (!file) return
+      if (!file.type.startsWith('image/')) {
+        setError('Choisissez une image (PNG, JPG, WebP…).')
+        return
+      }
+
+      setDecoding(true)
+      setError(null)
+      try {
+        const data = await decodeQrFromImageFile(file)
+        if (!data) {
+          setError('Aucun QR code détecté dans cette image.')
+          return
+        }
+        onDecoded(data)
+      } catch {
+        setError('Impossible de lire cette image.')
+      } finally {
+        setDecoding(false)
+      }
+    },
+    [onDecoded],
+  )
+
+  function openFilePicker() {
+    if (typeof document === 'undefined') return
+    const existing = inputRef.current
+    if (existing) {
+      existing.click()
+      return
+    }
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.style.display = 'none'
+    input.onchange = () => {
+      const file = input.files?.[0]
+      void processFile(file)
+      input.remove()
+      inputRef.current = null
+    }
+    document.body.appendChild(input)
+    inputRef.current = input
+    input.click()
+  }
+
+  const dropHandlers = {
+    onDragEnter: (e: DragEventLike) => {
+      e.preventDefault?.()
+      e.stopPropagation?.()
+      dragDepth.current += 1
+      setDragging(true)
+    },
+    onDragOver: (e: DragEventLike) => {
+      e.preventDefault?.()
+      e.stopPropagation?.()
+      setDragging(true)
+    },
+    onDragLeave: (e: DragEventLike) => {
+      e.preventDefault?.()
+      e.stopPropagation?.()
+      dragDepth.current = Math.max(0, dragDepth.current - 1)
+      if (dragDepth.current === 0) setDragging(false)
+    },
+    onDrop: (e: DragEventLike) => {
+      e.preventDefault?.()
+      e.stopPropagation?.()
+      dragDepth.current = 0
+      setDragging(false)
+      const file = e.dataTransfer?.files?.[0]
+      void processFile(file)
+    },
+  }
+
+  return (
+    <View style={styles.webRoot}>
+      <View style={styles.webIntro}>
+        <View style={styles.fallbackIcon}>
+          <ScanLine size={36} color={colors.signal} />
+        </View>
+        <Text style={styles.fallbackTitle}>Scanner QR</Text>
+        <Text style={styles.fallbackText}>
+          Déposez une image de QR code pour le décoder, ou choisissez un fichier.
+        </Text>
+      </View>
+
+      <Pressable
+        onPress={openFilePicker}
+        disabled={decoding}
+        accessibilityRole="button"
+        accessibilityLabel="Déposer ou choisir une image de QR code"
+        style={({ pressed }) => [
+          styles.dropZone,
+          dragging && styles.dropZoneActive,
+          pressed && !decoding && styles.dropZonePressed,
+          decoding && styles.dropZoneDisabled,
+        ]}
+        // @ts-expect-error web drag-and-drop events (react-native-web)
+        {...dropHandlers}
+      >
+        <View style={[styles.dropIconWrap, dragging && styles.dropIconWrapActive]}>
+          {decoding ? (
+            <Upload size={28} color={colors.signal} />
+          ) : (
+            <ImagePlus size={28} color={dragging ? colors.signal : colors.slate500} />
+          )}
+        </View>
+        <Text style={styles.dropTitle}>
+          {decoding ? 'Décodage…' : dragging ? 'Relâchez pour décoder' : 'Glissez-déposez une image'}
+        </Text>
+        <Text style={styles.dropHint}>PNG, JPG, WebP — ou cliquez pour parcourir</Text>
+      </Pressable>
+
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      <Text style={styles.webFootnote}>
+        Sur téléphone, utilisez l’app pour scanner avec la caméra.
+      </Text>
+    </View>
+  )
+}
+
 export default function ScannerScreen() {
   const isFocused = useIsFocused()
   const [permission, requestPermission] = useCameraPermissions()
@@ -61,6 +413,11 @@ export default function ScannerScreen() {
   const handleBarcodeScanned = useCallback((result: BarcodeScanningResult) => {
     if (!result.data) return
     setScanned({ data: result.data, type: result.type })
+    setCopied(false)
+  }, [])
+
+  const handleImageDecoded = useCallback((data: string) => {
+    setScanned({ data, type: 'qr' })
     setCopied(false)
   }, [])
 
@@ -80,19 +437,20 @@ export default function ScannerScreen() {
     await Linking.openURL(scanned.data)
   }
 
-  if (Platform.OS === 'web') {
+  if (scanned) {
     return (
-      <View style={styles.fallback}>
-        <View style={styles.fallbackIcon}>
-          <ScanLine size={36} color={colors.signal} />
-        </View>
-        <Text style={styles.fallbackTitle}>Scanner QR</Text>
-        <Text style={styles.fallbackText}>
-          Le scanner caméra est disponible sur iOS et Android. Ouvrez l’app QRious sur votre
-          téléphone pour scanner un code QR.
-        </Text>
-      </View>
+      <ScanResultView
+        scanned={scanned}
+        copied={copied}
+        onCopy={() => void copyData()}
+        onOpen={() => void openUrl()}
+        onReset={resetScan}
+      />
     )
+  }
+
+  if (Platform.OS === 'web') {
+    return <WebImageDropScanner onDecoded={handleImageDecoded} />
   }
 
   if (!permission) {
@@ -111,43 +469,6 @@ export default function ScannerScreen() {
         </Text>
         <Button label="Autoriser la caméra" onPress={() => void requestPermission()} />
       </View>
-    )
-  }
-
-  if (scanned) {
-    const info = describePayload(scanned.data)
-    const canOpen = isHttpUrl(scanned.data)
-
-    return (
-      <ScrollView contentContainerStyle={styles.resultContainer}>
-        <Card style={styles.resultCard}>
-          <View style={styles.resultBadge}>
-            <Check size={16} color={colors.success} />
-            <Text style={styles.resultBadgeText}>QR scanné</Text>
-          </View>
-          <Text style={styles.resultKind}>{info.kind}</Text>
-          <Text style={styles.resultData} selectable>
-            {scanned.data}
-          </Text>
-
-          <View style={styles.resultActions}>
-            {canOpen ? (
-              <Button
-                label="Ouvrir le lien"
-                onPress={() => void openUrl()}
-                icon={<ExternalLink size={16} color="#fff" />}
-              />
-            ) : null}
-            <Button
-              label={copied ? 'Copié' : 'Copier'}
-              variant="secondary"
-              onPress={() => void copyData()}
-              icon={<Copy size={16} color={colors.slate700} />}
-            />
-            <Button label="Scanner à nouveau" variant="ghost" onPress={resetScan} />
-          </View>
-        </Card>
-      </ScrollView>
     )
   }
 
@@ -192,6 +513,11 @@ export default function ScannerScreen() {
 const FRAME = 240
 const CORNER = 28
 const THICK = 3
+/** Outer bezel size (~iPhone proportions). */
+const PHONE_W = 300
+const PHONE_H = 620
+/** borderWidth×2 + padding×2 */
+const PHONE_CHROME = 7 * 2 + 3 * 2
 
 const styles = StyleSheet.create({
   fallback: {
@@ -221,6 +547,83 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     marginBottom: 8,
+  },
+  webRoot: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.lg,
+    padding: spacing.xl,
+    maxWidth: 560,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  webIntro: {
+    alignItems: 'center',
+    gap: spacing.sm,
+    maxWidth: 420,
+  },
+  dropZone: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: 48,
+    paddingHorizontal: spacing.xl,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: colors.slate300,
+    backgroundColor: colors.slate50,
+  },
+  dropZoneActive: {
+    borderColor: colors.signal,
+    backgroundColor: 'rgba(18, 196, 168, 0.08)',
+  },
+  dropZonePressed: {
+    borderColor: colors.slate400,
+    backgroundColor: colors.slate100,
+  },
+  dropZoneDisabled: {
+    opacity: 0.7,
+  },
+  dropIconWrap: {
+    width: 56,
+    height: 56,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    marginBottom: 4,
+  },
+  dropIconWrapActive: {
+    borderColor: 'rgba(18, 196, 168, 0.35)',
+    backgroundColor: 'rgba(18, 196, 168, 0.12)',
+  },
+  dropTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.ink,
+    textAlign: 'center',
+  },
+  dropHint: {
+    fontSize: 13,
+    color: colors.slate500,
+    textAlign: 'center',
+  },
+  errorText: {
+    color: colors.danger,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  webFootnote: {
+    fontSize: 13,
+    color: colors.slate400,
+    textAlign: 'center',
+    marginTop: 4,
   },
   cameraRoot: {
     flex: 1,
@@ -297,10 +700,10 @@ const styles = StyleSheet.create({
   torchLabel: { color: '#fff', fontWeight: '700', fontSize: 14 },
   resultContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     padding: spacing.lg,
     paddingBottom: 40,
-    maxWidth: 560,
+    maxWidth: 960,
     width: '100%',
     alignSelf: 'center',
   },
@@ -327,4 +730,161 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   resultActions: { gap: 10, marginTop: 4 },
+  previewsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.lg,
+    alignItems: 'flex-start',
+    marginTop: spacing.sm,
+  },
+  previewSectionLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.slate700,
+    letterSpacing: 0.2,
+  },
+  phoneWrap: {
+    gap: spacing.sm,
+    alignItems: 'center',
+    minWidth: PHONE_W,
+  },
+  phone: {
+    width: PHONE_W,
+    height: PHONE_H,
+    borderRadius: 40,
+    borderWidth: 7,
+    borderColor: '#0F172A',
+    backgroundColor: '#0F172A',
+    padding: 3,
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.22,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  islandRow: {
+    position: 'absolute',
+    top: 14,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  dynamicIsland: {
+    width: 100,
+    height: 22,
+    borderRadius: 12,
+    backgroundColor: '#000',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  phoneScreen: {
+    flex: 1,
+    borderRadius: 32,
+    overflow: 'hidden',
+    backgroundColor: colors.white,
+  },
+  phoneViewport: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  phoneFallback: {
+    flex: 1,
+    padding: spacing.md,
+    paddingTop: 36,
+    gap: spacing.sm,
+    justifyContent: 'center',
+  },
+  phoneFallbackTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.ink,
+  },
+  phoneFallbackText: {
+    fontSize: 12,
+    lineHeight: 18,
+    color: colors.slate600,
+  },
+  phoneFallbackHint: {
+    fontSize: 11,
+    color: colors.slate400,
+  },
+  ogWrap: {
+    flex: 1,
+    minWidth: 260,
+    maxWidth: 420,
+    gap: spacing.sm,
+  },
+  ogHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  ogLoading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 20,
+  },
+  ogLoadingText: {
+    fontSize: 13,
+    color: colors.slate500,
+  },
+  ogError: {
+    fontSize: 13,
+    color: colors.danger,
+    fontWeight: '600',
+  },
+  ogCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    overflow: 'hidden',
+    backgroundColor: colors.white,
+  },
+  ogImage: {
+    width: '100%',
+    height: 168,
+    backgroundColor: colors.slate100,
+  },
+  ogImagePlaceholder: {
+    width: '100%',
+    height: 120,
+    backgroundColor: colors.slate100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ogImagePlaceholderText: {
+    fontSize: 12,
+    color: colors.slate400,
+    fontWeight: '600',
+  },
+  ogBody: {
+    padding: 14,
+    gap: 4,
+  },
+  ogSite: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.slate400,
+    letterSpacing: 0.4,
+  },
+  ogTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.ink,
+    lineHeight: 22,
+  },
+  ogDesc: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: colors.slate600,
+    marginTop: 2,
+  },
+  ogDescMuted: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: colors.slate400,
+    fontStyle: 'italic',
+  },
 })

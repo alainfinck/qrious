@@ -36,6 +36,7 @@ import {
 import { Badge, Button, Input } from './ui'
 import { QrStyleEditor } from './QrStyleEditor'
 import { QrStyledPreview, type QrExportExtension, type QrPreviewHandle } from './QrStyledPreview'
+import { SmartPagePhonePreview } from './SmartPagePhonePreview'
 import { StaticContentFields } from './StaticContentFields'
 import { VerticalFields } from './VerticalFields'
 import {
@@ -131,9 +132,20 @@ export function QrCodeForm({
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const [previewTab, setPreviewTab] = useState<'qr' | 'page'>('qr')
   const previewInstanceRef = useRef<QrPreviewHandle | null>(null)
 
   const steps = mode === 'smart' ? SMART_STEPS : STATIC_STEPS
+  const currentStepId = steps[step]?.id
+
+  React.useEffect(() => {
+    if (mode !== 'smart') return
+    if (currentStepId === 'content' || currentStepId === 'identity') {
+      setPreviewTab('page')
+    } else if (currentStepId === 'design') {
+      setPreviewTab('qr')
+    }
+  }, [mode, currentStepId])
 
   const setField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setState((prev) => ({ ...prev, [key]: value }))
@@ -156,7 +168,6 @@ export function QrCodeForm({
     [state.vertical],
   )
   const ActiveIcon = VERTICAL_ICONS[state.vertical] ?? LayoutGrid
-  const currentStepId = steps[step]?.id
   const isLastStep = step >= steps.length - 1
 
   function switchMode(next: QrMode) {
@@ -468,11 +479,34 @@ export function QrCodeForm({
 
       <View style={[styles.preview, wide && { flex: 1 }]}>
         <View style={styles.previewHead}>
-          <Text style={styles.previewTitle}>Aperçu QR</Text>
+          <Text style={styles.previewTitle}>Aperçu</Text>
           <Text style={styles.previewSubtitle}>
             {mode === 'static' ? 'QR statique · payload direct' : 'Smart Page · URL dynamique'}
           </Text>
         </View>
+
+        {mode === 'smart' ? (
+          <View style={styles.previewTabs}>
+            <Pressable
+              onPress={() => setPreviewTab('qr')}
+              style={[styles.previewTab, previewTab === 'qr' && styles.previewTabActive]}
+            >
+              <Text style={[styles.previewTabText, previewTab === 'qr' && styles.previewTabTextActive]}>
+                QR code
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setPreviewTab('page')}
+              style={[styles.previewTab, previewTab === 'page' && styles.previewTabActive]}
+            >
+              <Text
+                style={[styles.previewTabText, previewTab === 'page' && styles.previewTabTextActive]}
+              >
+                Page smartphone
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
 
         {mode === 'smart' ? (
           <View style={styles.previewModelRow}>
@@ -490,44 +524,54 @@ export function QrCodeForm({
           <Badge label={`Statique · ${staticType}`} tone="accent" />
         )}
 
-        <QrStyledPreview
-          data={encodedPayload}
-          style={qrStyle}
-          displaySize={300}
-          onReadyInstance={(instance) => {
-            previewInstanceRef.current = instance
-          }}
-        />
-
-        {mode === 'smart' ? (
+        {mode === 'static' || previewTab === 'qr' ? (
           <>
-            <Text style={styles.previewPageTitle} numberOfLines={2}>
-              {state.title.trim() || 'Sans titre'}
-            </Text>
-            <View style={styles.previewBadges}>
-              <Badge label={VERTICAL_LABELS[state.vertical]} tone="accent" />
-              <Badge
-                label={STATUS_LABELS[state.status]}
-                tone={state.status === 'published' ? 'success' : 'warning'}
-              />
-            </View>
-            <View style={styles.urlBox}>
-              <Text style={styles.urlLabel}>URL scannée</Text>
-              <Text style={styles.url} numberOfLines={2}>
-                /{state.slug || 'slug'}
-              </Text>
-            </View>
+            <QrStyledPreview
+              data={encodedPayload}
+              style={qrStyle}
+              displaySize={mode === 'smart' ? 260 : 300}
+              onReadyInstance={(instance) => {
+                previewInstanceRef.current = instance
+              }}
+            />
+
+            {mode === 'smart' ? (
+              <>
+                <Text style={styles.previewPageTitle} numberOfLines={2}>
+                  {state.title.trim() || 'Sans titre'}
+                </Text>
+                <View style={styles.previewBadges}>
+                  <Badge label={VERTICAL_LABELS[state.vertical]} tone="accent" />
+                  <Badge
+                    label={STATUS_LABELS[state.status]}
+                    tone={state.status === 'published' ? 'success' : 'warning'}
+                  />
+                </View>
+                <View style={styles.urlBox}>
+                  <Text style={styles.urlLabel}>URL scannée</Text>
+                  <Text style={styles.url} numberOfLines={2}>
+                    /{state.slug || 'slug'}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <View style={styles.urlBox}>
+                <Text style={styles.urlLabel}>Payload</Text>
+                <Text style={styles.url} numberOfLines={3}>
+                  {encodedPayload || '—'}
+                </Text>
+              </View>
+            )}
           </>
         ) : (
-          <View style={styles.urlBox}>
-            <Text style={styles.urlLabel}>Payload</Text>
-            <Text style={styles.url} numberOfLines={3}>
-              {encodedPayload || '—'}
-            </Text>
-          </View>
+          <SmartPagePhonePreview
+            state={state}
+            liveUrl={page?.slug ? publicUrl : null}
+            preferLive={Boolean(page?.status === 'published')}
+          />
         )}
 
-        {Platform.OS === 'web' ? (
+        {Platform.OS === 'web' && (mode === 'static' || previewTab === 'qr') ? (
           <View style={styles.exportBlock}>
             <Button
               label={exporting ? 'Export…' : 'PNG HD'}
@@ -1068,6 +1112,37 @@ const styles = StyleSheet.create({
   previewHead: { alignSelf: 'stretch', gap: 2 },
   previewTitle: { fontSize: 16, fontWeight: '700', color: colors.ink },
   previewSubtitle: { fontSize: 12, color: colors.slate500 },
+  previewTabs: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    padding: 4,
+    borderRadius: 12,
+    backgroundColor: colors.slate100,
+    gap: 4,
+  },
+  previewTab: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    borderRadius: 9,
+  },
+  previewTabActive: {
+    backgroundColor: colors.white,
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  previewTabText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.slate500,
+  },
+  previewTabTextActive: {
+    color: colors.ink,
+  },
   previewModelRow: {
     alignSelf: 'stretch',
     flexDirection: 'row',
