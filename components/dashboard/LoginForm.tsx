@@ -20,7 +20,13 @@ import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { loginAction } from '@/lib/auth/actions'
 import { cn } from '@/lib/utils'
 
-export function LoginForm({ notice }: { notice?: string | null }) {
+export function LoginForm({
+  notice,
+  redirectTo,
+}: {
+  notice?: string | null
+  redirectTo?: string
+}) {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -38,6 +44,7 @@ export function LoginForm({ notice }: { notice?: string | null }) {
   return (
     <AuthShell title="Bon retour" description="Connectez-vous pour accéder à votre tableau de bord">
       <form action={handleSubmit} className="space-y-6">
+        {redirectTo ? <input type="hidden" name="redirectTo" value={redirectTo} /> : null}
         {notice ? (
           <BlurFade delay={0.05} inView>
             <p className={authSuccessClass}>{notice}</p>

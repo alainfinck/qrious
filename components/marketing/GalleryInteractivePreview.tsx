@@ -19,6 +19,7 @@ import {
   Play,
   QrCode,
   Share2,
+  ShieldCheck,
   Sparkles,
   User,
   Volume2,
