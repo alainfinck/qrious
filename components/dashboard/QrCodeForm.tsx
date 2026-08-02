@@ -413,24 +413,24 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
           </div>
 
           {/* SÉLECTEUR DE STYLE / MODÈLE AVEC DROPDOWN ET MODAL */}
-          <div className="mt-6 space-y-3 rounded-2xl border border-slate-200/90 bg-slate-50/60 p-4 sm:p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <Label className="text-base font-semibold text-slate-900">
+          <div className="mt-8 space-y-4 rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 sm:p-6 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-0.5">
+                <Label className="text-base font-bold text-slate-900">
                   Modèle & Style de QR Code
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-slate-500 leading-normal">
                   Définit la structure et les fonctionnalités de la page scannée.
                 </p>
               </div>
 
-              {/* DROPDOWN SELECT RAPIDE */}
-              <div className="w-full sm:w-auto min-w-[240px]">
+              {/* ACTION GROUP (DROPDOWN + CATALOGUE MODAL) */}
+              <div className="flex flex-wrap items-center gap-2.5">
                 <Select
                   value={vertical}
                   onValueChange={(v) => changeVertical(v as LandingPageVertical)}
                 >
-                  <SelectTrigger className="bg-white rounded-xl h-10 border-slate-200 shadow-sm font-medium text-sm">
+                  <SelectTrigger className="h-9.5 min-w-[200px] rounded-xl border-slate-200 bg-white font-semibold text-xs shadow-sm">
                     <SelectValue placeholder="Choisir un modèle..." />
                   </SelectTrigger>
                   <SelectContent className="max-h-72">
@@ -440,67 +440,66 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
                         <SelectItem key={item.value} value={item.value} className="py-2">
                           <div className="flex items-center gap-2">
                             <Icon className="h-4 w-4 text-mq-ink shrink-0" />
-                            <span className="font-semibold text-sm">{item.label}</span>
-                            <span className="text-[11px] text-slate-400">({item.model})</span>
+                            <span className="font-semibold text-xs">{item.label}</span>
+                            <span className="text-[10px] text-slate-400">({item.model})</span>
                           </div>
                         </SelectItem>
                       )
                     })}
                   </SelectContent>
                 </Select>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setModalOpen(true)}
+                  className="h-9.5 shrink-0 rounded-xl border-slate-200 bg-white px-3 font-semibold text-xs hover:border-slate-300 hover:bg-slate-100/70 shadow-sm"
+                >
+                  <Sparkles className="mr-1.5 h-3.5 w-3.5 text-mq-coral" />
+                  Catalogue visuel
+                </Button>
               </div>
             </div>
 
             {/* CARTE DE PRÉSENTATION DU MODÈLE ACTIF */}
             {verticalMeta ? (
-              <div className="relative overflow-hidden rounded-xl border border-slate-900/10 bg-white p-4.5 shadow-sm">
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div className="flex items-start gap-3.5">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-mq-ink text-mq-signal shadow-sm">
-                      <ActiveIcon className="h-6 w-6" />
+              <div className="relative overflow-hidden rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-sm transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-mq-ink text-mq-signal shadow-sm ring-1 ring-slate-900/10">
+                    <ActiveIcon className="h-6 w-6" />
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-bold text-slate-900 text-sm sm:text-base">
+                        {verticalMeta.label}
+                      </h3>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
+                        {verticalMeta.model}
+                      </span>
+                      <span className="rounded-full bg-emerald-50 border border-emerald-200/60 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-800">
+                        {verticalMeta.category}
+                      </span>
                     </div>
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-bold text-slate-900 text-base">
-                          {verticalMeta.label}
-                        </h3>
-                        <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
-                          {verticalMeta.model}
+
+                    <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">
+                      {verticalMeta.description}
+                    </p>
+
+                    <div className="pt-2.5 flex flex-wrap items-center gap-1.5 border-t border-slate-100">
+                      <span className="text-[11px] font-semibold text-slate-400 mr-1">
+                        Champs inclus :
+                      </span>
+                      {verticalMeta.fields.map((f) => (
+                        <span
+                          key={f}
+                          className="rounded-md bg-slate-100/90 border border-slate-200/50 px-2 py-0.5 text-[11px] font-medium text-slate-700"
+                        >
+                          {f}
                         </span>
-                        <span className="rounded-full bg-mq-signal/20 px-2.5 py-0.5 text-[11px] font-semibold text-mq-ink">
-                          {verticalMeta.category}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-xs text-slate-600 leading-relaxed max-w-xl">
-                        {verticalMeta.description}
-                      </p>
-                      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                        <span className="text-[11px] font-semibold text-slate-400">
-                          Champs inclus :
-                        </span>
-                        {verticalMeta.fields.map((f) => (
-                          <span
-                            key={f}
-                            className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700"
-                          >
-                            {f}
-                          </span>
-                        ))}
-                      </div>
+                      ))}
                     </div>
                   </div>
-
-                  {/* BOUTON DECLENCHEUR DU MODAL */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setModalOpen(true)}
-                    className="shrink-0 rounded-xl border-slate-300 hover:border-slate-400 hover:bg-slate-50 font-semibold text-xs h-9"
-                  >
-                    <Sparkles className="mr-1.5 h-3.5 w-3.5 text-mq-coral" />
-                    Catalogue visuel complet
-                  </Button>
                 </div>
               </div>
             ) : null}
