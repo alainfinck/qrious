@@ -446,7 +446,6 @@ export function QrCodeForm({ page, action, submitLabel, initialVertical }: QrCod
                 onChange={(e) => {
                   setTitle(e.target.value)
                   if (error) setError(null)
-                  if (!page) setSlug(slugify(e.target.value))
                 }}
                 placeholder="Ex. Exposition Lumière 2026"
                 className={cn(!title.trim() && error && 'border-red-500 ring-2 ring-red-500/20')}

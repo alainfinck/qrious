@@ -195,3 +195,15 @@ export async function incrementScanCount(id: string): Promise<void> {
     // Best-effort — don't throw on analytics failure
   }
 }
+
+export async function getAllMedia() {
+  const payload = await getPayload({ config })
+  
+  const result = await payload.find({
+    collection: 'media',
+    limit: 200,
+    sort: '-createdAt',
+  })
+
+  return result.docs
+}

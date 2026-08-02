@@ -10,6 +10,8 @@ import {
   Settings,
   User,
   Users,
+  FileText,
+  Image as ImageIcon,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -19,7 +21,8 @@ import { cn } from '@/lib/utils'
 const navItems = [
   { href: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard, exact: true },
   { href: '/dashboard/qr-codes', label: 'Mes QR Codes', icon: QrCode },
-  { href: '/dashboard/artistes', label: 'Artistes', icon: Users },
+  { href: '/dashboard/pages', label: 'Mes Smart Pages', icon: FileText },
+  { href: '/dashboard/medias', label: 'Médias', icon: ImageIcon },
   { href: '/dashboard/statistiques', label: 'Statistiques', icon: BarChart3 },
   { href: '/dashboard/profil', label: 'Profil', icon: User },
 ]

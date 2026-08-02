@@ -7,12 +7,14 @@ interface DashboardPageHeaderProps {
   title: string
   description: string
   showCreateButton?: boolean
+  children?: React.ReactNode
 }
 
 export function DashboardPageHeader({
   title,
   description,
   showCreateButton = true,
+  children,
 }: DashboardPageHeaderProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -28,6 +30,7 @@ export function DashboardPageHeader({
           </Link>
         </Button>
       ) : null}
+      {children}
     </div>
   )
 }

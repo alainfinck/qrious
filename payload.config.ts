@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { buildConfig } from 'payload'
 
 import { LandingPages } from './src/collections/LandingPages'
@@ -54,6 +55,24 @@ export default buildConfig({
       ],
     },
     Users,
+  ],
+  plugins: [
+    s3Storage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.S3_BUCKET || 'qrious',
+      config: {
+        endpoint: process.env.S3_ENDPOINT || 'https://s3.fr-par.scw.cloud',
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
+        },
+        region: process.env.S3_REGION || 'fr-par',
+        // Optional: depending on the S3 provider, you might need to force path style
+        // forcePathStyle: true,
+      },
+    }),
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'qrious-dev-secret-change-me',

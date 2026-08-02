@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Mail, Phone, ArrowRight, Sparkles } from 'lucide-react'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 function BrandMark({ className }: { className?: string }) {
   return (
@@ -191,7 +192,10 @@ export function MarketingFooter() {
 
         {/* Bottom Bar with Copyright & Direct Contact Links */}
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/15 pt-8 text-sm sm:text-base text-white/70 sm:flex-row">
-          <p>© {new Date().getFullYear()} QRious. Tous droits réservés.</p>
+          <div className="flex items-center gap-4">
+            <p>© {new Date().getFullYear()} QRious. Tous droits réservés.</p>
+            <LanguageSwitcher />
+          </div>
 
           <div className="flex flex-wrap items-center gap-6 text-white/80">
             <a
