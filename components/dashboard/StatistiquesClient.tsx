@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin, Clock, BarChart3, Mail, Sparkles, Filter, Download } from 'lucide-react'
+import { MapPin, Clock, BarChart3, Mail, Sparkles } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ActivityChart } from '@/components/dashboard/ActivityChart'
 import { OverviewStats } from '@/components/dashboard/OverviewStats'
@@ -24,6 +24,7 @@ interface StatistiquesClientProps {
 }
 
 export function StatistiquesClient({ stats, pages }: StatistiquesClientProps) {
+  const t = useTranslations('Dashboard.stats')
   const [activeTab, setActiveTab] = useState('overview')
 
   return (
@@ -34,16 +35,12 @@ export function StatistiquesClient({ stats, pages }: StatistiquesClientProps) {
           <div className="flex items-center gap-2">
             <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30">
               <Sparkles className="h-3 w-3 mr-1" />
-              Business Intelligence v2.0
+              {t('biBadge')}
             </Badge>
-            <span className="text-xs text-slate-300">Données en direct</span>
+            <span className="text-xs text-slate-300">{t('liveData')}</span>
           </div>
-          <h2 className="text-lg font-bold">
-            Analytics & Centre de Décision Commerciale
-          </h2>
-          <p className="text-xs text-slate-300 max-w-2xl">
-            Analysez la géolocalisation de vos visiteurs, anticipez vos heures de pointe et configurez l'envoi de bilans hebdomadaires automatiques par email.
-          </p>
+          <h2 className="text-lg font-bold">{t('bannerTitle')}</h2>
+          <p className="text-xs text-slate-300 max-w-2xl">{t('bannerDescription')}</p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -53,22 +50,22 @@ export function StatistiquesClient({ stats, pages }: StatistiquesClientProps) {
 
       {/* Navigation Tabs */}
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-2 md:grid-cols-4 h-auto p-1 bg-muted/60">
-          <TabsTrigger value="overview" className="gap-2 py-2.5 text-xs font-semibold">
-            <BarChart3 className="h-4 w-4 text-primary" />
-            Vue d'Ensemble
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
+          <TabsTrigger value="overview">
+            <BarChart3 className="h-4 w-4 shrink-0 opacity-80" />
+            {t('tabOverview')}
           </TabsTrigger>
-          <TabsTrigger value="heatmap" className="gap-2 py-2.5 text-xs font-semibold">
-            <MapPin className="h-4 w-4 text-emerald-500" />
-            Carte & Heatmap Villes
+          <TabsTrigger value="heatmap">
+            <MapPin className="h-4 w-4 shrink-0 opacity-80" />
+            {t('tabHeatmap')}
           </TabsTrigger>
-          <TabsTrigger value="peakhours" className="gap-2 py-2.5 text-xs font-semibold">
-            <Clock className="h-4 w-4 text-amber-500" />
-            Pics Horaires & Appareils
+          <TabsTrigger value="peakhours">
+            <Clock className="h-4 w-4 shrink-0 opacity-80" />
+            {t('tabPeakHours')}
           </TabsTrigger>
-          <TabsTrigger value="reports" className="gap-2 py-2.5 text-xs font-semibold">
-            <Mail className="h-4 w-4 text-blue-500" />
-            Rapports Hebdo & Alertes
+          <TabsTrigger value="reports">
+            <Mail className="h-4 w-4 shrink-0 opacity-80" />
+            {t('tabReports')}
           </TabsTrigger>
         </TabsList>
 

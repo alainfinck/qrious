@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowRight, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import {
   authErrorClass,
@@ -18,8 +18,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { forgotPasswordAction } from '@/lib/auth/actions'
+import { Link } from '@/src/i18n/routing'
 
 export function ForgotPasswordForm() {
+  const t = useTranslations('Dashboard.forgotPassword')
+  const tAuth = useTranslations('Dashboard.auth')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
@@ -38,22 +41,19 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <AuthShell
-      title="Mot de passe oublié"
-      description="Recevez un lien pour réinitialiser votre mot de passe"
-    >
+    <AuthShell title={t('title')} description={t('description')}>
       <form action={handleSubmit} className="space-y-6">
         <BlurFade delay={0.08} inView>
           <div className="space-y-2">
             <Label htmlFor="email" className={authLabelClass}>
-              E-mail
+              {tAuth('email')}
             </Label>
             <Input
               id="email"
               name="email"
               type="email"
               autoComplete="email"
-              placeholder="vous@exemple.fr"
+              placeholder={tAuth('emailPlaceholder')}
               required
               autoFocus
               className={authFieldClass}
@@ -77,11 +77,11 @@ export function ForgotPasswordForm() {
               {pending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Envoi…
+                  {t('submitting')}
                 </>
               ) : (
                 <>
-                  Envoyer le lien
+                  {t('submit')}
                   <ArrowRight className="h-5 w-5" />
                 </>
               )}
@@ -93,7 +93,7 @@ export function ForgotPasswordForm() {
       <BlurFade delay={0.24} inView>
         <p className={`mt-7 ${authMutedLinkClass}`}>
           <Link href="/dashboard/login" className={authLinkClass}>
-            ← Retour à la connexion
+            {t('backToLogin')}
           </Link>
         </p>
       </BlurFade>

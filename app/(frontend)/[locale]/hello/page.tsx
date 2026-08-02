@@ -1,16 +1,17 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
-import PricingPageClient from './PricingPageClient'
+import { HelloScanLanding } from '@/components/marketing/HelloScanLanding'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Pricing')
+  const t = await getTranslations('HelloScan')
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
+    robots: { index: false, follow: false },
   }
 }
 
-export default function PricingPage() {
-  return <PricingPageClient />
+export default function HelloPage() {
+  return <HelloScanLanding />
 }

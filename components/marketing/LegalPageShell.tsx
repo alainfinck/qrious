@@ -1,7 +1,11 @@
-import Link from 'next/link'
+'use client'
 
+import { useTranslations } from 'next-intl'
+
+import { BrandWordmark } from '@/components/brand/BrandWordmark'
 import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { MarketingHeader } from '@/components/marketing/MarketingHeader'
+import { Link } from '@/src/i18n/routing'
 
 export function LegalPageShell({
   title,
@@ -12,6 +16,8 @@ export function LegalPageShell({
   updated: string
   children: React.ReactNode
 }) {
+  const t = useTranslations('LegalShell')
+
   return (
     <div className="min-h-dvh bg-mq-paper font-body">
       <MarketingHeader />
@@ -22,13 +28,15 @@ export function LegalPageShell({
             aria-hidden
           />
           <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
-            <p className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
-              <span className="mq-rainbow-text">QRious</span>
+            <p className="text-4xl font-bold tracking-tight sm:text-5xl">
+              <BrandWordmark rainbow />
             </p>
             <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
               {title}
             </h1>
-            <p className="mt-3 text-sm text-white/50">Dernière mise à jour : {updated}</p>
+            <p className="mt-3 text-sm text-white/50">
+              {t('updatedPrefix')} {updated}
+            </p>
           </div>
         </section>
 
@@ -38,7 +46,7 @@ export function LegalPageShell({
           </article>
           <div className="mx-auto mt-12 max-w-3xl px-4 text-sm text-mq-muted sm:px-6">
             <Link href="/contact" className="font-medium text-mq-signal-deep hover:underline">
-              Une question ? Contactez-nous
+              {t('contactCta')}
             </Link>
           </div>
         </section>

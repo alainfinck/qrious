@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowRight, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import {
   authErrorClass,
@@ -17,8 +17,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { registerAction } from '@/lib/auth/actions'
+import { Link } from '@/src/i18n/routing'
 
 export function RegisterForm() {
+  const t = useTranslations('Dashboard.register')
+  const tAuth = useTranslations('Dashboard.auth')
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
@@ -33,22 +36,19 @@ export function RegisterForm() {
   }
 
   return (
-    <AuthShell
-      title="Créer un compte"
-      description="Rejoignez QRious pour gérer vos QR codes dynamiques"
-    >
+    <AuthShell title={t('title')} description={t('description')}>
       <form action={handleSubmit} className="space-y-6">
         <BlurFade delay={0.08} inView>
           <div className="space-y-2">
             <Label htmlFor="email" className={authLabelClass}>
-              E-mail
+              {tAuth('email')}
             </Label>
             <Input
               id="email"
               name="email"
               type="email"
               autoComplete="email"
-              placeholder="vous@exemple.fr"
+              placeholder={tAuth('emailPlaceholder')}
               required
               autoFocus
               className={authFieldClass}
@@ -59,14 +59,14 @@ export function RegisterForm() {
         <BlurFade delay={0.12} inView>
           <div className="space-y-2">
             <Label htmlFor="password" className={authLabelClass}>
-              Mot de passe
+              {tAuth('password')}
             </Label>
             <Input
               id="password"
               name="password"
               type="password"
               autoComplete="new-password"
-              placeholder="8 caractères minimum"
+              placeholder={t('passwordPlaceholder')}
               minLength={8}
               required
               className={authFieldClass}
@@ -77,7 +77,7 @@ export function RegisterForm() {
         <BlurFade delay={0.16} inView>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword" className={authLabelClass}>
-              Confirmer le mot de passe
+              {t('confirmPassword')}
             </Label>
             <Input
               id="confirmPassword"
@@ -107,11 +107,11 @@ export function RegisterForm() {
               {pending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Création…
+                  {t('submitting')}
                 </>
               ) : (
                 <>
-                  Créer mon compte
+                  {t('submit')}
                   <ArrowRight className="h-5 w-5" />
                 </>
               )}
@@ -122,9 +122,9 @@ export function RegisterForm() {
 
       <BlurFade delay={0.28} inView>
         <p className={`mt-7 ${authMutedLinkClass}`}>
-          Déjà un compte ?{' '}
+          {t('hasAccount')}{' '}
           <Link href="/dashboard/login" className={authLinkClass}>
-            Se connecter
+            {t('signIn')}
           </Link>
         </p>
       </BlurFade>

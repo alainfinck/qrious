@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { useParams, notFound } from 'next/navigation'
 import {
   Link2,
@@ -17,7 +17,7 @@ import {
   Share2,
   FileText,
   Smartphone,
-  Sparkles
+  Sparkles,
 } from 'lucide-react'
 
 import { MarketingHeader } from '@/components/marketing/MarketingHeader'
@@ -25,6 +25,7 @@ import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { CtaSection } from '@/components/marketing/CtaSection'
 import { PublicQrEditor } from '@/components/qr-editor/PublicQrEditor'
 import { BlurFade } from '@/components/ui/blur-fade'
+import { Link } from '@/src/i18n/routing'
 import { type QrContentType } from '@/lib/qr/payload'
 
 interface TypeConfig {
@@ -158,6 +159,7 @@ const TYPE_CONFIGS: Partial<Record<QrContentType, TypeConfig>> = {
 }
 
 export default function TypeGeneratorPage() {
+  const t = useTranslations('Generator')
   const params = useParams()
   const typeKey = String(params?.type || '').toLowerCase() as QrContentType
   const config = TYPE_CONFIGS[typeKey]
@@ -200,7 +202,7 @@ export default function TypeGeneratorPage() {
                 {config.subtitle} {config.description}
               </p>
             </BlurFade>
-            
+
             <BlurFade delay={0.4} inView>
               <div className="pt-2 flex flex-wrap justify-center gap-3">
                 <Link
@@ -208,13 +210,13 @@ export default function TypeGeneratorPage() {
                   className="inline-flex items-center justify-center space-x-2 rounded-xl bg-mq-signal px-5 py-2.5 text-sm font-bold text-mq-ink shadow-lg shadow-mq-signal/20 transition hover:bg-mq-signal/90"
                 >
                   <Sparkles className="h-4 w-4" />
-                  <span>Créer ce QR en Dynamique</span>
+                  <span>{t('ctaCreateDynamic')}</span>
                 </Link>
                 <Link
                   href="/features"
                   className="inline-flex items-center justify-center space-x-2 rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
                 >
-                  <span>Toutes les fonctionnalités</span>
+                  <span>{t('ctaAllFeatures')}</span>
                 </Link>
               </div>
             </BlurFade>
@@ -226,10 +228,10 @@ export default function TypeGeneratorPage() {
       <section className="py-12 lg:py-16 bg-mq-paper">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Générez votre QR Code gratuitement</h2>
-            <p className="text-slate-600">Personnalisez les couleurs, le logo et téléchargez en haute définition.</p>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">{t('typeEditorTitle')}</h2>
+            <p className="text-slate-600">{t('typeEditorSubtitle')}</p>
           </div>
-          
+
           <PublicQrEditor initialType={typeKey} />
         </div>
       </section>

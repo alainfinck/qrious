@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import {
   BarChart3,
   LayoutDashboard,
@@ -9,44 +9,30 @@ import {
   QrCode,
   Settings,
   User,
-  Users,
   FileText,
   Image as ImageIcon,
 } from 'lucide-react'
 
+import { BrandMark } from '@/components/brand/BrandMark'
+import { BrandWordmark } from '@/components/brand/BrandWordmark'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { Button } from '@/components/ui/button'
 import { logoutAction } from '@/lib/auth/actions'
 import { cn } from '@/lib/utils'
+import { Link as LocaleLink, usePathname } from '@/src/i18n/routing'
 
 const navItems = [
-  { href: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard, exact: true },
-  { href: '/dashboard/qr-codes', label: 'Mes QR Codes', icon: QrCode },
-  { href: '/dashboard/pages', label: 'Mes Smart Pages', icon: FileText },
-  { href: '/dashboard/medias', label: 'Médias', icon: ImageIcon },
-  { href: '/dashboard/statistiques', label: 'Statistiques', icon: BarChart3 },
-  { href: '/dashboard/profil', label: 'Profil', icon: User },
+  { href: '/dashboard', labelKey: 'overview' as const, icon: LayoutDashboard, exact: true },
+  { href: '/dashboard/qr-codes', labelKey: 'qrCodes' as const, icon: QrCode },
+  { href: '/dashboard/pages', labelKey: 'smartPages' as const, icon: FileText },
+  { href: '/dashboard/medias', labelKey: 'medias' as const, icon: ImageIcon },
+  { href: '/dashboard/statistiques', labelKey: 'stats' as const, icon: BarChart3 },
+  { href: '/dashboard/profil', labelKey: 'profile' as const, icon: User },
 ]
 
 function isActive(pathname: string, href: string, exact?: boolean) {
   if (exact) return pathname === href
   return pathname === href || pathname.startsWith(`${href}/`)
-}
-
-function BrandMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden>
-      <rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" strokeWidth="2.2" />
-      <rect x="5" y="5" width="6" height="6" fill="currentColor" />
-      <rect x="18" y="2" width="12" height="12" rx="1.5" stroke="currentColor" strokeWidth="2.2" />
-      <rect x="21" y="5" width="6" height="6" fill="currentColor" />
-      <rect x="2" y="18" width="12" height="12" rx="1.5" stroke="currentColor" strokeWidth="2.2" />
-      <rect x="5" y="21" width="6" height="6" fill="currentColor" />
-      <rect x="18" y="18" width="5" height="5" fill="currentColor" />
-      <rect x="25" y="18" width="5" height="5" fill="currentColor" />
-      <rect x="18" y="25" width="5" height="5" fill="currentColor" />
-      <rect x="24" y="24" width="6" height="6" fill="currentColor" />
-    </svg>
-  )
 }
 
 interface DashboardSidebarProps {
@@ -56,11 +42,12 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ className, onNavigate }: DashboardSidebarProps) {
   const pathname = usePathname()
+  const t = useTranslations('Dashboard.nav')
 
   return (
     <aside className={cn('flex h-full w-64 flex-col border-r border-slate-200/80 bg-white', className)}>
       <div className="px-5 py-6">
-        <Link
+        <LocaleLink
           href="/dashboard"
           onClick={onNavigate}
           className="group inline-flex items-center gap-3.5"
@@ -77,24 +64,26 @@ export function DashboardSidebar({ className, onNavigate }: DashboardSidebarProp
             <BrandMark className="relative h-6 w-6 text-white" />
           </span>
           <span className="min-w-0">
-            <span className="block font-display text-xl font-bold leading-none tracking-tight mq-rainbow-text">
-              QRious
+            <span className="block text-xl font-bold leading-none tracking-tight">
+              <BrandWordmark rainbow />
             </span>
-            <span className="mt-1.5 block text-sm font-medium text-slate-500">Dashboard</span>
+            <span className="mt-1.5 block text-sm font-medium text-slate-500">
+              {t('brandSubtitle')}
+            </span>
           </span>
-        </Link>
+        </LocaleLink>
       </div>
 
       <div className="flex-1 px-3 pb-4">
         <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-          Navigation
+          {t('sectionLabel')}
         </p>
         <nav className="space-y-1.5">
-          {navItems.map(({ href, label, icon: Icon, exact }) => {
+          {navItems.map(({ href, labelKey, icon: Icon, exact }) => {
             const active = isActive(pathname, href, exact)
 
             return (
-              <Link
+              <LocaleLink
                 key={href}
                 href={href}
                 onClick={onNavigate}
@@ -118,14 +107,18 @@ export function DashboardSidebar({ className, onNavigate }: DashboardSidebarProp
                   )}
                   strokeWidth={active ? 2.25 : 2}
                 />
-                <span className="leading-none">{label}</span>
-              </Link>
+                <span className="leading-none">{t(labelKey)}</span>
+              </LocaleLink>
             )
           })}
         </nav>
       </div>
 
       <div className="space-y-1 border-t border-slate-100 p-3">
+        <div className="flex items-center justify-between px-1.5 py-1">
+          <span className="text-xs font-medium text-slate-400">{t('language')}</span>
+          <LanguageSwitcher />
+        </div>
         <Button
           asChild
           variant="ghost"
@@ -133,7 +126,7 @@ export function DashboardSidebar({ className, onNavigate }: DashboardSidebarProp
         >
           <Link href="/cms" onClick={onNavigate}>
             <Settings className="h-5 w-5" />
-            Admin CMS
+            {t('adminCms')}
           </Link>
         </Button>
         <form action={logoutAction}>
@@ -143,7 +136,7 @@ export function DashboardSidebar({ className, onNavigate }: DashboardSidebarProp
             className="h-11 w-full justify-start gap-3 rounded-xl px-3.5 text-base font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-900"
           >
             <LogOut className="h-5 w-5" />
-            Déconnexion
+            {t('logout')}
           </Button>
         </form>
       </div>

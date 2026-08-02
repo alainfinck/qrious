@@ -1,12 +1,16 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { ArrowRight } from 'lucide-react'
 
+import { BrandWordmark } from '@/components/brand/BrandWordmark'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
+import { Link } from '@/src/i18n/routing'
 
 export function CtaSection() {
+  const t = useTranslations('CTA')
+
   return (
     <section className="relative overflow-hidden py-24 sm:py-28">
       <div
@@ -21,18 +25,18 @@ export function CtaSection() {
 
       <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
         <BlurFade delay={0.1} inView>
-          <p className="font-display text-5xl font-bold tracking-tight text-mq-ink sm:text-6xl">
-            QRious
+          <p className="text-5xl font-bold tracking-tight text-mq-ink sm:text-6xl">
+            <BrandWordmark />
           </p>
         </BlurFade>
         <BlurFade delay={0.18} inView>
           <h2 className="mt-5 font-display text-3xl font-bold tracking-tight text-mq-ink sm:text-4xl">
-            Prêt à lancer votre premier QR&nbsp;?
+            {t('title')}
           </h2>
         </BlurFade>
         <BlurFade delay={0.26} inView>
           <p className="mx-auto mt-4 max-w-lg text-lg leading-relaxed text-mq-ink/70">
-            Créez votre compte, configurez votre landing et partagez-la en quelques minutes.
+            {t('description')}
           </p>
         </BlurFade>
         <BlurFade delay={0.34} inView>
@@ -45,7 +49,7 @@ export function CtaSection() {
                 borderRadius="14px"
               >
                 <span className="flex items-center gap-2 font-semibold text-white">
-                  Accéder au tableau de bord
+                  {t('primary')}
                   <ArrowRight className="h-4 w-4" />
                 </span>
               </ShimmerButton>
@@ -54,7 +58,7 @@ export function CtaSection() {
               href="#metiers"
               className="inline-flex h-12 items-center justify-center rounded-xl border-2 border-mq-ink/20 bg-white/50 px-6 text-base font-semibold text-mq-ink backdrop-blur-sm transition-colors hover:bg-white"
             >
-              Découvrir les métiers
+              {t('secondary')}
             </a>
           </div>
         </BlurFade>

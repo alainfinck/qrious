@@ -242,13 +242,13 @@ export function ShapeButton({ selected, label, onClick, children }: ShapeButtonP
       aria-label={label}
       aria-pressed={selected}
       className={cn(
-        'flex flex-col items-center gap-1.5 rounded-xl border p-2 text-slate-600 transition-all',
+        'flex flex-col items-center gap-1.5 rounded-xl border p-2 transition-all',
         selected
-          ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 shadow-xs ring-2 ring-slate-900/10'
-          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 hover:bg-slate-50',
+          ? 'border-mq-ink bg-mq-ink text-white shadow-sm'
+          : 'border-mq-ink/10 bg-white text-mq-muted hover:border-mq-signal/40 hover:bg-mq-mist/50 hover:text-mq-ink',
       )}
     >
-      <span className={cn(selected ? 'text-slate-900 font-bold' : 'text-slate-700')}>{children}</span>
+      <span className={cn(selected ? 'font-bold text-white' : 'text-mq-ink')}>{children}</span>
       <span className="max-w-[4.5rem] truncate text-[10px] font-medium leading-tight">{label}</span>
     </button>
   )

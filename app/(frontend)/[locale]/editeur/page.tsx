@@ -1,59 +1,74 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
+import { BrandWordmarkAppear } from '@/components/brand/BrandWordmarkAppear'
 import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { MarketingHeader } from '@/components/marketing/MarketingHeader'
 import { PublicQrEditor } from '@/components/qr-editor/PublicQrEditor'
 import { Button } from '@/components/ui/button'
+import { Link } from '@/src/i18n/routing'
 
-export const metadata: Metadata = {
-  title: 'Éditeur de QR code gratuit | QRious',
-  description:
-    'Créez et personnalisez un QR code gratuitement : URL, texte, Wi-Fi, vCard. Style des modules, des yeux, couleurs, logo, export PNG et SVG.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Editor')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
-export default function EditeurPage() {
+export default async function EditeurPage() {
+  const t = await getTranslations('Editor')
+
   return (
-    <div className="min-h-dvh bg-mq-paper font-body">
+    <div className="relative min-h-dvh bg-mq-paper font-body">
+      {/* Decorative layer isolated so overflow doesn't break sticky preview */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[32rem] overflow-hidden" aria-hidden>
+        <div className="absolute inset-0 mq-grid opacity-[0.35]" />
+        <div className="absolute -left-32 top-24 h-72 w-72 rounded-full bg-mq-signal/20 blur-3xl mq-blob" />
+        <div className="absolute -right-24 top-48 h-80 w-80 rounded-full bg-mq-sky/15 blur-3xl mq-blob-delay" />
+      </div>
+
       <MarketingHeader />
-      <main>
-        <section className="relative overflow-hidden border-b border-mq-ink/5 bg-mq-ink pt-28 pb-12 text-white lg:pt-32 lg:pb-14">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,#1a3d36_0%,transparent_50%)]" />
-          <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="max-w-2xl space-y-4">
-              <span className="inline-flex items-center rounded-full border border-mq-signal/30 bg-mq-signal/10 px-3 py-1 text-sm font-medium text-mq-signal">
-                Éditeur gratuit
-              </span>
-              <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-                Créez votre QR code en quelques secondes
-              </h1>
-              <p className="text-lg leading-relaxed text-white/60">
-                Personnalisez le contenu, le style des modules et des yeux, les couleurs et le logo,
-                puis téléchargez en PNG ou SVG — sans inscription. Pour suivre les scans et changer
-                la destination plus tard, passez aux QR dynamiques.
-              </p>
-              <div className="flex flex-wrap gap-3 pt-1">
+      <main className="relative">
+        <section className="relative border-b border-mq-ink/5 pt-28 pb-8 lg:pt-32 lg:pb-10">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl space-y-3">
+                <p className="font-qr text-sm font-semibold tracking-wide text-mq-signal-deep">
+                  {t('badge')}
+                </p>
+                <h1 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-4xl font-bold tracking-tight text-mq-ink sm:text-5xl">
+                  <BrandWordmarkAppear rainbow />
+                </h1>
+                <p className="font-display text-2xl font-bold tracking-tight text-mq-ink sm:text-3xl">
+                  {t('title')}
+                </p>
+                <p className="max-w-xl text-base leading-relaxed text-mq-muted sm:text-lg">
+                  {t('description')}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
                 <Button
                   asChild
                   size="sm"
-                  className="rounded-xl bg-mq-signal font-semibold text-mq-ink hover:bg-mq-signal/90"
+                  className="rounded-xl bg-mq-ink font-semibold text-white hover:bg-mq-ink-soft"
                 >
-                  <Link href="/demo">QR dynamiques</Link>
+                  <Link href="/demo">{t('ctaDynamic')}</Link>
                 </Button>
                 <Button
                   asChild
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="rounded-xl text-white/70 hover:bg-white/10 hover:text-white"
+                  className="rounded-xl border-mq-ink/15 bg-white/70"
                 >
-                  <Link href="/features">Voir les fonctionnalités</Link>
+                  <Link href="/features">{t('ctaFeatures')}</Link>
                 </Button>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="py-10 lg:py-14">
+        <section className="py-8 lg:py-12">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <PublicQrEditor />
           </div>

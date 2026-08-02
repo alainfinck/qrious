@@ -1,3 +1,5 @@
+import { getTranslations } from 'next-intl/server'
+
 import { ActivityChart } from '@/components/dashboard/ActivityChart'
 import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader'
 import { OverviewStats } from '@/components/dashboard/OverviewStats'
@@ -7,14 +9,15 @@ import { getAllLandingPages, getDashboardStats } from '@/lib/payload'
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardHomePage() {
-  const [stats, pages] = await Promise.all([getDashboardStats(), getAllLandingPages()])
+  const [stats, pages, t] = await Promise.all([
+    getDashboardStats(),
+    getAllLandingPages(),
+    getTranslations('Dashboard.overview'),
+  ])
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
-      <DashboardPageHeader
-        title="Tableau de bord"
-        description="Bienvenue sur votre tableau de bord Art QR."
-      />
+      <DashboardPageHeader title={t('title')} description={t('description')} />
 
       <OverviewStats total={stats.total} pages={pages} />
 

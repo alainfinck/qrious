@@ -1,19 +1,17 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { ArrowUpRight, Building2, Contact, Palette } from 'lucide-react'
 
 import { BlurFade } from '@/components/ui/blur-fade'
 import { BorderBeam } from '@/components/ui/border-beam'
+import { Link } from '@/src/i18n/routing'
 
 const verticals = [
   {
-    id: 'art',
+    id: 'art' as const,
     icon: Palette,
-    label: 'Art & Galeries',
     href: '/galeries',
-    description:
-      'Mettez en valeur chaque œuvre : artiste, dimensions, médium, Instagram et vidéo.',
     visual: 'from-[#5c2b1a] via-[#c45a2a] to-[#1a0f0c]',
     accent: 'bg-mq-sun',
     beamFrom: '#ffc53d',
@@ -27,12 +25,9 @@ const verticals = [
     ),
   },
   {
-    id: 'immo',
+    id: 'immo' as const,
     icon: Building2,
-    label: 'Immobilier & Gîtes',
     href: '/features',
-    description:
-      'Présentez un bien avec prix, surface, pièces, DPE coloré et bouton de réservation.',
     visual: 'from-[#0a2a44] via-[#1a6fb5] to-[#061820]',
     accent: 'bg-mq-sky',
     beamFrom: '#3dbbff',
@@ -48,12 +43,9 @@ const verticals = [
     ),
   },
   {
-    id: 'vcard',
+    id: 'vcard' as const,
     icon: Contact,
-    label: 'Carte de visite',
     href: '/editeur',
-    description:
-      'Remplacez la carte papier : nom, fonction, téléphone, email et LinkedIn en un scan.',
     visual: 'from-[#06352e] via-[#12c4a8] to-[#042018]',
     accent: 'bg-mq-signal',
     beamFrom: '#12c4a8',
@@ -75,6 +67,8 @@ const verticals = [
 ]
 
 export function VerticalsSection() {
+  const t = useTranslations('Verticals')
+
   return (
     <section id="metiers" className="relative overflow-hidden bg-mq-ink py-24 text-white sm:py-32">
       <div
@@ -89,14 +83,14 @@ export function VerticalsSection() {
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <BlurFade delay={0.1} inView>
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mq-sun">Métiers</p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-5xl">
-              Un template par{' '}
-              <span className="text-mq-signal">univers</span>
-            </h2>
-            <p className="mt-5 text-lg leading-relaxed text-white/60">
-              Les champs s&apos;adaptent à votre métier. Un back-office, trois expériences distinctes.
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mq-sun">
+              {t('eyebrow')}
             </p>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-5xl">
+              {t('titleBefore')}{' '}
+              <span className="text-mq-signal">{t('titleHighlight')}</span>
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-white/60">{t('subtitle')}</p>
           </div>
         </BlurFade>
 
@@ -126,10 +120,14 @@ export function VerticalsSection() {
                     >
                       <vertical.icon className="h-6 w-6" />
                     </span>
-                    <h3 className="font-display text-xl font-semibold">{vertical.label}</h3>
+                    <h3 className="font-display text-xl font-semibold">
+                      {t(`items.${vertical.id}.label`)}
+                    </h3>
                     <ArrowUpRight className="ml-auto h-5 w-5 text-white/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-mq-sun" />
                   </div>
-                  <p className="text-sm leading-relaxed text-white/75">{vertical.description}</p>
+                  <p className="text-sm leading-relaxed text-white/75">
+                    {t(`items.${vertical.id}.description`)}
+                  </p>
                 </div>
               </Link>
             </BlurFade>

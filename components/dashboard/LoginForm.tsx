@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { AuthShell } from '@/components/dashboard/AuthShell'
 import {
@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { loginAction } from '@/lib/auth/actions'
 import { cn } from '@/lib/utils'
+import { Link } from '@/src/i18n/routing'
 
 export function LoginForm({
   notice,
@@ -27,6 +28,8 @@ export function LoginForm({
   notice?: string | null
   redirectTo?: string
 }) {
+  const t = useTranslations('Dashboard.login')
+  const tAuth = useTranslations('Dashboard.auth')
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -42,7 +45,7 @@ export function LoginForm({
   }
 
   return (
-    <AuthShell title="Bon retour" description="Connectez-vous pour accéder à votre tableau de bord">
+    <AuthShell title={t('title')} description={t('description')}>
       <form action={handleSubmit} className="space-y-6">
         {redirectTo ? <input type="hidden" name="redirectTo" value={redirectTo} /> : null}
         {notice ? (
@@ -54,14 +57,14 @@ export function LoginForm({
         <BlurFade delay={0.08} inView>
           <div className="space-y-2.5">
             <Label htmlFor="email" className={authLabelClass}>
-              E-mail
+              {tAuth('email')}
             </Label>
             <Input
               id="email"
               name="email"
               type="email"
               autoComplete="email"
-              placeholder="vous@exemple.fr"
+              placeholder={tAuth('emailPlaceholder')}
               required
               autoFocus
               className={authFieldClass}
@@ -73,13 +76,13 @@ export function LoginForm({
           <div className="space-y-2.5">
             <div className="flex items-center justify-between gap-2">
               <Label htmlFor="password" className={authLabelClass}>
-                Mot de passe
+                {tAuth('password')}
               </Label>
               <Link
                 href="/dashboard/forgot-password"
                 className="text-sm font-medium text-mq-sky hover:text-mq-signal"
               >
-                Mot de passe oublié ?
+                {t('forgotPassword')}
               </Link>
             </div>
             <div className="relative">
@@ -96,7 +99,7 @@ export function LoginForm({
                 type="button"
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 transition-colors hover:text-white/80"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                aria-label={showPassword ? t('hidePassword') : t('showPassword')}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -120,11 +123,11 @@ export function LoginForm({
               {pending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Connexion…
+                  {t('submitting')}
                 </>
               ) : (
                 <>
-                  Se connecter
+                  {t('submit')}
                   <ArrowRight className="h-5 w-5" />
                 </>
               )}
@@ -135,9 +138,9 @@ export function LoginForm({
 
       <BlurFade delay={0.28} inView>
         <p className={`mt-7 ${authMutedLinkClass}`}>
-          Pas encore de compte ?{' '}
+          {t('noAccount')}{' '}
           <Link href="/dashboard/register" className={authLinkClass}>
-            Créer un compte
+            {t('createAccount')}
           </Link>
         </p>
       </BlurFade>

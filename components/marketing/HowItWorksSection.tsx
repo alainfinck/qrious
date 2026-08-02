@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Edit3, QrCode, Share2 } from 'lucide-react'
 
 import { BlurFade } from '@/components/ui/blur-fade'
@@ -8,30 +9,24 @@ import { NumberTicker } from '@/components/ui/number-ticker'
 const steps = [
   {
     step: 1,
+    key: '1' as const,
     icon: Edit3,
-    title: 'Créez votre page',
-    description:
-      'Choisissez votre métier, renseignez le contenu et personnalisez votre thème depuis le tableau de bord.',
     iconBg: 'bg-mq-signal text-mq-ink',
     num: 'text-mq-signal',
     bar: 'from-mq-signal to-mq-sky',
   },
   {
     step: 2,
+    key: '2' as const,
     icon: QrCode,
-    title: 'Générez votre QR',
-    description:
-      'Chaque page reçoit une URL unique. Imprimez le QR une seule fois — il ne change jamais.',
     iconBg: 'bg-mq-sky text-mq-ink',
     num: 'text-mq-sky',
     bar: 'from-mq-sky to-mq-sun',
   },
   {
     step: 3,
+    key: '3' as const,
     icon: Share2,
-    title: 'Partagez & mettez à jour',
-    description:
-      'Vos visiteurs scannent une landing mobile-first. Vous modifiez le contenu quand vous voulez.',
     iconBg: 'bg-mq-coral text-white',
     num: 'text-mq-coral',
     bar: 'from-mq-coral to-mq-sun',
@@ -39,6 +34,8 @@ const steps = [
 ]
 
 export function HowItWorksSection() {
+  const t = useTranslations('HowItWorks')
+
   return (
     <section
       id="comment"
@@ -50,11 +47,11 @@ export function HowItWorksSection() {
         <BlurFade delay={0.1} inView>
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mq-sky">
-              Comment ça marche
+              {t('eyebrow')}
             </p>
             <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-mq-ink sm:text-5xl">
-              De l&apos;idée au scan en{' '}
-              <NumberTicker value={3} className="text-mq-coral" /> étapes
+              {t('titleBefore')}{' '}
+              <NumberTicker value={3} className="text-mq-coral" /> {t('titleAfter')}
             </h2>
           </div>
         </BlurFade>
@@ -79,8 +76,12 @@ export function HowItWorksSection() {
                     0{item.step}
                   </span>
                 </div>
-                <h3 className="font-display text-2xl font-semibold text-mq-ink">{item.title}</h3>
-                <p className="mt-3 text-base leading-relaxed text-mq-muted">{item.description}</p>
+                <h3 className="font-display text-2xl font-semibold text-mq-ink">
+                  {t(`steps.${item.key}.title`)}
+                </h3>
+                <p className="mt-3 text-base leading-relaxed text-mq-muted">
+                  {t(`steps.${item.key}.description`)}
+                </p>
               </li>
             </BlurFade>
           ))}

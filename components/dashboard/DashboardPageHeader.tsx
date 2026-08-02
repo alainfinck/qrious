@@ -1,7 +1,10 @@
-import Link from 'next/link'
+'use client'
+
 import { Plus } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
+import { Link } from '@/src/i18n/routing'
 
 interface DashboardPageHeaderProps {
   title: string
@@ -16,6 +19,8 @@ export function DashboardPageHeader({
   showCreateButton = true,
   children,
 }: DashboardPageHeaderProps) {
+  const t = useTranslations('Dashboard.common')
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div>
@@ -26,7 +31,7 @@ export function DashboardPageHeader({
         <Button asChild className="shrink-0">
           <Link href="/dashboard/new">
             <Plus className="h-4 w-4" />
-            Créer un QR Code
+            {t('createQrCode')}
           </Link>
         </Button>
       ) : null}

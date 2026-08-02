@@ -1,13 +1,24 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Loader2, Send } from 'lucide-react'
 
 import { BorderBeam } from '@/components/ui/border-beam'
 import { Button } from '@/components/ui/button'
+import { Link } from '@/src/i18n/routing'
+
+const SUBJECT_KEYS = [
+  'demo',
+  'pricing',
+  'support',
+  'enterprise',
+  'partnership',
+  'other',
+] as const
 
 export function ContactForm() {
+  const t = useTranslations('ContactForm')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
@@ -29,15 +40,13 @@ export function ContactForm() {
     <div className="relative overflow-hidden rounded-3xl border border-mq-ink/8 bg-white p-8 shadow-[0_24px_60px_-30px_rgba(10,12,11,0.2)]">
       <BorderBeam size={100} duration={12} colorFrom="#0f9f8a" colorTo="#5eead4" />
       <div className="mb-8">
-        <h2 className="font-display text-2xl font-bold text-mq-ink">Envoyez-nous un message</h2>
-        <p className="mt-1 text-sm text-mq-muted">
-          Remplissez le formulaire — réponse sous 24h ouvrées.
-        </p>
+        <h2 className="font-display text-2xl font-bold text-mq-ink">{t('title')}</h2>
+        <p className="mt-1 text-sm text-mq-muted">{t('subtitle')}</p>
       </div>
 
       {isSuccess && (
         <div className="mb-6 rounded-xl border border-mq-signal/30 bg-mq-signal/10 px-4 py-3 text-sm text-mq-signal-deep">
-          Message envoyé ! Nous vous répondrons rapidement.
+          {t('success')}
         </div>
       )}
 
@@ -45,13 +54,13 @@ export function ContactForm() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
             <label htmlFor="firstName" className="text-sm font-medium text-mq-ink">
-              Prénom *
+              {t('firstName')}
             </label>
             <input type="text" id="firstName" name="firstName" required className={fieldClass} />
           </div>
           <div className="space-y-2">
             <label htmlFor="lastName" className="text-sm font-medium text-mq-ink">
-              Nom *
+              {t('lastName')}
             </label>
             <input type="text" id="lastName" name="lastName" required className={fieldClass} />
           </div>
@@ -60,13 +69,13 @@ export function ContactForm() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-mq-ink">
-              Email *
+              {t('email')}
             </label>
             <input type="email" id="email" name="email" required className={fieldClass} />
           </div>
           <div className="space-y-2">
             <label htmlFor="phone" className="text-sm font-medium text-mq-ink">
-              Téléphone
+              {t('phone')}
             </label>
             <input type="tel" id="phone" name="phone" className={fieldClass} />
           </div>
@@ -74,29 +83,28 @@ export function ContactForm() {
 
         <div className="space-y-2">
           <label htmlFor="subject" className="text-sm font-medium text-mq-ink">
-            Sujet *
+            {t('subject')}
           </label>
           <select id="subject" name="subject" required className={fieldClass}>
-            <option value="">Choisissez un sujet</option>
-            <option value="demo">Demande de démonstration</option>
-            <option value="pricing">Question sur les tarifs</option>
-            <option value="support">Support technique</option>
-            <option value="enterprise">Solution Enterprise</option>
-            <option value="partnership">Partenariat</option>
-            <option value="other">Autre</option>
+            <option value="">{t('subjectPlaceholder')}</option>
+            {SUBJECT_KEYS.map((key) => (
+              <option key={key} value={key}>
+                {t(`subjects.${key}`)}
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="space-y-2">
           <label htmlFor="message" className="text-sm font-medium text-mq-ink">
-            Message *
+            {t('message')}
           </label>
           <textarea
             id="message"
             name="message"
             rows={5}
             required
-            placeholder="Décrivez votre projet ou votre question..."
+            placeholder={t('messagePlaceholder')}
             className={`${fieldClass} resize-none`}
           />
         </div>
@@ -109,9 +117,9 @@ export function ContactForm() {
             className="mt-1 h-4 w-4 rounded border-mq-ink/20 text-mq-signal focus:ring-mq-signal"
           />
           <span className="text-sm text-mq-muted">
-            J&apos;accepte que mes données soient traitées conformément à la{' '}
+            {t('privacyConsent')}{' '}
             <Link href="/confidentialite" className="text-mq-signal-deep hover:underline">
-              politique de confidentialité
+              {t('privacyLink')}
             </Link>{' '}
             *
           </span>
@@ -126,12 +134,12 @@ export function ContactForm() {
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Envoi…
+              {t('submitting')}
             </>
           ) : (
             <>
               <Send className="mr-2 h-4 w-4" />
-              Envoyer
+              {t('submit')}
             </>
           )}
         </Button>

@@ -1,5 +1,13 @@
 export function getPublicBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  const raw = (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(
+    /\/$/,
+    '',
+  )
+  // Legacy v2 host → current production domain
+  if (raw === 'https://v2.qrious.fr' || raw === 'http://v2.qrious.fr') {
+    return 'https://www.qrious.fr'
+  }
+  return raw
 }
 
 export function getQrTargetUrl(slug: string): string {

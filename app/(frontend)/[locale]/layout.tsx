@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Bricolage_Grotesque, Figtree } from 'next/font/google'
+import { Bricolage_Grotesque, Figtree, Pixelify_Sans } from 'next/font/google'
 
 import '@/app/globals.css'
 
@@ -12,6 +12,13 @@ const display = Bricolage_Grotesque({
 const body = Figtree({
   subsets: ['latin'],
   variable: '--font-body',
+  display: 'swap',
+})
+
+const qr = Pixelify_Sans({
+  subsets: ['latin'],
+  variable: '--font-qr',
+  weight: '700',
   display: 'swap',
 })
 
@@ -50,7 +57,7 @@ export default async function FrontendLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${display.variable} ${body.variable}`}>
+    <html lang={locale} className={`${display.variable} ${body.variable} ${qr.variable}`}>
       <body className="font-body antialiased">
         <NextIntlClientProvider messages={messages}>
           {children}

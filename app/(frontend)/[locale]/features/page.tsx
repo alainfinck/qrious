@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import {
   BarChart3,
   Download,
@@ -24,62 +24,30 @@ import { MagicCard } from '@/components/ui/magic-card'
 import { NumberTicker } from '@/components/ui/number-ticker'
 import { Particles } from '@/components/ui/particles'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
+import { Link } from '@/src/i18n/routing'
 import { cn } from '@/lib/utils'
 
-const features = [
-  {
-    icon: QrCode,
-    title: 'QR codes dynamiques',
-    description: 'Un QR imprimé une fois, un contenu que vous mettez à jour à volonté.',
-  },
-  {
-    icon: FileText,
-    title: 'Templates métiers',
-    description: 'Art, immobilier, vCard — des champs adaptés à chaque vertical.',
-  },
-  {
-    icon: Palette,
-    title: 'Marque blanche',
-    description: 'Logo et couleur primaire : vos landings portent votre identité.',
-  },
-  {
-    icon: LayoutDashboard,
-    title: 'Tableau de bord',
-    description: 'Créez, publiez et gérez tous vos QR depuis un seul espace.',
-  },
-  {
-    icon: Smartphone,
-    title: 'Mobile-first',
-    description: 'Landings optimisées pour le scan smartphone, rapides et lisibles.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Statistiques',
-    description: 'Suivez les scans et l’engagement de vos pages en un coup d’œil.',
-  },
-  {
-    icon: Share2,
-    title: 'Partage instantané',
-    description: 'URL unique, QR téléchargeable, prêt pour print ou digital.',
-  },
-  {
-    icon: Download,
-    title: 'Export QR',
-    description: 'Téléchargez vos QR en haute qualité pour l’impression.',
-  },
-  {
-    icon: Globe,
-    title: 'En ligne en secondes',
-    description: 'Publiez et partagez immédiatement — zéro déploiement technique.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Fiable & sécurisé',
-    description: 'Hébergement moderne, données protégées, pages toujours disponibles.',
-  },
-]
+const featureIcons = [
+  QrCode,
+  FileText,
+  Palette,
+  LayoutDashboard,
+  Smartphone,
+  BarChart3,
+  Share2,
+  Download,
+  Globe,
+  ShieldCheck,
+] as const
 
 export default function FeaturesPage() {
+  const t = useTranslations('FeaturesPage')
+  const features = featureIcons.map((icon, i) => ({
+    icon,
+    title: t(`items.${i + 1}.title`),
+    description: t(`items.${i + 1}.description`),
+  }))
+
   return (
     <div className="min-h-dvh bg-mq-paper font-body">
       <MarketingHeader />
@@ -99,15 +67,12 @@ export default function FeaturesPage() {
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
             <BlurFade delay={0.1} inView>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mq-signal">
-                Fonctionnalités
+                {t('eyebrow')}
               </p>
               <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                La suite complète pour des QR professionnels
+                {t('title')}
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/60">
-                Créez, personnalisez et publiez des landing pages scannables — sans code, sans
-                réimpression.
-              </p>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/60">{t('subtitle')}</p>
             </BlurFade>
             <BlurFade delay={0.2} inView>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -118,14 +83,14 @@ export default function FeaturesPage() {
                     borderRadius="12px"
                     className="h-12 px-6"
                   >
-                    <span className="font-semibold text-mq-ink">Voir la démo</span>
+                    <span className="font-semibold text-mq-ink">{t('ctaDemo')}</span>
                   </ShimmerButton>
                 </Link>
                 <Link
                   href="/pricing"
                   className="inline-flex h-12 items-center justify-center rounded-xl border border-white/15 px-6 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                 >
-                  Voir les tarifs
+                  {t('ctaPricing')}
                 </Link>
               </div>
             </BlurFade>
@@ -135,19 +100,19 @@ export default function FeaturesPage() {
                   <div className="font-display text-2xl font-bold text-white">
                     <NumberTicker value={10} className="text-white" />+
                   </div>
-                  <div className="text-sm text-white/45">Fonctionnalités</div>
+                  <div className="text-sm text-white/45">{t('stats.features')}</div>
                 </div>
                 <div>
                   <div className="font-display text-2xl font-bold text-white">
                     <NumberTicker value={100} className="text-white" />%
                   </div>
-                  <div className="text-sm text-white/45">Responsive</div>
+                  <div className="text-sm text-white/45">{t('stats.responsive')}</div>
                 </div>
                 <div>
                   <div className="font-display text-2xl font-bold text-white">
                     <NumberTicker value={3} className="text-white" />
                   </div>
-                  <div className="text-sm text-white/45">Verticals</div>
+                  <div className="text-sm text-white/45">{t('stats.verticals')}</div>
                 </div>
               </div>
             </BlurFade>
@@ -187,12 +152,8 @@ export default function FeaturesPage() {
             <div className="relative overflow-hidden rounded-3xl border border-mq-ink/8 bg-mq-ink p-8 text-white sm:p-12">
               <BorderBeam size={120} duration={10} colorFrom="#0f9f8a" colorTo="#5eead4" />
               <BlurFade delay={0.1} inView>
-                <h2 className="font-display text-2xl font-bold sm:text-3xl">
-                  Prêt à tester sur votre métier ?
-                </h2>
-                <p className="mt-3 max-w-lg text-white/55">
-                  Créez votre premier QR en quelques minutes et voyez le résultat sur mobile.
-                </p>
+                <h2 className="font-display text-2xl font-bold sm:text-3xl">{t('midCta.title')}</h2>
+                <p className="mt-3 max-w-lg text-white/55">{t('midCta.description')}</p>
                 <Link href="/dashboard/register" className="mt-8 inline-block">
                   <ShimmerButton
                     background="linear-gradient(135deg, #0f9f8a 0%, #0b7a6a 100%)"
@@ -200,7 +161,7 @@ export default function FeaturesPage() {
                     borderRadius="12px"
                     className="h-11 px-5"
                   >
-                    <span className="font-semibold text-mq-ink">Commencer gratuitement</span>
+                    <span className="font-semibold text-mq-ink">{t('midCta.button')}</span>
                   </ShimmerButton>
                 </Link>
               </BlurFade>

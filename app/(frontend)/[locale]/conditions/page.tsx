@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-
 import { LegalPageShell, LegalSection } from '@/components/marketing/LegalPageShell'
+import { Link } from '@/src/i18n/routing'
 
 export const metadata: Metadata = {
   title: "Conditions Générales d'Utilisation | QRious",

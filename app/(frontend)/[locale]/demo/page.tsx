@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { BarChart3, Eye, QrCode, Settings, Smartphone, Users } from 'lucide-react'
 
 import { MarketingFooter } from '@/components/marketing/MarketingFooter'
@@ -11,6 +11,7 @@ import { MagicCard } from '@/components/ui/magic-card'
 import { NumberTicker } from '@/components/ui/number-ticker'
 import { Particles } from '@/components/ui/particles'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
+import { Link } from '@/src/i18n/routing'
 
 const highlights = [
   {
@@ -36,6 +37,8 @@ const highlights = [
 ]
 
 export default function DemoPage() {
+  const t = useTranslations('Demo')
+
   return (
     <div className="min-h-dvh bg-mq-paper font-body">
       <MarketingHeader />
@@ -45,32 +48,30 @@ export default function DemoPage() {
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2">
             <BlurFade delay={0.1} inView>
               <p className="inline-flex items-center rounded-full border border-mq-signal/30 bg-mq-signal/10 px-3 py-1 text-sm font-medium text-mq-signal">
-                Démo interactive
+                {t('badge')}
               </p>
               <h1 className="mt-6 font-display text-4xl font-bold tracking-tight sm:text-5xl">
-                Découvrez QRious en action
+                {t('title')}
               </h1>
-              <p className="mt-5 text-lg leading-relaxed text-white/60">
-                Explorez le parcours : du tableau de bord à la landing scannée sur smartphone.
-              </p>
+              <p className="mt-5 text-lg leading-relaxed text-white/60">{t('subtitle')}</p>
               <div className="mt-8 flex gap-8">
                 <div>
                   <div className="font-display text-2xl font-bold">
                     <NumberTicker value={2} className="text-white" /> min
                   </div>
-                  <div className="text-sm text-white/45">Création d&apos;un QR</div>
+                  <div className="text-sm text-white/45">{t('statCreate')}</div>
                 </div>
                 <div>
                   <div className="font-display text-2xl font-bold">
                     <NumberTicker value={100} className="text-white" />%
                   </div>
-                  <div className="text-sm text-white/45">Personnalisable</div>
+                  <div className="text-sm text-white/45">{t('statCustomizable')}</div>
                 </div>
                 <div>
                   <div className="font-display text-2xl font-bold">
                     <NumberTicker value={24} className="text-white" />h
                   </div>
-                  <div className="text-sm text-white/45">Support</div>
+                  <div className="text-sm text-white/45">{t('statSupport')}</div>
                 </div>
               </div>
               <div className="mt-10">
@@ -81,7 +82,7 @@ export default function DemoPage() {
                     borderRadius="12px"
                     className="h-12 px-6"
                   >
-                    <span className="font-semibold text-mq-ink">Essayer gratuitement</span>
+                    <span className="font-semibold text-mq-ink">{t('ctaTry')}</span>
                   </ShimmerButton>
                 </Link>
               </div>
@@ -128,11 +129,9 @@ export default function DemoPage() {
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <BlurFade delay={0.1} inView>
               <h2 className="font-display text-3xl font-bold text-mq-ink sm:text-4xl">
-                Ce que vous allez tester
+                {t('highlightsTitle')}
               </h2>
-              <p className="mt-3 max-w-xl text-mq-muted">
-                Un parcours complet, du back-office à l’expérience scan.
-              </p>
+              <p className="mt-3 max-w-xl text-mq-muted">{t('highlightsSubtitle')}</p>
             </BlurFade>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {highlights.map((item, index) => (
@@ -160,12 +159,8 @@ export default function DemoPage() {
         <section className="border-t border-mq-ink/5 bg-white/40 py-20">
           <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
             <BlurFade delay={0.1} inView>
-              <h2 className="font-display text-3xl font-bold text-mq-ink">
-                Lancez votre propre démo
-              </h2>
-              <p className="mt-4 text-mq-muted">
-                Créez un compte et publiez votre première landing en quelques minutes.
-              </p>
+              <h2 className="font-display text-3xl font-bold text-mq-ink">{t('bottomTitle')}</h2>
+              <p className="mt-4 text-mq-muted">{t('bottomSubtitle')}</p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link href="/dashboard/register">
                   <ShimmerButton
@@ -174,14 +169,14 @@ export default function DemoPage() {
                     borderRadius="12px"
                     className="h-12 px-6"
                   >
-                    <span className="font-semibold">Créer mon compte</span>
+                    <span className="font-semibold">{t('ctaRegister')}</span>
                   </ShimmerButton>
                 </Link>
                 <Link
                   href="/pricing"
                   className="inline-flex h-12 items-center justify-center rounded-xl border border-mq-ink/15 px-6 text-sm font-medium text-mq-ink hover:bg-mq-ink/5"
                 >
-                  Voir les tarifs
+                  {t('ctaPricing')}
                 </Link>
               </div>
             </BlurFade>

@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 
 import { QrCodeForm } from '@/components/dashboard/QrCodeForm'
 import { QrPreviewCard } from '@/components/dashboard/QrPreviewCard'
@@ -8,6 +8,7 @@ import { QrStatsPanel } from '@/components/dashboard/QrStatsPanel'
 import { Button } from '@/components/ui/button'
 import { updateQrCodeAction } from '@/lib/dashboard/actions'
 import { getLandingPageById } from '@/lib/payload'
+import { Link } from '@/src/i18n/routing'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -15,7 +16,10 @@ interface PageProps {
 
 export default async function EditQrCodePage({ params }: PageProps) {
   const { id } = await params
-  const page = await getLandingPageById(id)
+  const [page, t] = await Promise.all([
+    getLandingPageById(id),
+    getTranslations('Dashboard.qrEdit'),
+  ])
 
   if (!page) {
     notFound()
@@ -33,12 +37,12 @@ export default async function EditQrCodePage({ params }: PageProps) {
         </Button>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{page.title}</h1>
-          <p className="text-sm text-muted-foreground">Modifier le contenu et le statut de publication.</p>
+          <p className="text-sm text-muted-foreground">{t('description')}</p>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <QrCodeForm page={page} action={boundUpdate} submitLabel="Enregistrer" />
+        <QrCodeForm page={page} action={boundUpdate} submitLabel={t('submit')} />
         <div className="space-y-6">
           <QrPreviewCard page={page} />
           <QrStatsPanel page={page} />
@@ -47,4 +51,3 @@ export default async function EditQrCodePage({ params }: PageProps) {
     </div>
   )
 }
-

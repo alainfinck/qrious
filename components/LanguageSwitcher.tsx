@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from '@/src/i18n/routing';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,21 +9,30 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Globe } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const languages = [
-  { code: 'fr', label: 'Français' },
-  { code: 'en', label: 'English' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'it', label: 'Italiano' },
-  { code: 'es', label: 'Español' },
-  { code: 'pl', label: 'Polski' },
-];
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'it', label: 'Italiano', flag: '🇮🇹' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'pl', label: 'Polski', flag: '🇵🇱' },
+] as const;
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  variant?: 'default' | 'onDark';
+  className?: string;
+}
+
+export function LanguageSwitcher({
+  variant = 'default',
+  className,
+}: LanguageSwitcherProps) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations('LanguageSwitcher');
 
   const handleLanguageChange = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale });
@@ -34,8 +43,19 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
-          <Globe className="h-4 w-4" />
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label={t('ariaLabel')}
+          className={cn(
+            'gap-2',
+            variant === 'onDark' && 'text-white/90 hover:bg-white/10 hover:text-white',
+            className,
+          )}
+        >
+          <span className="text-base leading-none" aria-hidden>
+            {currentLanguage.flag}
+          </span>
           <span className="hidden sm:inline-block">{currentLanguage.label}</span>
           <span className="sm:hidden">{currentLanguage.code.toUpperCase()}</span>
         </Button>
@@ -45,8 +65,11 @@ export function LanguageSwitcher() {
           <DropdownMenuItem
             key={lang.code}
             onClick={() => handleLanguageChange(lang.code)}
-            className={locale === lang.code ? 'font-bold' : ''}
+            className={cn('gap-2.5', locale === lang.code && 'font-bold')}
           >
+            <span className="text-base leading-none" aria-hidden>
+              {lang.flag}
+            </span>
             {lang.label}
           </DropdownMenuItem>
         ))}

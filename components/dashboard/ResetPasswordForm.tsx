@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowRight, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import {
   authErrorClass,
@@ -16,20 +16,25 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { resetPasswordAction } from '@/lib/auth/actions'
+import { Link } from '@/src/i18n/routing'
 
 export function ResetPasswordForm({ token }: { token: string }) {
+  const t = useTranslations('Dashboard.resetPassword')
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
   if (!token) {
+    const linkLabel = t('forgotPasswordLink')
+    const [hintBefore, hintAfter] = t('invalidHint', { link: '___' }).split('___')
+
     return (
-      <AuthShell title="Lien invalide" description="Ce lien de réinitialisation est incomplet">
+      <AuthShell title={t('invalidTitle')} description={t('invalidDescription')}>
         <p className="text-sm text-white/60">
-          Demandez un nouveau lien depuis la page{' '}
+          {hintBefore}
           <Link href="/dashboard/forgot-password" className={authLinkClass}>
-            mot de passe oublié
+            {linkLabel}
           </Link>
-          .
+          {hintAfter}
         </p>
       </AuthShell>
     )
@@ -47,19 +52,19 @@ export function ResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <AuthShell title="Nouveau mot de passe" description="Choisissez un nouveau mot de passe sécurisé">
+    <AuthShell title={t('title')} description={t('description')}>
       <form action={handleSubmit} className="space-y-6">
         <BlurFade delay={0.08} inView>
           <div className="space-y-2">
             <Label htmlFor="password" className={authLabelClass}>
-              Nouveau mot de passe
+              {t('newPassword')}
             </Label>
             <Input
               id="password"
               name="password"
               type="password"
               autoComplete="new-password"
-              placeholder="8 caractères minimum"
+              placeholder={t('passwordPlaceholder')}
               minLength={8}
               required
               autoFocus
@@ -71,7 +76,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         <BlurFade delay={0.14} inView>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword" className={authLabelClass}>
-              Confirmer le mot de passe
+              {t('confirmPassword')}
             </Label>
             <Input
               id="confirmPassword"
@@ -101,11 +106,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
               {pending ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Enregistrement…
+                  {t('submitting')}
                 </>
               ) : (
                 <>
-                  Enregistrer
+                  {t('submit')}
                   <ArrowRight className="h-5 w-5" />
                 </>
               )}

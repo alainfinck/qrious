@@ -1,4 +1,10 @@
-import { QrFrameStyle, QrStyle } from './style'
+import { effectiveBackgroundColor, type QrFrameStyle, type QrStyle } from './style'
+
+const FRAME_FONT = 'Figtree, Bricolage Grotesque, system-ui, -apple-system, sans-serif'
+
+function bgFill(style: QrStyle): string {
+  return effectiveBackgroundColor(style)
+}
 
 export interface FrameDefinition {
   viewBox: string
@@ -20,8 +26,8 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" width="100%" height="100%">
         <rect x="0" y="0" width="1000" height="1200" rx="80" fill="${style.frameColor}" />
-        <rect x="50" y="50" width="900" height="900" rx="45" fill="${style.backgroundColor}" />
-        <text x="500" y="1060" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="90" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <rect x="50" y="50" width="900" height="900" rx="45" fill="${bgFill(style)}" />
+        <text x="500" y="1060" font-family="${FRAME_FONT}" font-weight="bold" font-size="90" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -35,8 +41,8 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" width="100%" height="100%">
         <rect x="0" y="0" width="1000" height="1200" rx="80" fill="${style.frameColor}" />
-        <rect x="50" y="250" width="900" height="900" rx="45" fill="${style.backgroundColor}" />
-        <text x="500" y="140" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="90" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <rect x="50" y="250" width="900" height="900" rx="45" fill="${bgFill(style)}" />
+        <text x="500" y="140" font-family="${FRAME_FONT}" font-weight="bold" font-size="90" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -50,8 +56,8 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1350" width="100%" height="100%">
         <path d="M 0 80 Q 0 0 80 0 L 920 0 Q 1000 0 1000 80 L 1000 1100 Q 1000 1180 920 1180 L 620 1180 L 500 1340 L 380 1180 L 80 1180 Q 0 1180 0 1100 Z" fill="${style.frameColor}" />
-        <rect x="50" y="250" width="900" height="900" rx="45" fill="${style.backgroundColor}" />
-        <text x="500" y="140" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="90" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <rect x="50" y="250" width="900" height="900" rx="45" fill="${bgFill(style)}" />
+        <text x="500" y="140" font-family="${FRAME_FONT}" font-weight="bold" font-size="90" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -66,9 +72,9 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1600" width="100%" height="100%">
         <rect x="0" y="0" width="1000" height="1600" rx="120" fill="${style.frameColor}" />
         <rect x="360" y="35" width="280" height="35" rx="18" fill="${style.frameTextColor}" opacity="0.3" />
-        <rect x="40" y="100" width="920" height="1420" rx="80" fill="${style.backgroundColor}" />
+        <rect x="40" y="100" width="920" height="1420" rx="80" fill="${bgFill(style)}" />
         <rect x="150" y="200" width="700" height="120" rx="60" fill="${style.frameColor}" />
-        <text x="500" y="260" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="65" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <text x="500" y="260" font-family="${FRAME_FONT}" font-weight="bold" font-size="65" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -83,8 +89,8 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1350" width="100%" height="100%">
         <circle cx="500" cy="70" r="32" fill="${style.frameTextColor}" opacity="0.5" />
         <rect x="0" y="140" width="1000" height="1210" rx="70" fill="${style.frameColor}" />
-        <rect x="50" y="190" width="900" height="900" rx="45" fill="${style.backgroundColor}" />
-        <text x="500" y="1205" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="85" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <rect x="50" y="190" width="900" height="900" rx="45" fill="${bgFill(style)}" />
+        <text x="500" y="1205" font-family="${FRAME_FONT}" font-weight="bold" font-size="85" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -98,8 +104,8 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1300" width="100%" height="100%">
         <rect x="0" y="0" width="1000" height="1300" rx="40" fill="${style.frameColor}" />
-        <rect x="60" y="60" width="880" height="880" rx="20" fill="${style.backgroundColor}" />
-        <text x="500" y="1110" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="85" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <rect x="60" y="60" width="880" height="880" rx="20" fill="${bgFill(style)}" />
+        <text x="500" y="1110" font-family="${FRAME_FONT}" font-weight="bold" font-size="85" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -113,9 +119,9 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1150" width="100%" height="100%">
         <rect x="20" y="20" width="960" height="1110" rx="50" fill="none" stroke="${style.frameColor}" stroke-width="40" />
-        <rect x="40" y="40" width="920" height="920" rx="30" fill="${style.backgroundColor}" />
+        <rect x="40" y="40" width="920" height="920" rx="30" fill="${bgFill(style)}" />
         <rect x="200" y="990" width="600" height="120" rx="60" fill="${style.frameColor}" />
-        <text x="500" y="1050" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="65" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <text x="500" y="1050" font-family="${FRAME_FONT}" font-weight="bold" font-size="65" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -129,9 +135,9 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="100%" height="100%">
         <circle cx="500" cy="500" r="480" fill="${style.frameColor}" />
-        <circle cx="500" cy="500" r="400" fill="${style.backgroundColor}" />
+        <circle cx="500" cy="500" r="400" fill="${bgFill(style)}" />
         <rect x="150" y="970" width="700" height="150" rx="75" fill="${style.frameColor}" />
-        <text x="500" y="1045" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="75" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <text x="500" y="1045" font-family="${FRAME_FONT}" font-weight="bold" font-size="75" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -145,8 +151,8 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="100%" height="100%">
         <path d="M 0 60 Q 0 0 60 0 L 940 0 Q 1000 0 1000 60 L 1000 550 C 930 550 930 650 1000 650 L 1000 1190 Q 1000 1250 940 1250 L 60 1250 Q 0 1250 0 1190 L 0 650 C 70 650 70 550 0 550 Z" fill="${style.frameColor}" />
-        <rect x="60" y="60" width="880" height="880" rx="30" fill="${style.backgroundColor}" />
-        <text x="500" y="1070" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="85" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <rect x="60" y="60" width="880" height="880" rx="30" fill="${bgFill(style)}" />
+        <text x="500" y="1070" font-family="${FRAME_FONT}" font-weight="bold" font-size="85" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -160,9 +166,9 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1300" width="100%" height="100%">
         <rect x="40" y="190" width="920" height="920" rx="60" fill="${style.frameColor}" />
-        <rect x="80" y="230" width="840" height="840" rx="40" fill="${style.backgroundColor}" />
+        <rect x="80" y="230" width="840" height="840" rx="40" fill="${bgFill(style)}" />
         <path d="M 100 70 L 900 70 L 850 150 L 900 230 L 100 230 L 150 150 Z" fill="${style.frameColor}" />
-        <text x="500" y="150" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="80" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <text x="500" y="150" font-family="${FRAME_FONT}" font-weight="bold" font-size="80" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>
@@ -176,9 +182,9 @@ export const FRAMES: Record<Exclude<QrFrameStyle, 'none'>, FrameDefinition> = {
     renderSvg: (style) => `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1350" width="100%" height="100%">
         <rect x="0" y="0" width="1000" height="1000" rx="70" fill="${style.frameColor}" />
-        <rect x="50" y="50" width="900" height="900" rx="45" fill="${style.backgroundColor}" />
+        <rect x="50" y="50" width="900" height="900" rx="45" fill="${bgFill(style)}" />
         <path d="M 350 1000 L 650 1000 L 650 1140 L 780 1140 L 500 1340 L 220 1140 L 350 1140 Z" fill="${style.frameColor}" />
-        <text x="500" y="1070" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="60" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
+        <text x="500" y="1070" font-family="${FRAME_FONT}" font-weight="bold" font-size="60" fill="${style.frameTextColor}" text-anchor="middle" dominant-baseline="middle">
           ${safeText(style.frameText)}
         </text>
       </svg>

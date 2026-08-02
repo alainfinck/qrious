@@ -1,50 +1,20 @@
 'use client'
 
-import { useCallback, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
-  Box,
-  Building2,
-  Calendar,
-  CalendarDays,
   Check,
-  Compass,
   Copy,
   Download,
   ExternalLink,
-  FileText,
-  LayoutGrid,
-  Link2,
-  Mail,
-  MapPin,
-  MessageCircle,
-  MessageSquare,
-  Palette,
-  Phone,
+  FileType,
   QrCode,
-  Share2,
-  ShoppingBag,
-  Smartphone,
+  Redo2,
   Sparkles,
-  Star,
-  Type,
-  User,
-  Utensils,
-  Wifi,
-  Wrench,
+  Undo2,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
@@ -54,24 +24,103 @@ import {
   type QrContentType,
   type QrPayloadInput,
 } from '@/lib/qr/payload'
-import { DEFAULT_QR_STYLE, type QrStyle } from '@/lib/qr/style'
+import {
+  applyTemplate,
+  STYLE_TEMPLATES,
+  type QrStyle,
+  type QrStyleTemplate,
+} from '@/lib/qr/style'
 import { cn } from '@/lib/utils'
 
 import { QrStyleForm } from './QrStyleForm'
 import { QrStyledPreview, type QrStyledPreviewHandle } from './QrStyledPreview'
 import { CONTENT_ICONS, defaultPayload, ContentFields } from './qr-types'
+
+const HISTORY_LIMIT = 40
+const INITIAL_TEMPLATE = STYLE_TEMPLATES.find((t) => t.id === 'signal')!
+const INITIAL_STYLE = applyTemplate(INITIAL_TEMPLATE)
+
 export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrContentType }) {
   const [contentType, setContentType] = useState<QrContentType>(initialType)
   const [payload, setPayload] = useState<QrPayloadInput>(defaultPayload(initialType))
-  const [style, setStyle] = useState<QrStyle>(DEFAULT_QR_STYLE)
+  const [style, setStyle] = useState<QrStyle>(INITIAL_STYLE)
+  const [history, setHistory] = useState<QrStyle[]>([INITIAL_STYLE])
+  const [historyIndex, setHistoryIndex] = useState(0)
+  const [activeTemplateId, setActiveTemplateId] = useState<string | null>(INITIAL_TEMPLATE.id)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const previewRef = useRef<QrStyledPreviewHandle>(null)
+  const skipHistoryRef = useRef(false)
+  const historyIndexRef = useRef(0)
 
   const ready = isPayloadReady(payload)
   const encoded = ready ? buildQrPayload(payload) : ''
   const currentConfig = QR_CONTENT_TYPES.find((c) => c.value === contentType)
   const isSmart = currentConfig?.category === 'smart'
+  const canUndo = historyIndex > 0
+  const canRedo = historyIndex < history.length - 1
+
+  const commitStyle = useCallback((next: QrStyle, templateId: string | null = null) => {
+    setStyle(next)
+    setActiveTemplateId(templateId)
+    if (skipHistoryRef.current) {
+      skipHistoryRef.current = false
+      return
+    }
+    setHistory((prev) => {
+      const trimmed = prev.slice(0, historyIndexRef.current + 1)
+      const merged = [...trimmed, next].slice(-HISTORY_LIMIT)
+      historyIndexRef.current = merged.length - 1
+      setHistoryIndex(merged.length - 1)
+      return merged
+    })
+  }, [])
+
+  const handleStyleChange = (next: QrStyle) => {
+    commitStyle(next, null)
+  }
+
+  const handleTemplateApply = (tpl: QrStyleTemplate) => {
+    setActiveTemplateId(tpl.id)
+  }
+
+  const undo = () => {
+    if (!canUndo) return
+    const idx = historyIndex - 1
+    skipHistoryRef.current = true
+    historyIndexRef.current = idx
+    setHistoryIndex(idx)
+    setStyle(history[idx])
+    setActiveTemplateId(null)
+  }
+
+  const redo = () => {
+    if (!canRedo) return
+    const idx = historyIndex + 1
+    skipHistoryRef.current = true
+    historyIndexRef.current = idx
+    setHistoryIndex(idx)
+    setStyle(history[idx])
+    setActiveTemplateId(null)
+  }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const mod = e.metaKey || e.ctrlKey
+      if (!mod) return
+      if (e.key === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        undo()
+      } else if ((e.key === 'z' && e.shiftKey) || e.key === 'y') {
+        e.preventDefault()
+        redo()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyIndex, history])
 
   const updatePayload = useCallback((next: QrPayloadInput) => {
     setPayload(next)
@@ -82,21 +131,54 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
     setPayload(defaultPayload(type))
   }
 
-  const downloadPng = async () => {
+  const download = async (ext: 'png' | 'svg' | 'jpeg' | 'webp') => {
     if (!ready) return
+    setExporting(true)
+    setError(null)
     try {
-      await previewRef.current?.download('png', `qrious-qr-${contentType}`)
+      await previewRef.current?.download(ext, `qrious-qr-${contentType}`)
     } catch {
-      setError('Export PNG impossible.')
+      setError(`Export ${ext.toUpperCase()} impossible.`)
+    } finally {
+      setExporting(false)
     }
   }
 
-  const downloadSvg = async () => {
+  const downloadPdf = async () => {
     if (!ready) return
+    setExporting(true)
+    setError(null)
     try {
-      await previewRef.current?.download('svg', `qrious-qr-${contentType}`)
+      const blob = await previewRef.current?.getRawData('png')
+      if (!blob) throw new Error('no blob')
+      const { jsPDF } = await import('jspdf')
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(String(reader.result))
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image()
+        el.onload = () => resolve(el)
+        el.onerror = reject
+        el.src = dataUrl
+      })
+      const maxMm = 90
+      const ratio = img.width / img.height
+      const w = ratio >= 1 ? maxMm : maxMm * ratio
+      const h = ratio >= 1 ? maxMm / ratio : maxMm
+      const pdf = new jsPDF({
+        orientation: w >= h ? 'landscape' : 'portrait',
+        unit: 'mm',
+        format: [w + 20, h + 20],
+      })
+      pdf.addImage(dataUrl, 'PNG', 10, 10, w, h)
+      pdf.save(`qrious-qr-${contentType}.pdf`)
     } catch {
-      setError('Export SVG impossible.')
+      setError('Export PDF impossible.')
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -110,40 +192,47 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
   const staticTypes = QR_CONTENT_TYPES.filter((t) => t.category === 'static')
   const smartTypes = QR_CONTENT_TYPES.filter((t) => t.category === 'smart')
 
+  const typeBtn = (active: boolean) =>
+    cn(
+      'group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all',
+      active
+        ? 'border-mq-ink bg-mq-ink text-white shadow-sm ring-2 ring-mq-signal/30'
+        : 'border-mq-ink/10 bg-white text-mq-ink hover:border-mq-signal/40 hover:bg-mq-mist/50',
+    )
+
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start">
-      <div className="space-y-6">
-        {/* En-tête / Choix du type de QR Code */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
+      <div className="space-y-5">
+        {/* Step 1 — Type */}
+        <section className="rounded-2xl border border-mq-ink/10 bg-white/90 p-5 shadow-[0_18px_50px_-36px_rgba(11,18,32,0.5)] backdrop-blur sm:p-6">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">1. Type de QR Code</h2>
-              <p className="text-sm text-slate-500">
-                Sélectionnez le format statique direct ou une Landing Page Métier dynamique.
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-mq-signal-deep">
+                Étape 1
+              </p>
+              <h2 className="font-display text-xl font-bold text-mq-ink">Type de QR</h2>
+              <p className="text-sm text-mq-muted">
+                Statique direct ou landing métier dynamique.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 border border-slate-200">
-              <QrCode className="h-4 w-4 text-slate-600" /> Universel
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-mq-ink/10 bg-mq-mist px-2.5 py-1 text-xs font-semibold text-mq-ink">
+              <QrCode className="h-3.5 w-3.5 text-mq-signal-deep" />
+              Gratuit
             </span>
           </div>
 
-          <Tabs defaultValue="static" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-              <TabsTrigger
-                value="static"
-                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
-              >
-                Codes Statiques Directs
+          <Tabs defaultValue={isSmart ? 'smart' : 'static'} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="static">
+                <QrCode className="h-3.5 w-3.5 shrink-0 opacity-80" />
+                Statiques
               </TabsTrigger>
-              <TabsTrigger
-                value="smart"
-                className="rounded-lg py-2.5 text-xs font-bold sm:text-sm text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-slate-200/80 transition-all"
-              >
-                ✨ Smart QR Pages (Métiers)
+              <TabsTrigger value="smart">
+                <Sparkles className="h-3.5 w-3.5 shrink-0 opacity-80" />
+                Smart Pages
               </TabsTrigger>
             </TabsList>
 
-            {/* Statiques */}
             <TabsContent value="static" className="mt-4">
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
                 {staticTypes.map((opt) => {
@@ -154,32 +243,22 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                       key={opt.value}
                       type="button"
                       onClick={() => handleTypeChange(opt.value)}
-                      className={cn(
-                        'group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all',
-                        active
-                          ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 shadow-xs ring-2 ring-slate-900/10'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50',
-                      )}
+                      className={typeBtn(active)}
                     >
-                      <div className="flex w-full items-center justify-between">
-                        <span
-                          className={cn(
-                            'flex h-7 w-7 items-center justify-center rounded-lg transition-colors',
-                            active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
-                          )}
-                        >
-                          <Icon className="h-4 w-4" />
-                        </span>
-                        {active && (
-                          <span className="h-2 w-2 rounded-full bg-slate-900 animate-pulse" />
+                      <span
+                        className={cn(
+                          'flex h-7 w-7 items-center justify-center rounded-lg transition-colors',
+                          active ? 'bg-mq-signal text-mq-ink' : 'bg-mq-mist text-mq-ink',
                         )}
-                      </div>
+                      >
+                        <Icon className="h-4 w-4" />
+                      </span>
                       <div>
                         <div className="text-xs font-bold leading-snug sm:text-sm">{opt.label}</div>
                         <div
                           className={cn(
-                            'mt-1 text-[11px] leading-tight line-clamp-2',
-                            active ? 'text-slate-600 font-medium' : 'text-slate-500',
+                            'mt-1 line-clamp-2 text-[11px] leading-tight',
+                            active ? 'text-white/65' : 'text-mq-muted',
                           )}
                         >
                           {opt.description}
@@ -191,7 +270,6 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
               </div>
             </TabsContent>
 
-            {/* Smart Landing Pages */}
             <TabsContent value="smart" className="mt-4">
               <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                 {smartTypes.map((opt) => {
@@ -202,26 +280,21 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                       key={opt.value}
                       type="button"
                       onClick={() => handleTypeChange(opt.value)}
-                      className={cn(
-                        'group relative flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all',
-                        active
-                          ? 'border-2 border-slate-900 bg-slate-100/90 text-slate-900 shadow-xs ring-2 ring-slate-900/10'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/90',
-                      )}
+                      className={typeBtn(active)}
                     >
                       <div className="flex w-full items-center justify-between">
                         <span
                           className={cn(
-                            'flex h-7 w-7 items-center justify-center rounded-lg transition-colors',
-                            active ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200',
+                            'flex h-7 w-7 items-center justify-center rounded-lg',
+                            active ? 'bg-mq-signal text-mq-ink' : 'bg-mq-mist text-mq-ink',
                           )}
                         >
                           <Icon className="h-4 w-4" />
                         </span>
                         <span
                           className={cn(
-                            'text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                            active ? 'bg-slate-200 text-slate-900' : 'bg-slate-100 text-slate-500',
+                            'rounded-full px-1.5 py-0.5 text-[10px] font-bold',
+                            active ? 'bg-white/15 text-mq-signal' : 'bg-mq-mist text-mq-muted',
                           )}
                         >
                           Page
@@ -231,8 +304,8 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                         <div className="text-xs font-bold leading-snug sm:text-sm">{opt.label}</div>
                         <div
                           className={cn(
-                            'mt-1 text-[11px] leading-tight line-clamp-2',
-                            active ? 'text-slate-600 font-medium' : 'text-slate-500',
+                            'mt-1 line-clamp-2 text-[11px] leading-tight',
+                            active ? 'text-white/65' : 'text-mq-muted',
                           )}
                         >
                           {opt.description}
@@ -246,104 +319,177 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
           </Tabs>
         </section>
 
-        {/* Formulaire des données */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <div className="mb-5 flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-slate-900">
-                2. Données encodées : <span className="text-slate-900 font-bold">{currentConfig?.label}</span>
-              </h2>
-              <p className="text-sm text-slate-500">{currentConfig?.description}</p>
-            </div>
+        {/* Step 2 — Data */}
+        <section className="rounded-2xl border border-mq-ink/10 bg-white/90 p-5 shadow-[0_18px_50px_-36px_rgba(11,18,32,0.5)] backdrop-blur sm:p-6">
+          <div className="mb-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-mq-signal-deep">
+              Étape 2
+            </p>
+            <h2 className="font-display text-xl font-bold text-mq-ink">
+              Contenu · {currentConfig?.label}
+            </h2>
+            <p className="text-sm text-mq-muted">{currentConfig?.description}</p>
           </div>
-
           <ContentFields payload={payload} onChange={updatePayload} />
         </section>
 
-        {/* Customisation du Style */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <div className="mb-5">
-            <h2 className="text-lg font-semibold text-slate-900">3. Personnalisation & Design</h2>
-            <p className="text-sm text-slate-500">
-              Forme des modules, yeux, palette de couleurs et logo central.
-            </p>
+        {/* Step 3 — Style */}
+        <section className="rounded-2xl border border-mq-ink/10 bg-white/90 p-5 shadow-[0_18px_50px_-36px_rgba(11,18,32,0.5)] backdrop-blur sm:p-6">
+          <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-mq-signal-deep">
+                Étape 3
+              </p>
+              <h2 className="font-display text-xl font-bold text-mq-ink">Design</h2>
+              <p className="text-sm text-mq-muted">
+                Templates, cadres, formes, dégradés, logo.
+              </p>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 w-9 rounded-xl border-mq-ink/10 p-0"
+                disabled={!canUndo}
+                onClick={undo}
+                title="Annuler (⌘Z)"
+              >
+                <Undo2 className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 w-9 rounded-xl border-mq-ink/10 p-0"
+                disabled={!canRedo}
+                onClick={redo}
+                title="Rétablir (⌘⇧Z)"
+              >
+                <Redo2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          <QrStyleForm value={style} onChange={setStyle} onError={setError} />
+          <QrStyleForm
+            value={style}
+            onChange={handleStyleChange}
+            onError={setError}
+            activeTemplateId={activeTemplateId}
+            onTemplateApply={handleTemplateApply}
+          />
         </section>
       </div>
 
-      {/* Panneau Latéral d'Aperçu & Téléchargement */}
-      <aside className="lg:sticky lg:top-24 space-y-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-semibold text-slate-900">Aperçu en direct</h2>
-            {isSmart && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs font-semibold text-slate-800">
-                <Sparkles className="h-3.5 w-3.5 text-slate-700" /> Dynamic Page
+      {/* Preview aside */}
+      <aside className="self-start lg:sticky lg:top-28 lg:z-20 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+        <div className="space-y-4 rounded-2xl border border-mq-ink/10 bg-white/95 p-5 shadow-[0_24px_60px_-32px_rgba(11,18,32,0.55)] backdrop-blur sm:p-6">
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="font-display text-lg font-bold text-mq-ink">Aperçu live</h2>
+            {isSmart ? (
+              <span className="inline-flex items-center gap-1 rounded-full border border-mq-signal/30 bg-mq-signal/10 px-2.5 py-0.5 text-xs font-semibold text-mq-signal-deep">
+                <Sparkles className="h-3.5 w-3.5" /> Smart
               </span>
-            )}
+            ) : null}
           </div>
-          <p className="mb-4 text-sm text-slate-500">
-            {isSmart ? 'Prévisualisez le QR Code qui pointe vers votre landing page dédiée.' : 'QR Code statique haute définition prêt à télécharger.'}
+          <p className="mb-4 text-sm text-mq-muted">
+            {style.size}×{style.size}px · {style.transparentBackground ? 'transparent' : 'opaque'}
           </p>
 
-          <QrStyledPreview ref={previewRef} data={encoded} style={style} displaySize={280} />
+          <QrStyledPreview ref={previewRef} data={encoded} style={style} displaySize={300} />
 
-          {error ? <p className="mt-3 text-sm font-medium text-red-600">{error}</p> : null}
+          {error ? <p className="mt-3 text-sm font-medium text-mq-coral-deep">{error}</p> : null}
 
           <div className="mt-5 grid gap-2">
             <Button
               type="button"
-              className="bg-slate-900 text-white hover:bg-slate-800 h-11 text-sm font-semibold rounded-xl transition-all shadow-xs"
-              disabled={!ready}
-              onClick={downloadPng}
+              className="h-11 rounded-xl bg-mq-ink text-sm font-semibold text-white hover:bg-mq-ink-soft"
+              disabled={!ready || exporting}
+              onClick={() => download('png')}
             >
               <Download className="mr-2 h-4 w-4" />
-              Télécharger PNG HD
+              PNG HD
             </Button>
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-xl border-mq-ink/12 text-xs font-semibold"
+                disabled={!ready || exporting}
+                onClick={() => download('svg')}
+              >
+                SVG
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-xl border-mq-ink/12 text-xs font-semibold"
+                disabled={!ready || exporting}
+                onClick={downloadPdf}
+              >
+                <FileType className="mr-1 h-3.5 w-3.5" />
+                PDF
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-xl border-mq-ink/12 text-xs font-semibold"
+                disabled={!ready || exporting || style.transparentBackground}
+                onClick={() => download('jpeg')}
+                title={
+                  style.transparentBackground
+                    ? 'JPEG ne supporte pas la transparence'
+                    : undefined
+                }
+              >
+                JPEG
+              </Button>
+            </div>
             <Button
               type="button"
-              variant="outline"
-              className="h-10 text-sm font-medium rounded-xl"
-              disabled={!ready}
-              onClick={downloadSvg}
+              variant="ghost"
+              className="h-9 text-xs text-mq-muted hover:text-mq-ink"
+              disabled={!encoded}
+              onClick={copyPayload}
             >
-              <Download className="mr-2 h-4 w-4" />
-              Télécharger Vectoriel SVG
-            </Button>
-            <Button type="button" variant="ghost" className="h-9 text-xs" disabled={!encoded} onClick={copyPayload}>
               {copied ? <Check className="mr-2 h-3.5 w-3.5" /> : <Copy className="mr-2 h-3.5 w-3.5" />}
-              {copied ? 'Copié dans le presse-papier' : 'Copier le contenu du QR'}
+              {copied ? 'Copié' : 'Copier le payload'}
             </Button>
           </div>
 
           <Separator className="my-5" />
 
-          {/* Banner d'encouragement pour les Smart Landing Pages */}
           {isSmart ? (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 space-y-3">
-              <div className="flex items-center gap-2 text-slate-900 font-semibold">
-                <Sparkles className="h-4 w-4 text-slate-700" />
-                Landing Page {currentConfig?.label}
+            <div className="space-y-3 rounded-xl border border-mq-signal/25 bg-mq-mist/80 p-4 text-sm text-mq-ink">
+              <div className="flex items-center gap-2 font-semibold">
+                <Sparkles className="h-4 w-4 text-mq-signal-deep" />
+                Landing {currentConfig?.label}
               </div>
-              <p className="text-xs leading-relaxed text-slate-600">
-                Vous créez un QR Code pour <strong>{currentConfig?.label}</strong>. Publiez une page responsive complète dédiée sans coder. Vous pourrez mettre à jour le contenu et suivre les scans en temps réel sans réimprimer le QR code !
+              <p className="text-xs leading-relaxed text-mq-muted">
+                Publiez une page responsive, changez le contenu sans réimprimer, suivez les scans.
               </p>
-              <Button asChild size="sm" className="w-full rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition-all">
+              <Button
+                asChild
+                size="sm"
+                className="w-full rounded-xl bg-mq-signal font-semibold text-mq-ink hover:bg-mq-signal/90"
+              >
                 <Link href={`/dashboard/new?vertical=${contentType}`}>
-                  Publier ma page complète (Gratuit)
+                  Publier ma page
                   <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
                 </Link>
               </Button>
             </div>
           ) : (
-            <div className="rounded-xl bg-slate-50 border border-slate-200/60 p-4 text-sm text-slate-600 space-y-2">
-              <p className="font-medium text-slate-900">Passez au QR Code Dynamique !</p>
-              <p className="text-xs leading-relaxed text-slate-600">
-                Un QR statique ne peut plus être modifié une fois imprimé. Avec QRious, créez des QR dynamiques rééditables avec analytics complets.
+            <div className="space-y-2 rounded-xl border border-mq-ink/8 bg-mq-mist/50 p-4 text-sm">
+              <p className="font-semibold text-mq-ink">Passez au dynamique</p>
+              <p className="text-xs leading-relaxed text-mq-muted">
+                Un QR statique est figé. Avec QRious, destination éditable + analytics.
               </p>
-              <Button asChild size="sm" className="w-full mt-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-all">
-                <Link href="/demo">Découvrir le Dashboard</Link>
+              <Button
+                asChild
+                size="sm"
+                className="mt-2 w-full rounded-xl bg-mq-ink text-white hover:bg-mq-ink-soft"
+              >
+                <Link href="/demo">Essayer le dashboard</Link>
               </Button>
             </div>
           )}
@@ -352,4 +498,3 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
     </div>
   )
 }
-

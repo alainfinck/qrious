@@ -70,7 +70,7 @@ export const CONTENT_ICONS: Record<QrContentType, typeof Link2> = {
 export function defaultPayload(type: QrContentType): QrPayloadInput {
   switch (type) {
     case 'url':
-      return { type: 'url', data: { url: 'https://' } }
+      return { type: 'url', data: { url: 'https://qrious.app' } }
     case 'text':
       return { type: 'text', data: { text: '' } }
     case 'email':

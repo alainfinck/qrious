@@ -1,16 +1,14 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import {
   Utensils,
   Calendar,
   ShoppingBag,
   Wrench,
   Palette,
-  Building2,
   Contact,
-  QrCode,
   ArrowRight,
   Sparkles,
   CheckCircle2,
@@ -20,9 +18,6 @@ import {
   Smartphone,
   Tag,
   Star,
-  Award,
-  Layers,
-  BarChart3,
 } from 'lucide-react'
 
 import { MarketingHeader } from '@/components/marketing/MarketingHeader'
@@ -33,105 +28,45 @@ import { LandingPageTemplatesSection } from '@/components/marketing/LandingPageT
 import { QrPrintMediumsSection } from '@/components/marketing/QrPrintMediumsSection'
 import { DisclaimerSection } from '@/components/marketing/DisclaimerSection'
 import { BlurFade } from '@/components/ui/blur-fade'
-import { BorderBeam } from '@/components/ui/border-beam'
 import { MagicCard } from '@/components/ui/magic-card'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
+import { Link } from '@/src/i18n/routing'
 
-const ALL_VERTICALS = [
-  {
-    slug: 'chrd',
-    title: 'Solution CHRD : Hôtellerie & Restauration',
-    badge: 'Hôtels, Restos & Campings',
-    icon: Utensils,
-    accentColor: '#e11d48',
-    gradient: 'from-rose-950 via-slate-900 to-slate-950',
-    description:
-      'Proposez une expérience haut de gamme dès le premier scan sur table ou en chambre : menu digital interactif, Wi-Fi invité instantané, avis Google et carte postale physique offerte.',
-    highlights: [
-      'Menu digital toujours à jour avec photos HD',
-      'Accès Wi-Fi automatique sans saisie de passe',
-      'Boost automatique de vos avis Google & TripAdvisor',
-      'Option Cadeau Carte Postale physique souvenir',
-    ],
-  },
-  {
-    slug: 'corporate-event',
-    title: 'Événementiel B2B & Séminaires',
-    badge: 'Corporate & Séminaires',
-    icon: Calendar,
-    accentColor: '#6366f1',
-    gradient: 'from-indigo-950 via-slate-900 to-slate-950',
-    description:
-      'Centralisez les ressources de vos conférences et engagez votre audience avec un Live Wall photo interactif et le partage direct de présentations PDF.',
-    highlights: [
-      'Mur photo collaboratif en direct (Live Wall)',
-      'Ordre du jour & programme des conférences',
-      'Téléchargement direct des présentations PDF',
-      'Code Wi-Fi invités partagé en un scan',
-    ],
-  },
-  {
-    slug: 'ugc-retail',
-    title: 'Retail & Concours Photo UGC',
-    badge: 'Retail & E-commerce',
-    icon: ShoppingBag,
-    accentColor: '#a855f7',
-    gradient: 'from-purple-950 via-slate-900 to-slate-950',
-    description:
-      'Transformez vos emballages et tickets de caisse en générateurs d’UGC : vos acheteurs envoient une photo de leur achat pour débloquer un coupon de réduction exclusif.',
-    highlights: [
-      'Activation directe sur packaging ou ticket',
-      'Collecte de contenus utilisateurs authentiques',
-      'Attribution automatique de codes promo',
-      'Fidélisation et augmentation du réachat',
-    ],
-  },
-  {
-    slug: 'field-service',
-    title: 'Field Service & Maintenance Équipements',
-    badge: 'Maintenance & Industrie',
-    icon: Wrench,
-    accentColor: '#059669',
-    gradient: 'from-emerald-950 via-slate-900 to-slate-950',
-    description:
-      'Identifiez vos équipements sur le terrain grâce à des étiquettes QR durables : accès direct aux manuels techniques, fiches de sécurité et formulaires d’intervention.',
-    highlights: [
-      'Fiche technique et historique d’intervention',
-      'Formulaire de signalement de panne instantané',
-      'Accès direct aux notices et schémas PDF',
-      'Historique de maintenance centralisé',
-    ],
-  },
-  {
-    slug: 'art',
-    title: 'Art & Galeries d’Exposition',
-    badge: 'Culture & Galeries',
-    icon: Palette,
-    accentColor: '#d97706',
-    gradient: 'from-amber-950 via-slate-900 to-slate-950',
-    description:
-      'Mettez en valeur chaque œuvre d’art avec un cartel digital complet : biographie de l’artiste, vidéo d’atelier, dimensions et formulaire de demande d’acquisition.',
-    highlights: [
-      'Cartel digital interactif pour œuvres d’art',
-      'Intégration vidéo et audioguide',
-      'Lien direct vers le profil Instagram de l’artiste',
-      'Bouton de demande de prix & réservation',
-    ],
-  },
-]
+const VERTICAL_META = [
+  { slug: 'chrd', key: 'chrd', icon: Utensils, accentColor: '#e11d48' },
+  { slug: 'corporate-event', key: 'corporate', icon: Calendar, accentColor: '#6366f1' },
+  { slug: 'ugc-retail', key: 'ugc', icon: ShoppingBag, accentColor: '#a855f7' },
+  { slug: 'field-service', key: 'field', icon: Wrench, accentColor: '#059669' },
+  { slug: 'art', key: 'art', icon: Palette, accentColor: '#d97706' },
+] as const
 
-const QUICK_TYPES = [
-  { label: 'Site Web', icon: Globe, color: 'text-sky-400' },
-  { label: 'Menu Digital', icon: Utensils, color: 'text-rose-400' },
-  { label: 'PDF & Brochure', icon: FileText, color: 'text-emerald-400' },
-  { label: 'vCard Contact', icon: Contact, color: 'text-amber-400' },
-  { label: 'Wi-Fi Guest', icon: Wifi, color: 'text-indigo-400' },
-  { label: 'Réseaux Sociaux', icon: Smartphone, color: 'text-purple-400' },
-  { label: 'Coupons Promo', icon: Tag, color: 'text-yellow-400' },
-  { label: 'Avis Google', icon: Star, color: 'text-amber-300' },
-]
+const QUICK_TYPE_META = [
+  { typeKey: 'web', icon: Globe, color: 'text-sky-400' },
+  { typeKey: 'menu', icon: Utensils, color: 'text-rose-400' },
+  { typeKey: 'pdf', icon: FileText, color: 'text-emerald-400' },
+  { typeKey: 'vcard', icon: Contact, color: 'text-amber-400' },
+  { typeKey: 'wifi', icon: Wifi, color: 'text-indigo-400' },
+  { typeKey: 'social', icon: Smartphone, color: 'text-purple-400' },
+  { typeKey: 'coupons', icon: Tag, color: 'text-yellow-400' },
+  { typeKey: 'reviews', icon: Star, color: 'text-amber-300' },
+] as const
 
 export default function SolutionsPage() {
+  const t = useTranslations('Solutions')
+
+  const allVerticals = VERTICAL_META.map((v) => ({
+    ...v,
+    title: t(`verticals.${v.key}.title`),
+    badge: t(`verticals.${v.key}.badge`),
+    description: t(`verticals.${v.key}.description`),
+    highlights: [
+      t(`verticals.${v.key}.h1`),
+      t(`verticals.${v.key}.h2`),
+      t(`verticals.${v.key}.h3`),
+      t(`verticals.${v.key}.h4`),
+    ],
+  }))
+
   return (
     <div className="min-h-dvh bg-mq-paper font-body">
       <MarketingHeader />
@@ -150,13 +85,14 @@ export default function SolutionsPage() {
               <div className="text-center max-w-3xl mx-auto space-y-6">
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold text-mq-signal backdrop-blur-md">
                   <Sparkles className="h-3.5 w-3.5" />
-                  <span>Solutions QR Codes Intelligentes</span>
+                  <span>{t('heroBadge')}</span>
                 </div>
                 <h1 className="font-display text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-                  Un univers de solutions pour chaque <span className="mq-rainbow-text">métier</span>
+                  {t('heroTitleBefore')}{' '}
+                  <span className="mq-rainbow-text">{t('heroTitleHighlight')}</span>
                 </h1>
                 <p className="text-lg text-white/70 leading-relaxed max-w-2xl mx-auto">
-                  Découvrez nos landing pages dynamiques sur-mesure et nos QR codes vectoriels pour l’hôtellerie, l’événementiel, le retail, l’art et la maintenance.
+                  {t('heroSubtitle')}
                 </p>
                 <div className="pt-4 flex justify-center gap-4">
                   <Link href="/editeur">
@@ -167,7 +103,7 @@ export default function SolutionsPage() {
                       className="h-12 px-7"
                     >
                       <span className="font-bold text-mq-ink flex items-center gap-2">
-                        Créer mon premier QR
+                        {t('ctaCreate')}
                         <ArrowRight className="h-4 w-4" />
                       </span>
                     </ShimmerButton>
@@ -176,7 +112,7 @@ export default function SolutionsPage() {
                     href="/pricing"
                     className="inline-flex h-12 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                   >
-                    Voir les offres & tarifs
+                    {t('ctaPricing')}
                   </Link>
                 </div>
               </div>
@@ -186,18 +122,18 @@ export default function SolutionsPage() {
             <BlurFade delay={0.2} inView>
               <div className="mt-16 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                 <p className="text-center text-xs font-bold uppercase tracking-wider text-white/60 mb-4">
-                  Types de QR Codes supportés instantanément
+                  {t('typesLabel')}
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
-                  {QUICK_TYPES.map((t, idx) => {
-                    const Icon = t.icon
+                  {QUICK_TYPE_META.map((item) => {
+                    const Icon = item.icon
                     return (
                       <div
-                        key={idx}
+                        key={item.typeKey}
                         className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white/90 transition-all hover:bg-white/15 hover:scale-[1.03]"
                       >
-                        <Icon className={`h-4 w-4 ${t.color}`} />
-                        <span>{t.label}</span>
+                        <Icon className={`h-4 w-4 ${item.color}`} />
+                        <span>{t(`types.${item.typeKey}`)}</span>
                       </div>
                     )
                   })}
@@ -213,19 +149,19 @@ export default function SolutionsPage() {
             <BlurFade delay={0.1} inView>
               <div className="text-center max-w-2xl mx-auto space-y-3">
                 <p className="text-sm font-semibold uppercase tracking-wider text-mq-coral">
-                  Par Métier & Secteur
+                  {t('sectionEyebrow')}
                 </p>
                 <h2 className="font-display text-3xl font-bold tracking-tight text-mq-ink sm:text-5xl">
-                  Découvrez nos <span className="mq-rainbow-text">5 verticals</span> d'excellence
+                  {t('sectionTitleBefore')}{' '}
+                  <span className="mq-rainbow-text">{t('sectionTitleHighlight')}</span>{' '}
+                  {t('sectionTitleAfter')}
                 </h2>
-                <p className="text-base text-mq-muted leading-relaxed">
-                  Chaque vertical dispose d’une landing page personnalisée, de champs métiers natifs et d'un tableau de bord de gestion direct.
-                </p>
+                <p className="text-base text-mq-muted leading-relaxed">{t('sectionSubtitle')}</p>
               </div>
             </BlurFade>
 
             <div className="grid gap-8 lg:grid-cols-2">
-              {ALL_VERTICALS.map((v, index) => {
+              {allVerticals.map((v, index) => {
                 const Icon = v.icon
                 return (
                   <BlurFade key={v.slug} delay={0.08 + index * 0.06} inView>
@@ -272,14 +208,14 @@ export default function SolutionsPage() {
                           href={`/solutions/${v.slug}`}
                           className="inline-flex items-center gap-2 text-sm font-bold text-mq-ink hover:text-mq-coral transition-colors group/link"
                         >
-                          <span>Voir la présentation complète</span>
+                          <span>{t('viewFull')}</span>
                           <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-1" />
                         </Link>
                         <Link
                           href="/editeur"
                           className="text-xs font-semibold text-mq-muted hover:text-mq-ink underline"
                         >
-                          Créer le QR
+                          {t('createQr')}
                         </Link>
                       </div>
                     </MagicCard>

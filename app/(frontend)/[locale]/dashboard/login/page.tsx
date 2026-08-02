@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 
 import { LoginForm } from '@/components/dashboard/LoginForm'
 import { isAuthenticated } from '@/lib/auth/session'
@@ -10,19 +11,26 @@ export default async function DashboardLoginPage({
 }: {
   searchParams: Promise<{ reset?: string; registered?: string; redirectTo?: string }>
 }) {
-  const params = await searchParams
+  const [params, t] = await Promise.all([
+    searchParams,
+    getTranslations('Dashboard.login'),
+  ])
 
   if (await isAuthenticated()) {
-    redirect(params.redirectTo && params.redirectTo.startsWith('/dashboard') ? params.redirectTo : '/dashboard')
+    redirect(
+      params.redirectTo && params.redirectTo.startsWith('/dashboard')
+        ? params.redirectTo
+        : '/dashboard',
+    )
   }
 
   let notice: string | null = null
   if (params.reset === '1') {
-    notice = 'Mot de passe mis à jour. Vous pouvez vous connecter.'
+    notice = t('noticeReset')
   } else if (params.registered === '1') {
-    notice = 'Compte créé. Connectez-vous avec vos identifiants.'
+    notice = t('noticeRegistered')
   } else if (params.redirectTo) {
-    notice = 'Connectez-vous pour personnaliser et publier votre Landing Page.'
+    notice = t('noticeRedirect')
   }
 
   return <LoginForm notice={notice} redirectTo={params.redirectTo} />

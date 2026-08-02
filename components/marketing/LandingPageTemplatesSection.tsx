@@ -1,25 +1,19 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import {
   Building2,
   Megaphone,
   Utensils,
   Palette,
-  Sparkles,
   ArrowRight,
   Check,
-  ExternalLink,
-  Smartphone,
-  Eye,
-  Star,
-  QrCode,
 } from 'lucide-react'
 
 import { BlurFade } from '@/components/ui/blur-fade'
-import { BorderBeam } from '@/components/ui/border-beam'
 import { MagicCard } from '@/components/ui/magic-card'
+import { Link } from '@/src/i18n/routing'
 
 interface TemplateCategory {
   id: string
@@ -243,6 +237,7 @@ const CATEGORIES: TemplateCategory[] = [
 ]
 
 export function LandingPageTemplatesSection() {
+  const t = useTranslations('LandingTemplates')
   const [activeCatId, setActiveCatId] = useState<string>('business')
   const currentCategory = CATEGORIES.find((c) => c.id === activeCatId) || CATEGORIES[0]
 
@@ -261,14 +256,12 @@ export function LandingPageTemplatesSection() {
         <BlurFade delay={0.1} inView>
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mq-coral">
-              Bibliothèque de modèles
+              {t('eyebrow')}
             </p>
             <h2 className="font-display text-3xl font-bold tracking-tight text-mq-ink sm:text-5xl lg:text-6xl">
-              Explorez les modèles de <span className="mq-rainbow-text">Landing Pages</span>
+              {t('titleBefore')} <span className="mq-rainbow-text">{t('titleHighlight')}</span>
             </h2>
-            <p className="text-lg text-mq-muted leading-relaxed">
-              Une solution prête à l’emploi pour chaque métier, secteur et campagne marketing.
-            </p>
+            <p className="text-lg text-mq-muted leading-relaxed">{t('subtitle')}</p>
           </div>
         </BlurFade>
 
@@ -347,14 +340,14 @@ export function LandingPageTemplatesSection() {
                     href={item.targetUrl}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-mq-ink hover:text-mq-signal transition-colors"
                   >
-                    <span>Explorer</span>
+                    <span>{t('explore')}</span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <Link
                     href="/editeur"
                     className="text-[11px] font-semibold text-mq-muted hover:text-mq-ink underline"
                   >
-                    Essayer le QR
+                    {t('tryQr')}
                   </Link>
                 </div>
               </MagicCard>
@@ -362,13 +355,12 @@ export function LandingPageTemplatesSection() {
           </div>
         </BlurFade>
 
-        {/* View All Solutions Link */}
         <div className="mt-14 text-center">
           <Link
             href="/solutions"
             className="inline-flex items-center gap-2 font-display text-base font-bold text-mq-ink hover:text-mq-coral transition-colors group"
           >
-            <span>Explorer l'ensemble des univers & templates QRious</span>
+            <span>{t('viewAll')}</span>
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>

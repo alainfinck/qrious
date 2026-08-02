@@ -1,16 +1,20 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+
 import { BlurFade } from '@/components/ui/blur-fade'
 import { ShineBorder } from '@/components/ui/shine-border'
 
 const perks = [
-  { text: 'Couleur primaire personnalisable (hex)', color: 'bg-mq-coral' },
-  { text: 'Logo uploadé depuis votre médiathèque', color: 'bg-mq-sun' },
-  { text: 'Application automatique sur toute la landing', color: 'bg-mq-signal' },
-  { text: 'Cohérence visuelle pour vos clients finaux', color: 'bg-mq-sky' },
+  { key: 'perk1' as const, color: 'bg-mq-coral' },
+  { key: 'perk2' as const, color: 'bg-mq-sun' },
+  { key: 'perk3' as const, color: 'bg-mq-signal' },
+  { key: 'perk4' as const, color: 'bg-mq-sky' },
 ]
 
 export function WhiteLabelSection() {
+  const t = useTranslations('WhiteLabel')
+
   return (
     <section className="relative overflow-hidden bg-mq-ink-soft py-24 text-white sm:py-32">
       <div className="pointer-events-none absolute inset-0" aria-hidden>
@@ -23,22 +27,19 @@ export function WhiteLabelSection() {
         <BlurFade delay={0.1} inView>
           <div className="space-y-6">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-mq-sun">
-              Marque blanche
+              {t('eyebrow')}
             </p>
             <h2 className="font-display text-3xl font-bold tracking-tight sm:text-5xl">
-              Votre image,
+              {t('titleLine1')}
               <br />
-              <span className="text-mq-coral">pas la nôtre</span>
+              <span className="text-mq-coral">{t('titleLine2')}</span>
             </h2>
-            <p className="text-lg leading-relaxed text-white/60">
-              Chaque landing hérite de votre identité. Idéal pour galeries, agences et indépendants
-              qui veulent du premium sans développement sur mesure.
-            </p>
+            <p className="text-lg leading-relaxed text-white/60">{t('description')}</p>
             <ul className="space-y-4 pt-2">
               {perks.map((perk) => (
-                <li key={perk.text} className="flex items-start gap-3 text-sm text-white/75">
+                <li key={perk.key} className="flex items-start gap-3 text-sm text-white/75">
                   <span className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-md ${perk.color}`} />
-                  {perk.text}
+                  {t(perk.key)}
                 </li>
               ))}
             </ul>
@@ -58,8 +59,8 @@ export function WhiteLabelSection() {
                   GL
                 </div>
                 <div>
-                  <p className="font-display text-sm font-semibold">Galerie Lumière</p>
-                  <p className="text-xs text-white/45">Thème personnalisé</p>
+                  <p className="font-display text-sm font-semibold">{t('demoGallery')}</p>
+                  <p className="text-xs text-white/45">{t('demoTheme')}</p>
                 </div>
               </div>
 
@@ -68,16 +69,16 @@ export function WhiteLabelSection() {
                 <div className="absolute inset-[12%] rounded-sm bg-gradient-to-b from-mq-sun/50 to-mq-coral/30" />
                 <div className="absolute bottom-3 left-3 right-3 flex gap-2">
                   <span className="rounded-md bg-black/45 px-2.5 py-1 text-[11px] text-white/90 backdrop-blur-sm">
-                    Huile sur toile
+                    {t('demoMedium')}
                   </span>
                   <span className="rounded-md bg-black/45 px-2.5 py-1 text-[11px] text-white/90 backdrop-blur-sm">
-                    80 × 60 cm
+                    {t('demoSize')}
                   </span>
                 </div>
               </div>
 
               <div className="h-11 rounded-xl bg-gradient-to-r from-mq-coral via-mq-sun to-mq-signal text-center font-display text-sm font-semibold leading-[2.75rem] text-mq-ink">
-                Découvrir l&apos;œuvre
+                {t('demoCta')}
               </div>
             </div>
 

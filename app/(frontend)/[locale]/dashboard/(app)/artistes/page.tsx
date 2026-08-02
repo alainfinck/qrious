@@ -1,12 +1,16 @@
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader'
 import { getArtistName } from '@/lib/dashboard/mock-analytics'
 import { getAllLandingPages } from '@/lib/payload'
 import { Card, CardContent } from '@/components/ui/card'
+import { Link } from '@/src/i18n/routing'
 
 export default async function ArtistesPage() {
-  const pages = await getAllLandingPages()
+  const [pages, t] = await Promise.all([
+    getAllLandingPages(),
+    getTranslations('Dashboard.artists'),
+  ])
   const artists = [
     ...new Map(
       pages
@@ -18,15 +22,15 @@ export default async function ArtistesPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-8">
       <DashboardPageHeader
-        title="Artistes"
-        description="Artistes associés à vos QR codes"
+        title={t('title')}
+        description={t('description')}
         showCreateButton={false}
       />
 
       {artists.length === 0 ? (
         <Card className="border-border">
           <CardContent className="py-12 text-center text-muted-foreground">
-            Aucun artiste renseigné. Ajoutez un nom d&apos;artiste lors de la création d&apos;un QR code Art.
+            {t('empty')}
           </CardContent>
         </Card>
       ) : (

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { FileIcon, ImageIcon, UploadCloud } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 
 import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader'
 import { Button } from '@/components/ui/button'
@@ -8,19 +9,23 @@ import { getAllMedia } from '@/lib/payload'
 import { formatBytes } from '@/lib/utils'
 
 export default async function MediasPage() {
-  const medias = await getAllMedia()
+  const [medias, t, tCommon] = await Promise.all([
+    getAllMedia(),
+    getTranslations('Dashboard.medias'),
+    getTranslations('Dashboard.common'),
+  ])
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
       <DashboardPageHeader
-        title="Bibliothèque de Médias"
-        description="Gérez vos images, logos et documents hébergés (S3) pour vos Landing Pages."
+        title={t('title')}
+        description={t('description')}
         showCreateButton={false}
       >
         <Button asChild>
           <Link href="/cms/collections/media/create">
             <UploadCloud className="mr-2 h-4 w-4" />
-            Uploader un fichier
+            {t('upload')}
           </Link>
         </Button>
       </DashboardPageHeader>
@@ -31,13 +36,11 @@ export default async function MediasPage() {
             <ImageIcon className="h-8 w-8 text-slate-400" />
           </div>
           <h3 className="mb-2 font-display text-lg font-semibold text-slate-900">
-            Aucun média pour le moment
+            {t('emptyTitle')}
           </h3>
-          <p className="mb-6 max-w-md text-sm text-slate-500">
-            Uploadez vos logos, bannières et menus (PDF) pour les insérer facilement dans vos Smart Pages.
-          </p>
+          <p className="mb-6 max-w-md text-sm text-slate-500">{t('emptyDescription')}</p>
           <Button asChild variant="outline">
-            <Link href="/cms/collections/media/create">Commencer l'upload</Link>
+            <Link href="/cms/collections/media/create">{t('startUpload')}</Link>
           </Button>
         </div>
       ) : (
@@ -61,7 +64,9 @@ export default async function MediasPage() {
                 ) : (
                   <div className="flex flex-col items-center gap-2 text-slate-400">
                     <FileIcon className="h-10 w-10" />
-                    <span className="text-xs font-medium uppercase">{media.mimeType?.split('/')[1] || 'Fichier'}</span>
+                    <span className="text-xs font-medium uppercase">
+                      {media.mimeType?.split('/')[1] || tCommon('file')}
+                    </span>
                   </div>
                 )}
                 <div className="absolute inset-x-0 bottom-0 flex translate-y-full flex-col justify-end bg-gradient-to-t from-black/80 via-black/50 to-transparent p-3 pt-8 opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">
@@ -76,7 +81,7 @@ export default async function MediasPage() {
                       rel="noopener noreferrer"
                       className="hover:text-white"
                     >
-                      Ouvrir
+                      {t('open')}
                     </a>
                   </div>
                 </div>

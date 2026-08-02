@@ -883,7 +883,7 @@ export async function sendTestWeeklyDigestEmail(targetEmail: string) {
             <p style="font-size: 14px; color: #64748b;">Heure de pointe : <strong>Vendredi entre 19h00 et 21h00</strong> (310 scans)</p>
           </div>
           <div style="text-align: center; padding-top: 10px;">
-            <a href="https://qrious.fr/dashboard" style="background: #0f172a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Voir mon Dashboard Analytics</a>
+            <a href="https://www.qrious.fr/dashboard" style="background: #0f172a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Voir mon Dashboard Analytics</a>
           </div>
         </div>
       `

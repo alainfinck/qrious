@@ -1,16 +1,18 @@
+import { getTranslations } from 'next-intl/server'
+
 import { DashboardPageHeader } from '@/components/dashboard/DashboardPageHeader'
 import { QrCodesGrid } from '@/components/dashboard/QrCodesGrid'
 import { getAllLandingPages } from '@/lib/payload'
 
 export default async function SmartPagesPage() {
-  const pages = await getAllLandingPages()
+  const [pages, t] = await Promise.all([
+    getAllLandingPages(),
+    getTranslations('Dashboard.smartPages'),
+  ])
 
   return (
     <div className="mx-auto max-w-7xl space-y-8">
-      <DashboardPageHeader
-        title="Mes Smart Pages"
-        description="Gérez les pages de destination dynamiques associées à vos QR Codes."
-      />
+      <DashboardPageHeader title={t('title')} description={t('description')} />
       <QrCodesGrid pages={pages} />
     </div>
   )

@@ -1,1 +1,1085 @@
-{"Footer": {"title": "QRious", "subtitle": "Códigos QR dinámicos"}}
+{
+  "Common": {
+    "brand": "QRious",
+    "loading": "Cargando…",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "close": "Cerrar",
+    "search": "Buscar",
+    "learnMore": "Más información",
+    "getStarted": "Empezar",
+    "or": "o"
+  },
+  "Header": {
+    "navAriaLabel": "Navegación principal",
+    "navMobileAriaLabel": "Navegación móvil",
+    "product": "Producto",
+    "metiers": "Sectores",
+    "metiersMobile": "Sectores y soluciones",
+    "productSectionHeader": "Suite y herramientas QRious",
+    "metiersSectionHeader": "Soluciones por sector",
+    "optionsAvailable": "{count} opciones disponibles",
+    "productFooterText": "¿Necesitas personalizar tu diseño?",
+    "productFooterLink": "Abrir el editor completo",
+    "metiersFooterText": "¿Una solicitud a medida para tu empresa?",
+    "metiersFooterLink": "Contactar al equipo",
+    "pricing": "Precios",
+    "pricingTip": "Planes y tarifas",
+    "about": "Nosotros",
+    "aboutTip": "Nuestra historia y misión",
+    "contact": "Contacto",
+    "contactTip": "Escríbenos",
+    "login": "Iniciar sesión",
+    "createQr": "Crear mi QR",
+    "openMenu": "Abrir el menú",
+    "closeMenu": "Cerrar el menú",
+    "productItems": {
+      "universal": {
+        "label": "Generador universal",
+        "description": "Crea tus códigos QR (Wi-Fi, vCard, PDF, App…)",
+        "badge": "Esencial"
+      },
+      "url": {
+        "label": "Generador URL",
+        "description": "Crea un código QR para tu sitio web"
+      },
+      "vcard": {
+        "label": "Generador vCard",
+        "description": "Crea tu tarjeta de visita digital"
+      },
+      "wifi": {
+        "label": "Generador Wi-Fi",
+        "description": "Comparte tu conexión Wi-Fi"
+      },
+      "editor": {
+        "label": "Editor y diseño Pro",
+        "description": "Personalización avanzada, ojos, colores y logos",
+        "badge": "Popular"
+      },
+      "dynamic": {
+        "label": "QR dinámicos",
+        "description": "Modifica el destino sin reimprimir",
+        "badge": "Pro"
+      },
+      "demo": {
+        "label": "Demo interactiva",
+        "description": "Prueba la solución QRious en tiempo real",
+        "badge": "Gratis"
+      }
+    },
+    "metierItems": {
+      "chrd": {
+        "label": "Hostelería y restauración (CHRD)",
+        "description": "Menú PDF, Wi-Fi y ficha interactiva",
+        "badge": "Top elección"
+      },
+      "corporate": {
+        "label": "Eventos corporativos",
+        "description": "Live wall de fotos y seminarios B2B",
+        "badge": "B2B"
+      },
+      "ugc": {
+        "label": "Retail y concursos UGC",
+        "description": "Fotos de producto y códigos promo"
+      },
+      "field": {
+        "label": "Field Service y mantenimiento",
+        "description": "Gestión de equipos y guardias"
+      },
+      "art": {
+        "label": "Arte y galerías",
+        "description": "Landings de obras y exposiciones"
+      },
+      "immo": {
+        "label": "Inmobiliaria y casas rurales",
+        "description": "Inmuebles, precios, certificado energético y reserva",
+        "badge": "Popular"
+      },
+      "vcard": {
+        "label": "Tarjeta de visita (vCard)",
+        "description": "vCard digital en un escaneo",
+        "badge": "Esencial"
+      },
+      "tourism": {
+        "label": "Turismo y museos",
+        "description": "Audioguías y lugares culturales"
+      },
+      "feedback": {
+        "label": "Opiniones y e-reputación",
+        "description": "Recogida de Google Reviews y feedback privado",
+        "badge": "Nuevo"
+      },
+      "product": {
+        "label": "Manual de producto",
+        "description": "Guías en vídeo y resolución de problemas"
+      }
+    }
+  },
+  "Footer": {
+    "title": "QRious",
+    "subtitle": "Códigos QR dinámicos",
+    "ctaBadge": "Pasa al siguiente nivel",
+    "ctaTitle": "¿Listo para potenciar tu comunicación?",
+    "ctaDescription": "Crea códigos QR inteligentes y landing pages optimizadas para tu actividad en segundos.",
+    "ctaCreate": "Crear un código QR",
+    "ctaPricing": "Ver precios",
+    "brandDescription": "Solución completa de códigos QR dinámicos y landing pages sectoriales a medida para impulsar conversiones y experiencia de cliente.",
+    "statusBadge": "Servicios 100 % operativos · Alojados en Francia",
+    "colSolutions": "Soluciones sectoriales",
+    "linkChrd": "Hostelería y restauración",
+    "linkCorporate": "Eventos B2B",
+    "linkUgc": "Retail y concursos UGC",
+    "linkField": "Field Service y mant.",
+    "linkArt": "Arte y galerías",
+    "colSupport": "Soporte",
+    "linkDemo": "Demo interactiva",
+    "linkContact": "Contacto",
+    "linkAbout": "Nosotros",
+    "colLegal": "Legal",
+    "linkCgu": "Condiciones",
+    "linkPrivacy": "Privacidad",
+    "linkCookies": "Cookies",
+    "colApp": "Espacio App",
+    "linkLogin": "Iniciar sesión",
+    "linkDashboard": "Panel",
+    "linkRegister": "Crear una cuenta",
+    "copyright": "© {year} QRious. Todos los derechos reservados."
+  },
+  "LanguageSwitcher": {
+    "label": "Idioma",
+    "ariaLabel": "Cambiar idioma"
+  },
+  "Hero": {
+    "badge": "QR dinámicos · Landing pages · Marca blanca",
+    "brand": "QRious",
+    "headlineLine1": "Un código QR.",
+    "headlineLine2": "Tres universos.",
+    "headlineLine3": "Cero límites.",
+    "description": "Transforma cada escaneo en una landing page a medida — arte, inmobiliaria o tarjeta de visita — editable sin volver a imprimir.",
+    "ctaPrimary": "Empezar gratis",
+    "ctaSecondary": "Ver cómo funciona",
+    "scanHint": "Escanéame",
+    "scanPayload": "🎉 ¡Bravo, eres curioso!\n\nBienvenido a QRious — Un código QR. Tres universos. Cero límites.\n\n→ https://www.qrious.fr"
+  },
+  "HelloScan": {
+    "metaTitle": "¡Eres curioso! — QRious",
+    "metaDescription": "Bravo — escaneaste el QR del hero. Descubre QRious.",
+    "badge": "Escaneo correcto",
+    "headline": "¡Bravo, eres curioso!",
+    "message": "Este QR no solo es bonito — abre una landing de verdad. Exactamente lo que QRious hace por tu marca, exposición o tarjeta de visita.",
+    "punchline": "Un QR. Tres universos. Cero límites.",
+    "cta": "Crear mi QR",
+    "back": "Volver al inicio"
+  },
+  "SocialProof": {
+    "galeries": "Galerías y arte",
+    "immo": "Inmobiliaria y casas rurales",
+    "vcard": "Tarjetas de visita",
+    "dynamic": "Contenido dinámico",
+    "mobile": "Mobile-first",
+    "whiteLabel": "Marca blanca"
+  },
+  "Features": {
+    "eyebrow": "Funciones",
+    "titleBefore": "Todo para códigos QR",
+    "titleHighlight": "profesionales",
+    "subtitle": "De la creación a la puesta en línea — sin conocimientos técnicos.",
+    "items": {
+      "dynamic": {
+        "title": "Contenido dinámico",
+        "description": "Modifica precios, imágenes o datos de contacto en tiempo real. El código QR impreso sigue igual."
+      },
+      "multi": {
+        "title": "Multi-vertical",
+        "description": "Una sola herramienta para arte, inmobiliaria y tarjetas de visita. Cada sector tiene su plantilla."
+      },
+      "whiteLabel": {
+        "title": "Marca blanca",
+        "description": "Logo y color primario personalizables. Tus clientes ven tu marca, no la nuestra."
+      },
+      "deploy": {
+        "title": "Despliegue instantáneo",
+        "description": "Crea una página, publícala y compártela. Tu landing está en línea en segundos."
+      },
+      "central": {
+        "title": "Gestión centralizada",
+        "description": "Todos tus códigos QR en un solo panel. Estado borrador o publicado en un clic."
+      },
+      "mobile": {
+        "title": "Pensado para el móvil",
+        "description": "Diseño tipo link-in-bio, optimizado para el escaneo con smartphone. Rápido, legible, elegante."
+      }
+    }
+  },
+  "HowItWorks": {
+    "eyebrow": "Cómo funciona",
+    "titleBefore": "De la idea al escaneo en",
+    "titleAfter": "pasos",
+    "steps": {
+      "1": {
+        "title": "Crea tu página",
+        "description": "Elige tu sector, introduce el contenido y personaliza el tema desde el panel."
+      },
+      "2": {
+        "title": "Genera tu QR",
+        "description": "Cada página recibe una URL única. Imprime el QR una sola vez — nunca cambia."
+      },
+      "3": {
+        "title": "Comparte y actualiza",
+        "description": "Tus visitantes escanean una landing mobile-first. Tú modificas el contenido cuando quieras."
+      }
+    }
+  },
+  "Verticals": {
+    "eyebrow": "Sectores",
+    "titleBefore": "Una plantilla por",
+    "titleHighlight": "universo",
+    "subtitle": "Los campos se adaptan a tu sector. Un back-office, tres experiencias distintas.",
+    "items": {
+      "art": {
+        "label": "Arte y galerías",
+        "description": "Destaca cada obra: artista, dimensiones, medio, Instagram y vídeo."
+      },
+      "immo": {
+        "label": "Inmobiliaria y casas rurales",
+        "description": "Presenta un inmueble con precio, superficie, habitaciones, certificado energético a color y botón de reserva."
+      },
+      "vcard": {
+        "label": "Tarjeta de visita",
+        "description": "Sustituye la tarjeta de papel: nombre, cargo, teléfono, email y LinkedIn en un escaneo."
+      }
+    }
+  },
+  "WhiteLabel": {
+    "eyebrow": "Marca blanca",
+    "titleLine1": "Tu imagen,",
+    "titleLine2": "no la nuestra",
+    "description": "Cada landing hereda tu identidad. Ideal para galerías, agencias e independientes que quieren premium sin desarrollo a medida.",
+    "perk1": "Color primario personalizable (hex)",
+    "perk2": "Logo subido desde tu mediática",
+    "perk3": "Aplicación automática en toda la landing",
+    "perk4": "Coherencia visual para tus clientes finales",
+    "demoGallery": "Galería Lumière",
+    "demoTheme": "Tema personalizado",
+    "demoMedium": "Óleo sobre lienzo",
+    "demoSize": "80 × 60 cm",
+    "demoCta": "Descubrir la obra"
+  },
+  "CTA": {
+    "brand": "QRious",
+    "title": "¿Listo para lanzar tu primer QR?",
+    "description": "Crea tu cuenta, configura tu landing y compártela en minutos.",
+    "primary": "Ir al panel",
+    "secondary": "Descubrir los sectores"
+  },
+  "Disclaimer": {
+    "title": "Compromiso de transparencia y avisos legales",
+    "trial": {
+      "title": "1. Prueba gratuita de 7 días",
+      "description": "Accede gratis a todas las funciones avanzadas, plantillas sectoriales y personalización HD durante 7 días tras tu registro."
+    },
+    "continuity": {
+      "title": "2. Continuidad de tus datos",
+      "description": "Al expirar el periodo de prueba, tu cuenta sigue accesible. Tus QR dinámicos se pausan temporalmente hasta tu suscripción."
+    },
+    "static": {
+      "title": "3. QR estáticos gratuitos de por vida",
+      "description": "Los códigos QR estáticos generados (URL simple, Wi-Fi, SMS, Texto) siguen funcionando de por vida, sin límite de escaneos ni costes ocultos."
+    }
+  },
+  "QuickSteps": {
+    "badge": "Todo en uno para tus códigos QR",
+    "titleBefore": "Una plataforma pensada para tus",
+    "titleHighlight": "ambiciones",
+    "subtitle": "Crea, personaliza, publica y sigue tus códigos QR dinámicos con total libertad visual.",
+    "ctaTest": "Probar esta herramienta",
+    "ctaSolutions": "Descubrir las soluciones",
+    "tabs": {
+      "design": {
+        "label": "Diseño de código QR",
+        "title": "Opciones de diseño únicas y personalizadas",
+        "badge": "Diseño y estilo",
+        "description": "Descubre nuestra amplia gama de marcos, formas y colores personalizados e inserta el logo de tu empresa para crear códigos QR inolvidables.",
+        "bullets": [
+          "Personalización integral de colores (degradados, ojos, fondo)",
+          "Integración del logo de tu marca en el centro del QR",
+          "Marcos interactivos con llamadas a la acción («Escanéame»)",
+          "Exportación vectorial de alta resolución (SVG, PNG HD)"
+        ],
+        "previewLabel": "Vista previa en alta definición",
+        "previewHint": "Lista para impresión y visualización digital"
+      },
+      "custom": {
+        "label": "Personalización",
+        "title": "Personaliza tus datos y tipos de conversión",
+        "badge": "Formularios y Dynamic Data",
+        "description": "Rellenar detalles no basta. QRious te permite categorizar y personalizar cada punto de contacto para cautivar a tu audiencia.",
+        "bullets": [
+          "Multiformato: Web, PDF, WiFi, Menú, vCard, Redes sociales",
+          "Actualización en tiempo real sin reimprimir nunca el código QR",
+          "Campos dinámicos configurables en pocos clics",
+          "Soporte Smart Routing y redirección contextual"
+        ],
+        "smartTitle": "Redirección inteligente",
+        "smartDesc": "Detecta el idioma y el tipo de dispositivo",
+        "smartStatus": "Activo",
+        "pdfTitle": "Menú y archivos PDF",
+        "pdfDesc": "Actualización instantánea del catálogo",
+        "pdfStatus": "Sincronizado"
+      },
+      "solutions": {
+        "label": "Soluciones",
+        "title": "Las mejores soluciones de código QR para tu empresa",
+        "badge": "Plantillas sectoriales",
+        "description": "Ofrecemos la colección más rica de soluciones de landing pages a medida para ayudarte a alcanzar todos tus objetivos de conversión.",
+        "bullets": [
+          "Plantillas dedicadas CHRD, Eventos B2B, Retail UGC, Inmobiliaria y Arte",
+          "Experiencia mobile-first fluida y ultrarrápida",
+          "Personalización visual con los colores de tu empresa (marca blanca)",
+          "Integración de reseñas Google, TripAdvisor y formularios de captación"
+        ],
+        "cardChrd": "Hostelería y restauración",
+        "cardChrdSub": "Menú PDF y Wi-Fi Guest",
+        "cardCorp": "Corporate B2B",
+        "cardCorpSub": "Live Wall y agenda",
+        "cardRetail": "Retail y UGC",
+        "cardRetailSub": "Concurso fotográfico",
+        "cardArt": "Arte y galerías",
+        "cardArtSub": "Cartelas y audioguía"
+      },
+      "analytics": {
+        "label": "Estadísticas",
+        "title": "Estadísticas precisas para seguir y maximizar tus escaneos",
+        "badge": "Analytics y seguimiento HD",
+        "description": "QRious te ofrece análisis detallados para medir el rendimiento de tus soportes impresos y adaptar tus campañas de marketing.",
+        "bullets": [
+          "Número de escaneos en tiempo real y horas punta",
+          "Distribución por país, ciudades, SO (iOS, Android, Desktop)",
+          "Seguimiento de clics en botones de acción y conversión",
+          "Informes descargables e integración de analytics"
+        ],
+        "totalScans": "Escaneos totales",
+        "growth": "+24,5 % este mes"
+      }
+    }
+  },
+  "QrPrintMediums": {
+    "badge": "Calidad de impresión vectorial",
+    "titleBefore": "Códigos QR para tus",
+    "titleHighlight": "soportes de impresión",
+    "subtitle": "Distribuye y convierte más rápido con nuestras opciones de exportación vectorial (SVG, PNG HD) optimizadas para impresión.",
+    "cta": "Crear este código QR",
+    "items": {
+      "marketing": {
+        "title": "Marketing y gran formato",
+        "subtitle": "Haz llegar tu mensaje y captura a tu audiencia.",
+        "description": "Transforma banners, vallas y escaparates en puntos de contacto interactivos escaneables a varios metros.",
+        "tag": "Carteles y banners"
+      },
+      "vcard": {
+        "title": "Tarjetas de visita",
+        "subtitle": "Crea una primera impresión memorable.",
+        "description": "Ofrece una tarjeta física enriquecida con una vCard dinámica: compartir contacto, redes sociales y portfolio.",
+        "tag": "Networking y vCard"
+      },
+      "flyers": {
+        "title": "Flyers y prospectos",
+        "subtitle": "Difunde tus ofertas con estilo e interactividad.",
+        "description": "Impulsa la acción inmediata con un código QR promocional que da acceso a un cupón o formulario.",
+        "tag": "Promociones"
+      },
+      "brochures": {
+        "title": "Folletos y catálogos",
+        "subtitle": "Cuenta tu historia con imágenes y detalles.",
+        "description": "Enriquece tus documentos en papel con vídeos de demostración, fichas técnicas PDF y opiniones de clientes.",
+        "tag": "Catálogos HD"
+      }
+    }
+  },
+  "LandingTemplates": {
+    "eyebrow": "Biblioteca de plantillas",
+    "titleBefore": "Explora las plantillas de",
+    "titleHighlight": "Landing Pages",
+    "subtitle": "Una solución lista para usar en cada sector, industria y campaña de marketing.",
+    "explore": "Explorar",
+    "tryQr": "Probar el QR",
+    "viewAll": "Explorar todos los universos y plantillas QRious"
+  },
+  "ContactForm": {
+    "title": "Envíanos un mensaje",
+    "subtitle": "Rellena el formulario — respuesta en 24 h laborables.",
+    "success": "¡Mensaje enviado! Te responderemos pronto.",
+    "firstName": "Nombre *",
+    "lastName": "Apellidos *",
+    "email": "Email *",
+    "phone": "Teléfono",
+    "subject": "Asunto *",
+    "subjectPlaceholder": "Elige un asunto",
+    "subjects": {
+      "demo": "Solicitud de demostración",
+      "pricing": "Pregunta sobre precios",
+      "support": "Soporte técnico",
+      "enterprise": "Solución Enterprise",
+      "partnership": "Colaboración",
+      "other": "Otro"
+    },
+    "message": "Mensaje *",
+    "messagePlaceholder": "Describe tu proyecto o tu pregunta...",
+    "privacyConsent": "Acepto que mis datos se traten conforme a la",
+    "privacyLink": "política de privacidad",
+    "submitting": "Enviando…",
+    "submit": "Enviar"
+  },
+  "LegalShell": {
+    "updatedPrefix": "Última actualización:",
+    "contactCta": "¿Una pregunta? Contáctanos"
+  },
+  "About": {
+    "brand": "QRious",
+    "title": "Conectar lo físico con lo digital, sin fricción",
+    "subtitle": "Construimos la herramienta que transforma cada escaneo en una experiencia de marca — para galerías, inmobiliaria y profesionales.",
+    "ctaHistory": "Nuestra historia",
+    "ctaContact": "Contactarnos",
+    "historyTitle": "Nuestra historia",
+    "timeline": {
+      "2020": {
+        "title": "El nacimiento de una idea",
+        "desc": "Artistas y galerías necesitaban conectar lo físico con lo digital sin reimprimir."
+      },
+      "2022": {
+        "title": "Primer producto",
+        "desc": "Lanzamiento de QRious: QR dinámicos y landings sectoriales."
+      },
+      "2024": {
+        "title": "Multi-vertical",
+        "desc": "Arte, inmobiliaria y tarjetas de visita — un back-office, tres experiencias."
+      },
+      "2026": {
+        "title": "Marca blanca",
+        "desc": "Personalización completa para agencias, galerías e independientes."
+      }
+    },
+    "stats": {
+      "pros": "Profesionales acompañados",
+      "verticals": "Verticals",
+      "support": "Soporte reactivo"
+    },
+    "valuesEyebrow": "Valores",
+    "valuesTitle": "Lo que nos guía",
+    "values": {
+      "simplicity": {
+        "title": "Simplicidad",
+        "desc": "Sin complejidad técnica. Crea, publica, comparte."
+      },
+      "metier": {
+        "title": "El sector primero",
+        "desc": "Plantillas pensadas para usos reales, no páginas genéricas."
+      },
+      "speed": {
+        "title": "Rapidez",
+        "desc": "De la idea al QR escaneable en minutos."
+      },
+      "sustain": {
+        "title": "Sostenibilidad",
+        "desc": "Un QR impreso una vez. El contenido evoluciona sin desperdiciar papel."
+      },
+      "proximity": {
+        "title": "Proximidad",
+        "desc": "Un equipo a escala humana, reactivo y atento."
+      }
+    }
+  },
+  "Contact": {
+    "brand": "QRious",
+    "title": "Contáctanos",
+    "subtitle": "¿Una pregunta, un proyecto o una demo? Te respondemos rápido.",
+    "coordsTitle": "Datos de contacto",
+    "email": {
+      "title": "Email",
+      "hint": "Respuesta en 24 h"
+    },
+    "phone": {
+      "title": "Teléfono",
+      "hint": "Lun–Vie 9–18 h"
+    },
+    "address": {
+      "title": "Dirección",
+      "value": "Alsacia, Francia",
+      "hint": "Con cita previa"
+    },
+    "demo": {
+      "title": "Demo",
+      "value": "Probar la plataforma",
+      "hint": "Acceso inmediato"
+    },
+    "faqTitle": "Preguntas frecuentes",
+    "faq": {
+      "1": {
+        "q": "¿Cómo funciona la prueba gratuita?",
+        "a": "La prueba de 14 días permite probar las funciones sin compromiso. No se requiere tarjeta bancaria para empezar."
+      },
+      "2": {
+        "q": "¿Puedo modificar el contenido después de imprimir?",
+        "a": "Sí. El QR permanece idéntico; solo cambia la landing cuando publicas una actualización."
+      },
+      "3": {
+        "q": "¿Ofrecéis marca blanca?",
+        "a": "Sí — el logo y el color primario se aplican automáticamente a tus landings (según el plan)."
+      },
+      "4": {
+        "q": "¿Qué sectores están soportados?",
+        "a": "Arte y galerías, inmobiliaria y casas rurales, y tarjetas de visita profesionales."
+      },
+      "5": {
+        "q": "¿Cómo se protegen mis datos?",
+        "a": "Tratamiento conforme al RGPD, cifrado en tránsito, acceso restringido. Consulta nuestra política de privacidad."
+      }
+    }
+  },
+  "Pricing": {
+    "metaTitle": "Precios | QRious",
+    "metaDescription": "Precios QRious — planes Discovery, Starter, Professional y Enterprise. Prueba gratuita 14 días.",
+    "eyebrow": "Precios",
+    "titleBefore": "Precios simples y",
+    "titleHighlight": "transparentes",
+    "subtitle": "Elige el plan que se adapte a tus necesidades. Todos los planes de pago incluyen una prueba gratuita de 14 días.",
+    "popular": "Popular",
+    "periodMonth": "/mes",
+    "comparePrompt": "¿Necesitas comparar funciones?",
+    "compareLink": "Ver todas las funciones",
+    "plans": {
+      "free": {
+        "name": "Discovery",
+        "blurb": "Prueba QRious sin compromiso",
+        "cta": "Empezar gratis",
+        "features": [
+          "2 códigos QR",
+          "Landing page enriquecida",
+          "Estadísticas básicas",
+          "Diseño responsive",
+          "Editor QR gratuito"
+        ]
+      },
+      "starter": {
+        "name": "Starter",
+        "blurb": "Perfecto para empezar profesionalmente",
+        "cta": "Probar 14 días",
+        "features": [
+          "Hasta 100 códigos QR",
+          "Plantillas sectoriales (arte, inmobiliaria, vCard)",
+          "Estadísticas básicas",
+          "Soporte por email",
+          "Diseño responsive",
+          "Marca blanca ligera"
+        ]
+      },
+      "pro": {
+        "name": "Professional",
+        "blurb": "Para profesionales y equipos pequeños",
+        "cta": "Elegir Professional",
+        "features": [
+          "Hasta 500 códigos QR",
+          "Todas las funciones Starter",
+          "Estadísticas avanzadas",
+          "Personalización avanzada",
+          "Integraciones (Instagram, enlaces)",
+          "Soporte prioritario",
+          "Exportación de datos"
+        ]
+      }
+    },
+    "gallery": {
+      "eyebrow": "Para galerías",
+      "title": "Destaca tu branding y tus artistas",
+      "subtitle": "Crea una experiencia digital que refleje tu identidad y valore a tus artistas — sin reimprimir en cada exposición.",
+      "branding": {
+        "title": "Branding personalizado",
+        "desc": "Logo, colores y estilo integrados en cada landing."
+      },
+      "artists": {
+        "title": "Puesta en valor de los artistas",
+        "desc": "Perfiles, biografías y portfolios accesibles al escanear."
+      },
+      "analytics": {
+        "title": "Analytics detallados",
+        "desc": "Sigue el engagement y el impacto de tus exposiciones."
+      },
+      "ctaDiscover": "Descubrir para galerías",
+      "ctaDemo": "Solicitar una demo"
+    },
+    "enterprise": {
+      "eyebrow": "Enterprise",
+      "title": "Solución a medida para instituciones",
+      "description": "QR ilimitados, API, analytics detallados, acompañamiento dedicado y desarrollos a medida.",
+      "features": [
+        "Soporte 24/7 y formación de equipos",
+        "Consultor dedicado",
+        "Personalización completa"
+      ],
+      "billingNote": "Facturación anual disponible",
+      "cta": "Hablar con un experto"
+    }
+  },
+  "FeaturesPage": {
+    "eyebrow": "Funciones",
+    "title": "La suite completa para QR profesionales",
+    "subtitle": "Crea, personaliza y publica landing pages escaneables — sin código, sin reimpresión.",
+    "ctaDemo": "Ver la demo",
+    "ctaPricing": "Ver precios",
+    "stats": {
+      "features": "Funciones",
+      "responsive": "Responsive",
+      "verticals": "Verticals"
+    },
+    "midCta": {
+      "title": "¿Listo para probarlo en tu sector?",
+      "description": "Crea tu primer QR en minutos y ve el resultado en el móvil.",
+      "button": "Empezar gratis"
+    },
+    "items": {
+      "1": {
+        "title": "Códigos QR dinámicos",
+        "description": "Imprime un QR una vez y actualiza el contenido cuando quieras."
+      },
+      "2": {
+        "title": "Plantillas por sector",
+        "description": "Arte, inmobiliaria, vCard — campos adaptados a cada vertical."
+      },
+      "3": {
+        "title": "Marca blanca",
+        "description": "Logo y color primario: tus landings llevan tu identidad."
+      },
+      "4": {
+        "title": "Panel de control",
+        "description": "Crea, publica y gestiona todos tus QR desde un solo lugar."
+      },
+      "5": {
+        "title": "Mobile-first",
+        "description": "Landings optimizadas para el escaneo móvil — rápidas y legibles."
+      },
+      "6": {
+        "title": "Estadísticas",
+        "description": "Sigue los escaneos y el engagement de tus páginas de un vistazo."
+      },
+      "7": {
+        "title": "Compartir al instante",
+        "description": "URL única, QR descargable — listo para print o digital."
+      },
+      "8": {
+        "title": "Exportar QR",
+        "description": "Descarga tus QR en alta calidad para impresión."
+      },
+      "9": {
+        "title": "En línea en segundos",
+        "description": "Publica y comparte de inmediato — cero despliegue técnico."
+      },
+      "10": {
+        "title": "Fiable y seguro",
+        "description": "Hosting moderno, datos protegidos, páginas siempre disponibles."
+      }
+    }
+  },
+  "Solutions": {
+    "heroBadge": "Soluciones inteligentes de códigos QR",
+    "heroTitleBefore": "Un universo de soluciones para cada",
+    "heroTitleHighlight": "sector",
+    "heroSubtitle": "Descubre nuestras landing pages dinámicas a medida y códigos QR vectoriales para hostelería, eventos, retail, arte y mantenimiento.",
+    "ctaCreate": "Crear mi primer QR",
+    "ctaPricing": "Ver ofertas y precios",
+    "typesLabel": "Tipos de códigos QR admitidos al instante",
+    "sectionEyebrow": "Por sector e industria",
+    "sectionTitleBefore": "Descubre nuestros",
+    "sectionTitleHighlight": "5 verticals",
+    "sectionTitleAfter": "de excelencia",
+    "sectionSubtitle": "Cada vertical dispone de una landing page personalizada, campos sectoriales nativos y un panel de gestión directa.",
+    "viewFull": "Ver la presentación completa",
+    "createQr": "Crear el QR",
+    "types": {
+      "web": "Sitio Web",
+      "menu": "Menú Digital",
+      "pdf": "PDF & Folleto",
+      "vcard": "vCard Contacto",
+      "wifi": "Wi-Fi Invitados",
+      "social": "Redes Sociales",
+      "coupons": "Cupones Promo",
+      "reviews": "Reseñas Google"
+    },
+    "verticals": {
+      "chrd": {
+        "title": "Solución CHRD: Hostelería & Restauración",
+        "badge": "Hoteles, Restaurantes & Campings",
+        "description": "Ofrezca una experiencia premium desde el primer escaneo en mesa o habitación: menú digital interactivo, Wi-Fi de invitados instantáneo, reseñas Google y postal física de regalo.",
+        "h1": "Menú digital siempre actualizado con fotos HD",
+        "h2": "Acceso Wi-Fi automático sin escribir la contraseña",
+        "h3": "Impulso automático de sus reseñas Google & TripAdvisor",
+        "h4": "Opción postal souvenir física"
+      },
+      "corporate": {
+        "title": "Eventos B2B & Seminarios",
+        "badge": "Corporate & Seminarios",
+        "description": "Centralice los recursos de sus conferencias e involucre a su audiencia con un Live Wall interactivo y el intercambio directo de PDF.",
+        "h1": "Muro de fotos colaborativo en vivo (Live Wall)",
+        "h2": "Agenda y programa de conferencias",
+        "h3": "Descarga directa de presentaciones PDF",
+        "h4": "Código Wi-Fi de invitados en un escaneo"
+      },
+      "ugc": {
+        "title": "Retail & Concursos Foto UGC",
+        "badge": "Retail & E-commerce",
+        "description": "Convierta envases y tickets en motores UGC: los compradores envían una foto de su compra para desbloquear un cupón exclusivo.",
+        "h1": "Activación directa en envase o ticket",
+        "h2": "Recogida de contenido auténtico generado por usuarios",
+        "h3": "Atribución automática de códigos promo",
+        "h4": "Fidelización y aumento de recompra"
+      },
+      "field": {
+        "title": "Field Service & Mantenimiento de Equipos",
+        "badge": "Mantenimiento & Industria",
+        "description": "Identifique equipos en campo con etiquetas QR duraderas: acceso directo a manuales, fichas de seguridad y formularios de intervención.",
+        "h1": "Ficha técnica e historial de intervenciones",
+        "h2": "Formulario de reporte de avería instantáneo",
+        "h3": "Acceso directo a manuales y esquemas PDF",
+        "h4": "Historial de mantenimiento centralizado"
+      },
+      "art": {
+        "title": "Arte & Galerías de Exposición",
+        "badge": "Cultura & Galerías",
+        "description": "Ponga en valor cada obra con una ficha digital completa: biografía del artista, vídeo de taller, dimensiones y formulario de adquisición.",
+        "h1": "Ficha digital interactiva para obras de arte",
+        "h2": "Integración de vídeo y audioguía",
+        "h3": "Enlace directo al Instagram del artista",
+        "h4": "Botón de solicitud de precio y reserva"
+      }
+    }
+  },
+  "SolutionsVertical": {
+    "ctaCreate": "Crear mi QR {badge}",
+    "ctaEditor": "Probar el editor gratuito",
+    "whyTitle": "¿Por qué elegir esta solución?",
+    "whySubtitle": "Funciones clave diseñadas para tu actividad.",
+    "highlightHint": "Lista para usar y configurable en menos de 2 minutos desde tu espacio de usuario.",
+    "chrd": {
+      "title": "Solución CHRD: Hostelería & Restauración",
+      "subtitle": "Digitalice menús, impulse reseñas Google y regale postales.",
+      "badge": "Hostelería, Resto & Camping",
+      "description": "Experiencia premium desde la llegada con un QR en la mesa o habitación.",
+      "h1": "Menú y carta digital interactivos siempre actualizados",
+      "h2": "Acceso Wi-Fi instantáneo sin teclear",
+      "h3": "Impulso automático de reseñas Google & TripAdvisor",
+      "h4": "Postal souvenir física de regalo"
+    },
+    "corporate": {
+      "title": "Eventos B2B & Seminarios",
+      "subtitle": "Engage a sus equipos con un Live Wall y centralice recursos.",
+      "badge": "Corporate & Seminarios",
+      "description": "Un QR único en badges o pantallas de bienvenida para eventos fluidos.",
+      "h1": "Muro de fotos colaborativo en vivo (Live Wall)",
+      "h2": "Acceso instantáneo a agenda y programa",
+      "h3": "Descarga directa de presentaciones PDF",
+      "h4": "Código Wi-Fi de invitados en un escaneo"
+    },
+    "ugc": {
+      "title": "Retail & Concursos Foto UGC",
+      "subtitle": "Convierta compradores en embajadores con fotos en el packaging.",
+      "badge": "Retail & Brands",
+      "description": "Anime a fotografiar compras a cambio de un cupón inmediato.",
+      "h1": "Activación directa en envase o ticket",
+      "h2": "Recogida de UGC auténtico",
+      "h3": "Atribución automática de códigos promo exclusivos",
+      "h4": "Fidelización y aumento de recompra"
+    },
+    "field": {
+      "title": "Field Service & Mantenimiento de Equipos",
+      "subtitle": "Identifique equipos en campo y simplifique el seguimiento.",
+      "badge": "Mantenimiento & Industria",
+      "description": "QR duraderos en máquinas para acceso instantáneo a fichas técnicas y averías.",
+      "h1": "Estado en tiempo real (Operativo, Mantenimiento, Fuera de servicio)",
+      "h2": "Documentación técnica al escanear",
+      "h3": "Tickets de incidente instantáneos con fotos",
+      "h4": "Números de emergencia y guardia directos"
+    },
+    "art": {
+      "title": "Arte & Galerías de Exposición",
+      "subtitle": "Realce cada obra con ficha enriquecida, libro de visitas y venta directa.",
+      "badge": "Cultura & Museos",
+      "description": "La solución ideal para galerías, artistas y ferias de arte.",
+      "h1": "Ficha digital completa (Dimensiones, Medio, Año)",
+      "h2": "Audioguía y nota de intención del artista",
+      "h3": "Contacto directo para adquisición y precio",
+      "h4": "Enlace Instagram y portfolio"
+    },
+    "immo": {
+      "title": "Inmobiliaria, Gîtes & Alquileres",
+      "subtitle": "Presente inmuebles y facilite estancias con libreta digital de bienvenida.",
+      "badge": "Inmobiliaria & Temporada",
+      "description": "Ahorre tiempo y ofrezca una bienvenida 5 estrellas.",
+      "h1": "Info clave del inmueble (Superficie, habitaciones, certificado energético)",
+      "h2": "Instrucciones de llegada y Wi-Fi",
+      "h3": "Consejos y recomendaciones locales",
+      "h4": "Formulario de reserva online"
+    },
+    "vcard": {
+      "title": "Tarjeta de Visita Digital vCard",
+      "subtitle": "Comparta contactos y redes en un escaneo — sin tarjeta de papel.",
+      "badge": "Networking & Business",
+      "description": "No pierda nunca más un contacto profesional.",
+      "h1": "Añadir directo a contactos del teléfono (.vcf)",
+      "h2": "Enlaces a todas sus redes sociales",
+      "h3": "Cita directa vía Calendly",
+      "h4": "Branding personalizado en sus colores"
+    },
+    "tourism": {
+      "title": "Turismo & Patrimonio Cultural",
+      "subtitle": "Enriquezca la experiencia en sitios turísticos y monumentos.",
+      "badge": "Turismo & Ciudades",
+      "description": "Convierta cada lugar histórico en un recorrido interactivo dinámico.",
+      "h1": "Audioguía y contenidos explicativos",
+      "h2": "Mapa interactivo y geolocalización",
+      "h3": "Puntos de interés y anécdotas",
+      "h4": "Horarios y tarifas de acceso"
+    },
+    "feedback": {
+      "title": "Recogida de Opiniones & E-Reputación",
+      "subtitle": "Multiplique reseñas 5 estrellas en Google y gestione feedback privado.",
+      "badge": "Opiniones & E-Reputación",
+      "description": "Envíe clientes satisfechos a Google captando feedback constructivo en privado.",
+      "h1": "Redirección inteligente a Google, TripAdvisor o Trustpilot",
+      "h2": "Formulario privado de reclamación para proteger su nota",
+      "h3": "Diseño optimizado para conversión",
+      "h4": "Estadísticas de satisfacción en tiempo real"
+    },
+    "product": {
+      "title": "Manual de Producto Digital",
+      "subtitle": "Sustituya manuales en papel por un QR de asistencia completo.",
+      "badge": "Productos & Soporte",
+      "description": "Reduzca llamadas de soporte y ofrezca guías de vídeo de inicio rápido.",
+      "h1": "Descarga PDF del manual siempre disponible",
+      "h2": "Tutoriales de vídeo y pasos de inicio rápido",
+      "h3": "Registro de garantía y soporte al cliente",
+      "h4": "FAQ y resolución de problemas frecuentes"
+    }
+  },
+  "Generator": {
+    "metaTitle": "Generador de códigos QR universal gratuito | QRious",
+    "metaDescription": "Generador de códigos QR universal gratuito: URL, Arte, Inmobiliaria, vCard, Wi-Fi y más. Personalización avanzada, exportación PNG y SVG.",
+    "badge": "Generador universal multitipo",
+    "title": "Generador de códigos QR universal",
+    "description": "Crea códigos QR estáticos o previsualiza tus Smart Landing Pages sectoriales. Personalización integral del diseño y descarga gratuita en PNG HD y SVG.",
+    "ctaDynamic": "Crear un QR dinámico reeditable",
+    "ctaFeatures": "Descubrir la suite completa",
+    "typeEditorTitle": "Genera tu código QR gratis",
+    "typeEditorSubtitle": "Personaliza colores y logo, luego descarga en alta definición.",
+    "ctaCreateDynamic": "Crear este QR en dinámico",
+    "ctaAllFeatures": "Todas las funciones"
+  },
+  "Editor": {
+    "metaTitle": "Editor de códigos QR gratuito | QRious",
+    "metaDescription": "Crea y personaliza un código QR gratis: URL, texto, Wi-Fi, vCard. Exportación PNG y SVG.",
+    "badge": "Editor gratuito",
+    "title": "Crea tu código QR en segundos",
+    "description": "Personaliza el contenido, el estilo, los colores y el logo, luego descarga en PNG o SVG — sin registro.",
+    "ctaDynamic": "QR dinámicos",
+    "ctaFeatures": "Ver las funciones"
+  },
+  "Demo": {
+    "badge": "Demo interactiva",
+    "title": "Descubre QRious en acción",
+    "subtitle": "Explora el recorrido: del panel a la landing escaneada en el smartphone.",
+    "statCreate": "Creación de un QR",
+    "statCustomizable": "Personalizable",
+    "statSupport": "Soporte",
+    "ctaTry": "Probar gratis",
+    "highlightsTitle": "Lo que vas a probar",
+    "highlightsSubtitle": "Un recorrido completo, del back-office a la experiencia de escaneo.",
+    "bottomTitle": "Lanza tu propia demo",
+    "bottomSubtitle": "Crea una cuenta y publica tu primera landing en minutos.",
+    "ctaRegister": "Crear mi cuenta",
+    "ctaPricing": "Ver precios"
+  },
+  "Dashboard": {
+    "metadata": {
+      "title": "Dashboard — QRious",
+      "description": "Gestiona tus códigos QR dinámicos"
+    },
+    "nav": {
+      "brandSubtitle": "Dashboard",
+      "sectionLabel": "Navegación",
+      "overview": "Panel",
+      "qrCodes": "Mis códigos QR",
+      "smartPages": "Mis Smart Pages",
+      "medias": "Medios",
+      "stats": "Estadísticas",
+      "profile": "Perfil",
+      "adminCms": "Admin CMS",
+      "logout": "Cerrar sesión",
+      "menuAria": "Menú",
+      "sheetTitle": "Navegación",
+      "language": "Idioma"
+    },
+    "common": {
+      "createQrCode": "Crear un código QR",
+      "scans": "{count} escaneos",
+      "back": "Volver",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "publish": "Publicar",
+      "draft": "Borrador",
+      "published": "Publicado",
+      "stats": "Stats",
+      "preview": "Vista previa",
+      "open": "Abrir",
+      "file": "Archivo"
+    },
+    "auth": {
+      "brandEyebrow": "Panel",
+      "heroLine1": "Un QR.",
+      "heroLine2": "Tres universos.",
+      "heroLine3": "Cero fricción.",
+      "heroDescription": "Gestiona tus landings de arte, inmobiliaria y tarjetas de visita — contenido dinámico, marca blanca, stats de un vistazo.",
+      "feature1": "QR dinámicos sin reimpresión",
+      "feature2": "Plantillas sectoriales listas para usar",
+      "feature3": "Marca blanca en pocos clics",
+      "copyright": "© {year} QRious",
+      "backToSite": "← Volver al sitio",
+      "email": "E-mail",
+      "emailPlaceholder": "tu@ejemplo.es",
+      "password": "Contraseña"
+    },
+    "login": {
+      "title": "Bienvenido de nuevo",
+      "description": "Inicia sesión para acceder a tu panel",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…",
+      "noAccount": "¿Aún no tienes cuenta?",
+      "createAccount": "Crear una cuenta",
+      "noticeReset": "Contraseña actualizada. Ya puedes iniciar sesión.",
+      "noticeRegistered": "Cuenta creada. Inicia sesión con tus credenciales.",
+      "noticeRedirect": "Inicia sesión para personalizar y publicar tu Landing Page."
+    },
+    "register": {
+      "title": "Crear una cuenta",
+      "description": "Únete a QRious para gestionar tus códigos QR dinámicos",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "confirmPassword": "Confirmar contraseña",
+      "submit": "Crear mi cuenta",
+      "submitting": "Creando…",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "signIn": "Iniciar sesión"
+    },
+    "forgotPassword": {
+      "title": "Contraseña olvidada",
+      "description": "Recibe un enlace para restablecer tu contraseña",
+      "submit": "Enviar el enlace",
+      "submitting": "Enviando…",
+      "backToLogin": "← Volver al inicio de sesión"
+    },
+    "resetPassword": {
+      "invalidTitle": "Enlace no válido",
+      "invalidDescription": "Este enlace de restablecimiento está incompleto",
+      "invalidHint": "Solicita un nuevo enlace desde la página {link}.",
+      "forgotPasswordLink": "contraseña olvidada",
+      "title": "Nueva contraseña",
+      "description": "Elige una nueva contraseña segura",
+      "newPassword": "Nueva contraseña",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "confirmPassword": "Confirmar contraseña",
+      "submit": "Guardar",
+      "submitting": "Guardando…"
+    },
+    "overview": {
+      "title": "Panel",
+      "description": "Bienvenido a tu panel QRious.",
+      "statQrCodes": "Códigos QR",
+      "statTotalScans": "Total de escaneos",
+      "statUniqueVisitors": "Visitantes únicos",
+      "deltaThisMonth": "+{count} este mes",
+      "deltaThisWeek": "+{count} esta semana",
+      "activityTitle": "Actividad reciente",
+      "activityDescription": "Número de escaneos por día esta semana",
+      "chartLine": "Línea",
+      "chartBars": "Barras",
+      "recentTitle": "Códigos QR recientes",
+      "recentDescription": "Tus 3 últimos códigos QR creados",
+      "recentEmpty": "Ningún código QR por ahora.",
+      "viewAll": "Ver todos los códigos QR"
+    },
+    "qrCodes": {
+      "title": "Mis códigos QR",
+      "description": "Gestiona y sigue todos tus códigos QR generados.",
+      "emptyTitle": "Ningún código QR por ahora",
+      "emptyDescription": "Crea tu primer código QR dinámico y comparte una landing page editable en cualquier momento.",
+      "searchPlaceholder": "Buscar por título o artista...",
+      "noResults": "Ningún resultado para « {query} ».",
+      "createdOn": "Creado el {date}",
+      "tableTitle": "Título",
+      "tableSlug": "Slug / URL",
+      "tableVertical": "Universo",
+      "tableStatus": "Estado",
+      "tableUpdated": "Actualizado",
+      "viewPage": "Ver la página",
+      "unpublish": "Pasar a borrador",
+      "publish": "Publicar",
+      "deleteConfirmTitle": "¿Eliminar este código QR?",
+      "deleteConfirmDescription": "« {title} » se eliminará definitivamente. Esta acción es irreversible."
+    },
+    "smartPages": {
+      "title": "Mis Smart Pages",
+      "description": "Gestiona las páginas de destino dinámicas asociadas a tus códigos QR."
+    },
+    "medias": {
+      "title": "Biblioteca de medios",
+      "description": "Gestiona tus imágenes, logos y documentos alojados para tus Landing Pages.",
+      "upload": "Subir un archivo",
+      "emptyTitle": "Ningún medio por ahora",
+      "emptyDescription": "Sube tus logos, banners y menús (PDF) para insertarlos fácilmente en tus Smart Pages.",
+      "startUpload": "Empezar la subida",
+      "open": "Abrir"
+    },
+    "artists": {
+      "title": "Artistas",
+      "description": "Artistas asociados a tus códigos QR",
+      "empty": "Ningún artista indicado. Añade un nombre de artista al crear un código QR de Arte."
+    },
+    "profile": {
+      "title": "Perfil",
+      "description": "Tu espacio QRious",
+      "accountTitle": "Cuenta",
+      "accountDescription": "Información de tu cuenta",
+      "email": "E-mail",
+      "role": "Rol",
+      "roleAdmin": "Admin",
+      "roleUser": "Usuario",
+      "activeQrCodes": "Códigos QR activos",
+      "drafts": "Borradores"
+    },
+    "stats": {
+      "title": "Estadísticas e inteligencia de negocio",
+      "description": "Analiza escaneos, geolocalización, horas punta e informes semanales por email.",
+      "biBadge": "Business Intelligence v2.0",
+      "liveData": "Datos en directo",
+      "bannerTitle": "Analytics y centro de decisión comercial",
+      "bannerDescription": "Analiza la geolocalización de tus visitantes, anticipa las horas punta y configura el envío automático de balances semanales por email.",
+      "tabOverview": "Vista general",
+      "tabHeatmap": "Mapa y heatmap de ciudades",
+      "tabPeakHours": "Picos horarios y dispositivos",
+      "tabReports": "Informes semanales y alertas"
+    },
+    "qrNew": {
+      "title": "Nuevo código QR",
+      "description": "Tres pasos — identidad, contenido, publicación.",
+      "submit": "Crear el código QR"
+    },
+    "qrEdit": {
+      "description": "Modificar el contenido y el estado de publicación.",
+      "submit": "Guardar"
+    }
+  }
+}

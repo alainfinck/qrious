@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { useParams, notFound } from 'next/navigation'
 import {
   Utensils,
@@ -14,11 +14,9 @@ import {
   Compass,
   Star,
   Box,
-  ArrowRight,
   CheckCircle2,
   QrCode,
   Sparkles,
-  Smartphone,
 } from 'lucide-react'
 
 import { MarketingHeader } from '@/components/marketing/MarketingHeader'
@@ -26,15 +24,24 @@ import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { CtaSection } from '@/components/marketing/CtaSection'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { LandingPageRouter } from '@/components/landing/LandingPageRouter'
-import type { LandingPage, LandingPageVertical } from '@/types/landing-page'
+import { Link } from '@/src/i18n/routing'
+import type { LandingPage } from '@/types/landing-page'
+
+const SLUG_TO_MSG: Record<string, string> = {
+  chrd: 'chrd',
+  'corporate-event': 'corporate',
+  'ugc-retail': 'ugc',
+  'field-service': 'field',
+  art: 'art',
+  immo: 'immo',
+  vcard: 'vcard',
+  tourism: 'tourism',
+  feedback: 'feedback',
+  product: 'product',
+}
 
 interface VerticalConfig {
-  title: string
-  subtitle: string
-  badge: string
   icon: React.ElementType
-  description: string
-  highlights: string[]
   gradient: string
   accentColor: string
   mockData: LandingPage
@@ -42,18 +49,7 @@ interface VerticalConfig {
 
 const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
   chrd: {
-    title: 'Solution CHRD : Hôtellerie & Restauration',
-    subtitle: 'Digitalez vos menus, boostez vos avis Google et offrez des cartes postales à vos clients.',
-    badge: 'Hôtellerie, Resto & Camping',
     icon: Utensils,
-    description:
-      'Proposez une expérience haut de gamme à vos clients dès leur arrivée avec un QR code placé sur la table ou en chambre.',
-    highlights: [
-      'Menu & Carte digitale interactifs toujours à jour',
-      'Accès Wi-Fi instantané sans saisie fastidieuse',
-      'Boost automatique de vos avis Google & TripAdvisor',
-      'Carte postale souvenir physique offerte aux clients',
-    ],
     gradient: 'from-rose-950 via-slate-900 to-slate-950',
     accentColor: '#e11d48',
     mockData: {
@@ -77,18 +73,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   'corporate-event': {
-    title: 'Événementiel B2B & Séminaires',
-    subtitle: 'Engagez vos collaborateurs avec un Live Wall photo et centralisez les ressources de vos séminaires.',
-    badge: 'Corporate & Séminaires',
     icon: Calendar,
-    description:
-      'Un QR code unique sur les badges ou écrans d’accueil pour fluidifier le déroulement de vos événements professionnels.',
-    highlights: [
-      'Mur photo collaboratif en direct (Live Wall)',
-      'Accès instantané à l’ordre du jour & programme',
-      'Téléchargement direct des présentations PDF',
-      'Code Wi-Fi invités partagé en un scan',
-    ],
     gradient: 'from-indigo-950 via-slate-900 to-slate-950',
     accentColor: '#6366f1',
     mockData: {
@@ -112,18 +97,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   'ugc-retail': {
-    title: 'Retail & Concours Photo UGC',
-    subtitle: 'Transformez vos acheteurs en ambassadeurs grâce au partage de photos sur packaging.',
-    badge: 'Retail & Brands',
     icon: ShoppingBag,
-    description:
-      'Incitez vos clients à photographier leurs achats en échange d’un coupon de réduction immédiat.',
-    highlights: [
-      'Activation directe sur packaging ou ticket de caisse',
-      'Collecte de contenus authentiques générés par les utilisateurs (UGC)',
-      'Attribution automatique de codes promo exclusifs',
-      'Fidélisation et augmentation du réachat',
-    ],
     gradient: 'from-purple-950 via-slate-900 to-slate-950',
     accentColor: '#a855f7',
     mockData: {
@@ -145,18 +119,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   'field-service': {
-    title: 'Field Service & Maintenance Équipements',
-    subtitle: 'Identifiez vos équipements sur le terrain et simplifiez le suivi d’intervention et de maintenance.',
-    badge: 'Maintenance & Industrie',
     icon: Wrench,
-    description:
-      'Collez des QR codes durables sur vos machines pour offrir un accès instantané aux fiches techniques et au signalement de panne.',
-    highlights: [
-      'Statut en temps réel (Opérationnel, Maintenance, Hors Service)',
-      'Notice & documentation technique accessible au scan',
-      'Création instantanée de tickets d’incident avec photos',
-      'Numéros d’urgence & astreinte technique directes',
-    ],
     gradient: 'from-slate-900 via-slate-900 to-slate-950',
     accentColor: '#0ea5e9',
     mockData: {
@@ -181,17 +144,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   art: {
-    title: 'Art & Galeries d’Exposition',
-    subtitle: 'Sublimez chaque œuvre avec une fiche enrichie, un livre d’or et la vente directe.',
-    badge: 'Culture & Musées',
     icon: Palette,
-    description: 'La solution idéale pour les galeries, artistes indépendants et salons d’art.',
-    highlights: [
-      'Cartel numérique complet (Dimensions, Médium, Année)',
-      'Audio-guide et note d’intention de l’artiste',
-      'Contact direct pour acquisition et prix',
-      'Lien Instagram & portfolio',
-    ],
     gradient: 'from-[#5c2b1a] via-slate-900 to-slate-950',
     accentColor: '#ffc53d',
     mockData: {
@@ -215,17 +168,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   immo: {
-    title: 'Immobilier, Gîtes & Locations',
-    subtitle: 'Présentez vos biens et facilitez le séjour de vos voyageurs avec un livret d’accueil digital.',
-    badge: 'Immobilier & Saisonniers',
     icon: Building2,
-    description: 'Gagnez du temps et offrez un accueil 5 étoiles à vos locataires.',
-    highlights: [
-      'Informations clés du bien (Surface, pièces, DPE)',
-      'Consignes d’arrivée et accès Wi-Fi',
-      'Recommandations et bons plans locaux',
-      'Formulaire de réservation en ligne',
-    ],
     gradient: 'from-[#0a2a44] via-slate-900 to-slate-950',
     accentColor: '#3dbbff',
     mockData: {
@@ -250,17 +193,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   vcard: {
-    title: 'Carte de Visite Digitale vCard',
-    subtitle: 'Partagez instantanément vos coordonnées et réseaux sociaux en un scan sans carte papier.',
-    badge: 'Réseau & Business',
     icon: Contact,
-    description: 'Ne manquez plus aucun contact professionnel.',
-    highlights: [
-      'Ajout direct dans les contacts du téléphone (.vcf)',
-      'Liens vers tous vos réseaux sociaux (LinkedIn, Twitter, IG)',
-      'Prise de rendez-vous directe via Calendly',
-      'Branding personnalisé à vos couleurs',
-    ],
     gradient: 'from-[#06352e] via-slate-900 to-slate-950',
     accentColor: '#12c4a8',
     mockData: {
@@ -275,23 +208,13 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
         company: 'QRious Technologies',
         email: 'alexandre@qrious.fr',
         phone: '+33 6 12 34 56 78',
-        website: 'https://qrious.fr',
+        website: 'https://www.qrious.fr',
         linkedinUrl: 'https://linkedin.com/in/alexandre-martin',
       },
     },
   },
   tourism: {
-    title: 'Tourisme & Patrimoine Culturel',
-    subtitle: 'Enrichissez l’expérience de vos visiteurs sur vos sites touristiques et monuments.',
-    badge: 'Tourisme & Villes',
     icon: Compass,
-    description: 'Transformez chaque lieu historique en un parcours interactif dynamique.',
-    highlights: [
-      'Audio-guide et contenus explicatifs',
-      'Carte interactive et géolocalisation',
-      'Points d’intérêt notables et anecdotes',
-      'Horaires et tarifs d’accès',
-    ],
     gradient: 'from-amber-950 via-slate-900 to-slate-950',
     accentColor: '#f59e0b',
     mockData: {
@@ -312,17 +235,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   feedback: {
-    title: 'Collecte d’Avis & E-Réputation',
-    subtitle: 'Multipliez vos avis 5 étoiles sur Google et gérez les remarques privées.',
-    badge: 'Avis & E-Réputation',
     icon: Star,
-    description: 'Redirigez vos clients satisfaits vers Google tout en captant les retours constructifs en privé.',
-    highlights: [
-      'Redirection intelligente vers Google, TripAdvisor ou Trustpilot',
-      'Formulaire privé de réclamation pour préserver votre note',
-      'Design incitatif et optimisé pour le taux de conversion',
-      'Statistiques de satisfaction en temps réel',
-    ],
     gradient: 'from-yellow-950 via-slate-900 to-slate-950',
     accentColor: '#eab308',
     mockData: {
@@ -342,17 +255,7 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
     },
   },
   product: {
-    title: 'Notice & Manuel Produit Numérique',
-    subtitle: 'Remplacez vos manuels papier par un QR code d’assistance complet.',
-    badge: 'Produits & Support',
     icon: Box,
-    description: 'Diminuez les appels au support et offrez des guides vidéo de démarrage rapide.',
-    highlights: [
-      'Téléchargement de notice PDF toujours disponible',
-      'Tutoriels vidéo et étapes de démarrage rapide',
-      'Enregistrement de garantie et support client',
-      'FAQ et résolution de problèmes fréquents',
-    ],
     gradient: 'from-cyan-950 via-slate-900 to-slate-950',
     accentColor: '#06b6d4',
     mockData: {
@@ -375,13 +278,25 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
 }
 
 export default function VerticalSolutionPage() {
+  const t = useTranslations('SolutionsVertical')
   const params = useParams()
   const verticalKey = String(params?.vertical || '').toLowerCase()
   const config = VERTICAL_CONFIGS[verticalKey]
+  const msgKey = SLUG_TO_MSG[verticalKey]
 
-  if (!config) {
+  if (!config || !msgKey) {
     notFound()
   }
+
+  const title = t(`${msgKey}.title`)
+  const subtitle = t(`${msgKey}.subtitle`)
+  const badge = t(`${msgKey}.badge`)
+  const highlights = [
+    t(`${msgKey}.h1`),
+    t(`${msgKey}.h2`),
+    t(`${msgKey}.h3`),
+    t(`${msgKey}.h4`),
+  ]
 
   const IconComponent = config.icon
 
@@ -404,19 +319,19 @@ export default function VerticalSolutionPage() {
               <BlurFade delay={0.1} inView>
                 <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider bg-white/10 border border-white/20 text-white backdrop-blur">
                   <IconComponent className="h-4 w-4" style={{ color: config.accentColor }} />
-                  <span>{config.badge}</span>
+                  <span>{badge}</span>
                 </div>
               </BlurFade>
 
               <BlurFade delay={0.2} inView>
                 <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-white leading-[1.15]">
-                  {config.title}
+                  {title}
                 </h1>
               </BlurFade>
 
               <BlurFade delay={0.3} inView>
                 <p className="text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl">
-                  {config.subtitle}
+                  {subtitle}
                 </p>
               </BlurFade>
 
@@ -427,14 +342,14 @@ export default function VerticalSolutionPage() {
                     className="inline-flex items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-mq-signal to-emerald-500 px-6 py-3.5 text-base font-bold text-mq-ink shadow-lg shadow-mq-signal/25 transition hover:opacity-95 active:scale-95"
                   >
                     <Sparkles className="h-5 w-5" />
-                    <span>Créer mon QR {config.badge}</span>
+                    <span>{t('ctaCreate', { badge })}</span>
                   </Link>
                   <Link
                     href="/editeur"
                     className="inline-flex items-center justify-center space-x-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-base font-semibold text-white transition hover:bg-white/10"
                   >
                     <QrCode className="h-5 w-5 text-slate-300" />
-                    <span>Essayer l'éditeur gratuit</span>
+                    <span>{t('ctaEditor')}</span>
                   </Link>
                 </div>
               </BlurFade>
@@ -462,12 +377,12 @@ export default function VerticalSolutionPage() {
       <section className="py-20 bg-slate-950 border-t border-white/10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-extrabold text-white">Pourquoi choisir cette solution ?</h2>
-            <p className="mt-3 text-slate-400">Des fonctionnalités clés conçues pour votre activité.</p>
+            <h2 className="text-3xl font-extrabold text-white">{t('whyTitle')}</h2>
+            <p className="mt-3 text-slate-400">{t('whySubtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {config.highlights.map((highlight, index) => (
+            {highlights.map((highlight, index) => (
               <div
                 key={index}
                 className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-white/20"
@@ -476,9 +391,7 @@ export default function VerticalSolutionPage() {
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
                 <h3 className="text-base font-bold text-white mb-2">{highlight}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Prêt à l'emploi et configurable en moins de 2 minutes depuis votre espace utilisateur.
-                </p>
+                <p className="text-xs text-slate-400 leading-relaxed">{t('highlightHint')}</p>
               </div>
             ))}
           </div>
