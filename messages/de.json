@@ -232,7 +232,9 @@
         "title": "Teilen & aktualisieren",
         "description": "Besucher scannen eine Mobile-first-Landing. Sie aktualisieren den Inhalt jederzeit."
       }
-    }
+    },
+    "cta": "Meinen QR erstellen",
+    "stepLabel": "Schritt"
   },
   "Verticals": {
     "eyebrow": "Branchen",

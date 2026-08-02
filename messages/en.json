@@ -232,7 +232,9 @@
         "title": "Share & update",
         "description": "Visitors scan a mobile-first landing. You update the content whenever you want."
       }
-    }
+    },
+    "cta": "Create my QR",
+    "stepLabel": "Step"
   },
   "Verticals": {
     "eyebrow": "Industries",

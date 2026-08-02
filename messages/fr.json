@@ -232,7 +232,9 @@
         "title": "Partagez & mettez à jour",
         "description": "Vos visiteurs scannent une landing mobile-first. Vous modifiez le contenu quand vous voulez."
       }
-    }
+    },
+    "cta": "Créer mon QR",
+    "stepLabel": "Étape"
   },
   "Verticals": {
     "eyebrow": "Métiers",

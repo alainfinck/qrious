@@ -232,7 +232,9 @@
         "title": "Udostępnij i aktualizuj",
         "description": "Odwiedzający skanują landing mobile-first. Ty aktualizujesz treść, kiedy chcesz."
       }
-    }
+    },
+    "cta": "Stwórz mój QR",
+    "stepLabel": "Krok"
   },
   "Verticals": {
     "eyebrow": "Branże",

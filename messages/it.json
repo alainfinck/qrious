@@ -232,7 +232,9 @@
         "title": "Condividi e aggiorna",
         "description": "I visitatori scansionano una landing mobile-first. Tu aggiorni i contenuti quando vuoi."
       }
-    }
+    },
+    "cta": "Crea il mio QR",
+    "stepLabel": "Passo"
   },
   "Verticals": {
     "eyebrow": "Settori",
