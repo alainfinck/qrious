@@ -146,24 +146,39 @@ const VERTICAL_CONFIGS: Record<string, VerticalConfig> = {
   art: {
     icon: Palette,
     gradient: 'from-[#5c2b1a] via-slate-900 to-slate-950',
-    accentColor: '#ffc53d',
+    accentColor: '#c5a059',
     mockData: {
       id: 'demo-art',
       title: 'Lumière d’Automne',
       slug: 'demo-art',
       status: 'published',
       vertical: 'art',
+      theme: { primaryColor: '#c5a059' },
       artData: {
         artistName: 'Claude Dupont',
-        artistBio: 'Artiste peintre plasticien basé à Lyon.',
+        artistBio:
+          'Artiste peintre plasticien basé à Lyon. Ses travaux explorent la lumière naturelle à travers des glacis successifs et des ocres chauds.',
+        artistNationality: 'Français',
+        artistBirthYear: '1982',
         year: '2024',
         medium: 'Huile sur toile',
         dimensions: '100 × 80 cm',
+        series: "Éclats d'Automne",
+        edition: 'Pièce unique',
+        certificate: 'Certificat signé (PDF)',
+        description:
+          "Cette toile capture la lumière dorée d'un soir d'octobre sur les collines lyonnaises. Les glacis successifs révèlent la profondeur des ocres et la vibration du ciel.",
         price: 2400,
         currency: 'EUR',
         available: true,
         exhibitionName: 'Biennale de Paris',
+        exhibitionLocation: 'Grand Palais, Paris',
+        exhibitionDates: '12 sept. – 20 oct. 2024',
+        audioGuideUrl: 'https://example.com/audio-guide.mp3',
+        shopUrl: 'https://example.com/shop',
+        contactEmail: 'galerie@example.com',
         instagramUsername: 'claudedupont.art',
+        websiteUrl: 'https://example.com',
       },
     },
   },
@@ -338,7 +353,7 @@ export default function VerticalSolutionPage() {
               <BlurFade delay={0.4} inView>
                 <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link
-                    href={`/dashboard/nouveau?vertical=${config.mockData.vertical}`}
+                    href={`/dashboard/new?vertical=${config.mockData.vertical}`}
                     className="inline-flex items-center justify-center space-x-2 rounded-xl bg-gradient-to-r from-mq-signal to-emerald-500 px-6 py-3.5 text-base font-bold text-mq-ink shadow-lg shadow-mq-signal/25 transition hover:opacity-95 active:scale-95"
                   >
                     <Sparkles className="h-5 w-5" />

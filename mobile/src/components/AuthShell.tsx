@@ -1,0 +1,311 @@
+import React, { useEffect } from 'react'
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated'
+import { SafeAreaView } from 'react-native-safe-area-context'
+
+import { BrandMark, BrandWordmark } from './Brand'
+
+const FEATURES = [
+  { color: '#12C4A8', text: 'QR dynamiques sans réimpression' },
+  { color: '#38BDF8', text: 'Templates métiers prêts à l’emploi' },
+  { color: '#FF5C4D', text: 'Marque blanche en quelques clics' },
+]
+
+function FadeIn({
+  children,
+  delay = 0,
+  style,
+}: {
+  children: React.ReactNode
+  delay?: number
+  style?: object
+}) {
+  const opacity = useSharedValue(0)
+  const translateY = useSharedValue(14)
+
+  useEffect(() => {
+    opacity.value = withDelay(
+      delay,
+      withTiming(1, { duration: 520, easing: Easing.out(Easing.cubic) }),
+    )
+    translateY.value = withDelay(
+      delay,
+      withTiming(0, { duration: 520, easing: Easing.out(Easing.cubic) }),
+    )
+  }, [delay, opacity, translateY])
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }))
+
+  return <Animated.View style={[animatedStyle, style]}>{children}</Animated.View>
+}
+
+export function AuthShell({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description: string
+  children: React.ReactNode
+}) {
+  const { width } = useWindowDimensions()
+  const desktop = width >= 960
+  const year = new Date().getFullYear()
+
+  return (
+    <View style={styles.root}>
+      <LinearGradient
+        colors={['#0B1220', '#102536', '#0B1A2A']}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.9, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <View style={[styles.blob, styles.blobSignal]} />
+      <View style={[styles.blob, styles.blobCoral]} />
+      <View style={[styles.blob, styles.blobSky]} />
+      <View style={[styles.blob, styles.blobSun]} />
+
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom', 'left', 'right']}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.flex}
+        >
+          <View style={[styles.layout, desktop && styles.layoutDesktop]}>
+            {desktop ? (
+              <View style={styles.brandPanel}>
+                <FadeIn delay={40}>
+                  <View style={styles.brandRow}>
+                    <BrandMark size={36} />
+                    <BrandWordmark size={30} />
+                  </View>
+                </FadeIn>
+
+                <View style={styles.heroBlock}>
+                  <FadeIn delay={120}>
+                    <Text style={styles.eyebrow}>Tableau de bord</Text>
+                    <Text style={styles.heroTitle}>
+                      Un QR.{'\n'}
+                      <Text style={styles.heroSignal}>Tous les métiers.</Text>
+                      {'\n'}
+                      <Text style={styles.heroCoral}>Zéro friction.</Text>
+                    </Text>
+                    <Text style={styles.heroDesc}>
+                      Gérez vos landings multi-métiers — contenu dynamique, marque blanche, stats en
+                      un clin d’œil.
+                    </Text>
+                  </FadeIn>
+
+                  <FadeIn delay={240}>
+                    <View style={styles.features}>
+                      {FEATURES.map((item) => (
+                        <View key={item.text} style={styles.featureRow}>
+                          <View style={[styles.featureDot, { backgroundColor: item.color }]} />
+                          <Text style={styles.featureText}>{item.text}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </FadeIn>
+                </View>
+
+                <FadeIn delay={360}>
+                  <Text style={styles.copyright}>© {year} QRious</Text>
+                </FadeIn>
+              </View>
+            ) : null}
+
+            <ScrollView
+              contentContainerStyle={[
+                styles.formScroll,
+                desktop && styles.formScrollDesktop,
+              ]}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              {!desktop ? (
+                <FadeIn delay={40} style={styles.mobileBrand}>
+                  <View style={styles.brandRow}>
+                    <BrandMark size={30} />
+                    <BrandWordmark size={26} />
+                  </View>
+                </FadeIn>
+              ) : null}
+
+              <FadeIn delay={120}>
+                <View style={styles.formCard}>
+                  <LinearGradient
+                    colors={['rgba(18,196,168,0.35)', 'transparent', 'rgba(255,92,77,0.3)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.cardBeam}
+                  />
+                  <Text style={styles.formTitle}>{title}</Text>
+                  <Text style={styles.formDesc}>{description}</Text>
+                  {children}
+                </View>
+              </FadeIn>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#0B1220',
+    overflow: 'hidden',
+  },
+  flex: { flex: 1 },
+  safe: { flex: 1 },
+  blob: {
+    position: 'absolute',
+    borderRadius: 9999,
+    // Soft glow — CSS filter on web, large soft fill on native
+    ...(Platform.OS === 'web'
+      ? ({ filter: 'blur(90px)' } as object)
+      : { opacity: 0.9 }),
+  },
+  blobSignal: {
+    width: 420,
+    height: 420,
+    left: -120,
+    top: -100,
+    backgroundColor: 'rgba(18,196,168,0.28)',
+  },
+  blobCoral: {
+    width: 380,
+    height: 380,
+    right: -100,
+    bottom: -120,
+    backgroundColor: 'rgba(255,92,77,0.22)',
+  },
+  blobSky: {
+    width: 220,
+    height: 220,
+    right: '18%',
+    top: '18%',
+    backgroundColor: 'rgba(56,189,248,0.16)',
+  },
+  blobSun: {
+    width: 160,
+    height: 160,
+    left: '28%',
+    bottom: '22%',
+    backgroundColor: 'rgba(255,197,61,0.12)',
+  },
+  layout: {
+    flex: 1,
+  },
+  layoutDesktop: {
+    flexDirection: 'row',
+  },
+  brandPanel: {
+    width: '46%',
+    maxWidth: 560,
+    paddingHorizontal: 48,
+    paddingVertical: 40,
+    justifyContent: 'space-between',
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  heroBlock: {
+    maxWidth: 420,
+    gap: 28,
+  },
+  eyebrow: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 3.2,
+    textTransform: 'uppercase',
+    color: '#FFC53D',
+    marginBottom: 14,
+  },
+  heroTitle: {
+    fontSize: 44,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: -1.2,
+    lineHeight: 50,
+  },
+  heroSignal: { color: '#12C4A8' },
+  heroCoral: { color: '#FF5C4D' },
+  heroDesc: {
+    marginTop: 18,
+    fontSize: 17,
+    lineHeight: 26,
+    color: 'rgba(255,255,255,0.55)',
+  },
+  features: { gap: 14 },
+  featureRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  featureDot: { width: 10, height: 10, borderRadius: 3 },
+  featureText: { fontSize: 14, color: 'rgba(255,255,255,0.7)', flex: 1 },
+  copyright: { fontSize: 13, color: 'rgba(255,255,255,0.35)' },
+  formScroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 28,
+  },
+  formScrollDesktop: {
+    paddingHorizontal: 40,
+  },
+  mobileBrand: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  formCard: {
+    width: '100%',
+    maxWidth: 460,
+    alignSelf: 'center',
+    borderRadius: 28,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    paddingHorizontal: 28,
+    paddingVertical: 32,
+    overflow: 'hidden',
+  },
+  cardBeam: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+  },
+  formTitle: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: -0.8,
+    marginBottom: 10,
+  },
+  formDesc: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: 'rgba(255,255,255,0.6)',
+    marginBottom: 28,
+  },
+})

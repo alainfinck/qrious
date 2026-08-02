@@ -45,7 +45,7 @@ function HeaderBrand() {
   return (
     <Link
       href="/"
-      className="group flex items-center gap-3 font-display text-xl font-bold tracking-tight text-white sm:text-2xl"
+      className="group flex items-center gap-3 font-display text-xl font-bold tracking-tight text-mq-ink sm:text-2xl"
     >
       <motion.span
         className="inline-flex text-mq-coral"
@@ -54,12 +54,12 @@ function HeaderBrand() {
         transition={{ type: 'spring', stiffness: 420, damping: 18, delay: 0.05 }}
         whileHover={reduce ? undefined : { rotate: [0, -8, 8, -4, 0], scale: 1.08 }}
       >
-        <BrandMark className="h-8 w-8 transition-colors group-hover:text-mq-signal sm:h-9 sm:w-9" />
+        <BrandMark className="h-8 w-8 transition-colors group-hover:text-mq-coral sm:h-9 sm:w-9" />
       </motion.span>
 
       <span className="inline-flex items-baseline leading-none" aria-label="QRious">
         <motion.span
-          className="font-qr inline-block translate-y-[0.04em] text-[1.08em] font-bold leading-none tracking-[0.04em] transition-colors group-hover:text-mq-signal"
+          className="font-qr inline-block translate-y-[0.04em] text-[1.08em] font-bold leading-none tracking-[0.04em] transition-colors group-hover:text-mq-coral"
           initial={reduce ? false : { opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: [0, 0.55, 0.55, 1] }}
           transition={{
@@ -206,8 +206,8 @@ function NavDropdown({
         className={cn(
           'inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-base font-medium transition-all duration-150',
           open
-            ? 'bg-white/15 text-white shadow-inner'
-            : 'text-white/90 hover:bg-white/10 hover:text-white',
+            ? 'bg-slate-100 text-mq-ink shadow-inner'
+            : 'text-mq-ink/80 hover:bg-slate-100 hover:text-mq-ink',
         )}
         aria-expanded={open}
         aria-haspopup="menu"
@@ -215,7 +215,7 @@ function NavDropdown({
       >
         {label}
         <ChevronDown
-          className={cn('h-4 w-4 transition-transform duration-200 text-white/70', open && 'rotate-180 text-white')}
+          className={cn('h-4 w-4 transition-transform duration-200 text-slate-500', open && 'rotate-180 text-mq-ink')}
         />
       </button>
 
@@ -229,41 +229,47 @@ function NavDropdown({
           <div
             role="menu"
             className={cn(
-              'pointer-events-auto relative overflow-hidden rounded-2xl border border-white/15 bg-mq-ink/95 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.9)] backdrop-blur-2xl animate-in fade-in-0 zoom-in-95 duration-150',
+              'pointer-events-auto relative overflow-hidden rounded-2xl border border-mq-ink/10 bg-white shadow-[0_24px_60px_-16px_rgba(11,18,32,0.2)] animate-in fade-in-0 zoom-in-95 duration-150',
               widthClass || defaultWidth,
             )}
             onMouseEnter={clearClose}
             onMouseLeave={scheduleClose}
           >
             {/* Top triangle pointer */}
-            <div className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-white/20 bg-mq-ink" />
+            <div className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-mq-ink/10 bg-white" />
 
             {sectionHeader && (
-              <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.02] px-5 py-3">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-mq-signal/90">
+              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-mq-ink/70">
                   {sectionHeader}
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-white/40">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
                   {t('optionsAvailable', { count: items.length })}
                 </span>
               </div>
             )}
 
-            <div className={cn('grid gap-2 p-3', gridColsClass)}>
+            <div className={cn('grid gap-2.5 p-3.5', gridColsClass)}>
               {items.map((item) => (
                 <Link
                   key={item.href + item.label}
                   href={item.href}
                   role="menuitem"
-                  className="group relative flex items-start gap-3.5 rounded-xl border border-transparent p-3 transition-all duration-150 hover:border-white/15 hover:bg-white/10 hover:shadow-md"
+                  className="group relative flex items-start gap-4 rounded-2xl border border-transparent p-3.5 transition-all duration-200 hover:border-mq-ink/8 hover:bg-gradient-to-br hover:from-slate-50 hover:to-white hover:shadow-[0_10px_28px_-16px_rgba(11,18,32,0.22)]"
                   onClick={() => setOpen(false)}
                 >
-                  <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-mq-signal transition-all duration-200 group-hover:scale-105 group-hover:border-mq-coral/40 group-hover:bg-gradient-to-br group-hover:from-mq-coral group-hover:to-mq-sun group-hover:text-mq-ink group-hover:shadow-sm">
-                    <item.icon className="h-5 w-5" />
+                  <span className="relative mt-0.5 flex size-12 shrink-0 items-center justify-center sm:size-[3.25rem]">
+                    <span
+                      aria-hidden
+                      className="absolute inset-[-12%] rounded-2xl bg-gradient-to-br from-mq-coral/25 via-mq-sun/20 to-mq-signal/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100"
+                    />
+                    <span className="relative flex size-full items-center justify-center rounded-2xl border border-mq-ink/10 bg-gradient-to-br from-white to-slate-50 text-mq-coral-deep shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_6px_16px_-10px_rgba(11,18,32,0.25)] transition-all duration-200 group-hover:-translate-y-0.5 group-hover:scale-[1.06] group-hover:border-transparent group-hover:bg-gradient-to-br group-hover:from-mq-coral group-hover:to-mq-sun group-hover:text-mq-ink group-hover:shadow-[0_12px_24px_-12px_rgba(255,92,77,0.55)]">
+                      <item.icon className="size-6 sm:size-[1.625rem]" strokeWidth={1.75} />
+                    </span>
                   </span>
-                  <span className="min-w-0 flex-1">
+                  <span className="min-w-0 flex-1 pt-0.5">
                     <span className="flex items-center justify-between gap-1">
-                      <span className="block font-display text-[15px] font-semibold text-white/95 transition-colors group-hover:text-white">
+                      <span className="block font-display text-[15px] font-semibold text-mq-ink">
                         {item.label}
                       </span>
                       {item.badge && (
@@ -271,14 +277,14 @@ function NavDropdown({
                           className={cn(
                             'inline-flex items-center rounded-md border px-1.5 py-0.2 text-[10px] font-bold uppercase tracking-wide',
                             item.badgeTone ||
-                              'border-mq-signal/30 bg-mq-signal/20 text-mq-signal',
+                              'border-mq-coral/30 bg-mq-coral/10 text-mq-coral-deep',
                           )}
                         >
                           {item.badge}
                         </span>
                       )}
                     </span>
-                    <span className="mt-0.5 block text-[13px] leading-snug text-white/50 line-clamp-2 transition-colors group-hover:text-white/80">
+                    <span className="mt-1 block text-[13px] leading-snug text-slate-600 line-clamp-2 transition-colors group-hover:text-slate-700">
                       {item.description}
                     </span>
                   </span>
@@ -287,12 +293,12 @@ function NavDropdown({
             </div>
 
             {footer && (
-              <div className="flex items-center justify-between border-t border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-white/70">
+              <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-5 py-3.5 text-sm text-slate-600">
                 <span>{footer.text}</span>
                 <Link
                   href={footer.href}
                   onClick={() => setOpen(false)}
-                  className="group inline-flex items-center gap-1.5 font-semibold text-mq-signal transition-colors hover:text-white"
+                  className="group inline-flex items-center gap-1.5 font-semibold text-mq-coral-deep transition-colors hover:text-mq-ink"
                 >
                   <span>{footer.linkText}</span>
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
@@ -319,7 +325,7 @@ export function MarketingHeader() {
       description: t('productItems.universal.description'),
       icon: QrCode,
       badge: t('productItems.universal.badge'),
-      badgeTone: 'bg-mq-signal/20 text-mq-signal border-mq-signal/30',
+      badgeTone: 'bg-mq-coral/10 text-mq-coral-deep border-mq-coral/25',
     },
     {
       href: '/generateur/url',
@@ -345,7 +351,7 @@ export function MarketingHeader() {
       description: t('productItems.editor.description'),
       icon: Wand2,
       badge: t('productItems.editor.badge'),
-      badgeTone: 'bg-mq-sun/20 text-mq-sun border-mq-sun/30',
+      badgeTone: 'bg-amber-50 text-amber-700 border-amber-200',
     },
     {
       href: '/#fonctionnalites',
@@ -353,7 +359,7 @@ export function MarketingHeader() {
       description: t('productItems.dynamic.description'),
       icon: LayoutGrid,
       badge: t('productItems.dynamic.badge'),
-      badgeTone: 'bg-mq-coral/20 text-mq-coral border-mq-coral/30',
+      badgeTone: 'bg-mq-coral/10 text-mq-coral-deep border-mq-coral/25',
     },
     {
       href: '/demo',
@@ -361,7 +367,7 @@ export function MarketingHeader() {
       description: t('productItems.demo.description'),
       icon: Sparkles,
       badge: t('productItems.demo.badge'),
-      badgeTone: 'bg-mq-sky/20 text-mq-sky border-mq-sky/30',
+      badgeTone: 'bg-sky-50 text-sky-700 border-sky-200',
     },
   ]
 
@@ -372,7 +378,7 @@ export function MarketingHeader() {
       description: t('metierItems.chrd.description'),
       icon: Utensils,
       badge: t('metierItems.chrd.badge'),
-      badgeTone: 'bg-mq-signal/20 text-mq-signal border-mq-signal/30',
+      badgeTone: 'bg-mq-coral/10 text-mq-coral-deep border-mq-coral/25',
     },
     {
       href: '/solutions/corporate-event',
@@ -380,7 +386,7 @@ export function MarketingHeader() {
       description: t('metierItems.corporate.description'),
       icon: Calendar,
       badge: t('metierItems.corporate.badge'),
-      badgeTone: 'bg-mq-sky/20 text-mq-sky border-mq-sky/30',
+      badgeTone: 'bg-sky-50 text-sky-700 border-sky-200',
     },
     {
       href: '/solutions/ugc-retail',
@@ -406,7 +412,7 @@ export function MarketingHeader() {
       description: t('metierItems.immo.description'),
       icon: Building2,
       badge: t('metierItems.immo.badge'),
-      badgeTone: 'bg-mq-sun/20 text-mq-sun border-mq-sun/30',
+      badgeTone: 'bg-amber-50 text-amber-700 border-amber-200',
     },
     {
       href: '/solutions/vcard',
@@ -414,7 +420,7 @@ export function MarketingHeader() {
       description: t('metierItems.vcard.description'),
       icon: Contact,
       badge: t('metierItems.vcard.badge'),
-      badgeTone: 'bg-mq-signal/20 text-mq-signal border-mq-signal/30',
+      badgeTone: 'bg-slate-100 text-slate-700 border-slate-200',
     },
     {
       href: '/solutions/tourism',
@@ -428,7 +434,7 @@ export function MarketingHeader() {
       description: t('metierItems.feedback.description'),
       icon: Star,
       badge: t('metierItems.feedback.badge'),
-      badgeTone: 'bg-mq-coral/20 text-mq-coral border-mq-coral/30',
+      badgeTone: 'bg-mq-coral/10 text-mq-coral-deep border-mq-coral/25',
     },
     {
       href: '/solutions/product',
@@ -450,7 +456,7 @@ export function MarketingHeader() {
         <div className="mx-auto max-w-6xl px-4 pt-4 sm:px-6">
           <div
             data-header-bar
-            className="flex h-16 items-center justify-between rounded-2xl border border-white/15 bg-mq-ink/95 px-4 text-white shadow-[0_8px_32px_-12px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:h-[4.25rem] sm:px-6"
+            className="flex h-16 items-center justify-between rounded-2xl border border-mq-ink/10 bg-white px-4 text-mq-ink shadow-[0_8px_32px_-12px_rgba(11,18,32,0.18)] sm:h-[4.25rem] sm:px-6"
           >
             <HeaderBrand />
 
@@ -487,14 +493,14 @@ export function MarketingHeader() {
                   <TooltipTrigger asChild>
                     <Link
                       href={link.href}
-                      className="rounded-xl px-3.5 py-2 text-base font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+                      className="rounded-xl px-3.5 py-2 text-base font-medium text-mq-ink/80 transition-colors hover:bg-slate-100 hover:text-mq-ink"
                     >
                       {link.label}
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent
                     sideOffset={10}
-                    className="border-white/10 bg-mq-ink text-white"
+                    className="border-slate-200 bg-white text-mq-ink shadow-md"
                   >
                     {link.tip}
                   </TooltipContent>
@@ -503,10 +509,10 @@ export function MarketingHeader() {
             </nav>
 
             <div className="flex items-center gap-2 sm:gap-3">
-              <LanguageSwitcher variant="onDark" className="hidden lg:inline-flex" />
+              <LanguageSwitcher className="hidden lg:inline-flex" />
               <Link
                 href="/dashboard/login"
-                className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white sm:px-4 sm:text-base"
+                className="inline-flex h-11 items-center justify-center rounded-xl px-3 text-sm font-medium text-mq-ink/80 transition-colors hover:bg-slate-100 hover:text-mq-ink sm:px-4 sm:text-base"
               >
                 {t('login')}
               </Link>
@@ -518,7 +524,7 @@ export function MarketingHeader() {
               </Button>
               <button
                 type="button"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-white/85 hover:bg-white/10 lg:hidden"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-mq-ink/80 hover:bg-slate-100 lg:hidden"
                 onClick={() => setOpen((v) => !v)}
                 aria-expanded={open}
                 aria-label={open ? t('closeMenu') : t('openMenu')}
@@ -530,21 +536,21 @@ export function MarketingHeader() {
 
           {open && (
             <nav
-              className="mt-2 max-h-[min(75vh,600px)] space-y-1.5 overflow-y-auto rounded-2xl border border-white/15 bg-mq-ink p-3 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.85)] lg:hidden"
+              className="mt-2 max-h-[min(75vh,600px)] space-y-1.5 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_24px_60px_-16px_rgba(11,18,32,0.2)] lg:hidden"
               aria-label={t('navMobileAriaLabel')}
             >
               <button
                 type="button"
-                className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-base font-medium text-white/90 hover:bg-white/5"
+                className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-base font-medium text-mq-ink/90 hover:bg-slate-100"
                 onClick={() => setMobileProduct((v) => !v)}
               >
                 <span className="flex items-center gap-2">
-                  <Sparkles className="h-4.5 w-4.5 text-mq-signal" />
+                  <Sparkles className="h-4.5 w-4.5 text-mq-coral" />
                   {t('product')}
                 </span>
                 <ChevronDown
                   className={cn(
-                    'h-4 w-4 transition-transform',
+                    'h-4 w-4 text-slate-500 transition-transform',
                     mobileProduct && 'rotate-180',
                   )}
                 />
@@ -556,21 +562,21 @@ export function MarketingHeader() {
                       key={item.href + item.label}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-2.5 transition-colors hover:bg-white/10"
+                      className="group flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition-colors hover:bg-white hover:shadow-sm"
                     >
-                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mq-signal/15 text-mq-signal">
-                        <item.icon className="h-4 w-4" />
+                      <span className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-xl border border-mq-ink/10 bg-gradient-to-br from-white to-slate-50 text-mq-coral-deep shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-all duration-200 group-hover:border-transparent group-hover:from-mq-coral group-hover:to-mq-sun group-hover:text-mq-ink">
+                        <item.icon className="size-5" strokeWidth={1.75} />
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-1">
-                          <span className="block text-[13px] font-semibold text-white">{item.label}</span>
+                          <span className="block text-[13px] font-semibold text-mq-ink">{item.label}</span>
                           {item.badge && (
-                            <span className="text-[9px] font-bold uppercase text-mq-signal bg-mq-signal/15 px-1.5 py-0.5 rounded">
+                            <span className="rounded bg-mq-coral/10 px-1.5 py-0.5 text-[9px] font-bold uppercase text-mq-coral-deep">
                               {item.badge}
                             </span>
                           )}
                         </div>
-                        <span className="block text-[11px] text-white/50 line-clamp-1">{item.description}</span>
+                        <span className="block text-[11px] text-slate-600 line-clamp-1">{item.description}</span>
                       </div>
                     </Link>
                   ))}
@@ -579,7 +585,7 @@ export function MarketingHeader() {
 
               <button
                 type="button"
-                className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-base font-medium text-white/90 hover:bg-white/5"
+                className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-base font-medium text-mq-ink/90 hover:bg-slate-100"
                 onClick={() => setMobileMetiers((v) => !v)}
               >
                 <span className="flex items-center gap-2">
@@ -588,7 +594,7 @@ export function MarketingHeader() {
                 </span>
                 <ChevronDown
                   className={cn(
-                    'h-4 w-4 transition-transform',
+                    'h-4 w-4 text-slate-500 transition-transform',
                     mobileMetiers && 'rotate-180',
                   )}
                 />
@@ -600,21 +606,21 @@ export function MarketingHeader() {
                       key={item.href + item.label}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-2.5 transition-colors hover:bg-white/10"
+                      className="group flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition-colors hover:bg-white hover:shadow-sm"
                     >
-                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-mq-coral/15 text-mq-coral">
-                        <item.icon className="h-4 w-4" />
+                      <span className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-xl border border-mq-ink/10 bg-gradient-to-br from-white to-slate-50 text-mq-coral-deep shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-all duration-200 group-hover:border-transparent group-hover:from-mq-coral group-hover:to-mq-sun group-hover:text-mq-ink">
+                        <item.icon className="size-5" strokeWidth={1.75} />
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-1">
-                          <span className="block text-[13px] font-semibold text-white">{item.label}</span>
+                          <span className="block text-[13px] font-semibold text-mq-ink">{item.label}</span>
                           {item.badge && (
-                            <span className="text-[9px] font-bold uppercase text-mq-coral bg-mq-coral/15 px-1.5 py-0.5 rounded">
+                            <span className="rounded bg-mq-coral/10 px-1.5 py-0.5 text-[9px] font-bold uppercase text-mq-coral-deep">
                               {item.badge}
                             </span>
                           )}
                         </div>
-                        <span className="block text-[11px] text-white/50 line-clamp-1">{item.description}</span>
+                        <span className="block text-[11px] text-slate-600 line-clamp-1">{item.description}</span>
                       </div>
                     </Link>
                   ))}
@@ -626,20 +632,20 @@ export function MarketingHeader() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-xl px-3 py-3 text-base font-medium text-white/80 hover:bg-white/5 hover:text-white"
+                  className="block rounded-xl px-3 py-3 text-base font-medium text-mq-ink/80 hover:bg-slate-100 hover:text-mq-ink"
                 >
                   {link.label}
                 </Link>
               ))}
 
               <div className="px-1 py-1">
-                <LanguageSwitcher variant="onDark" className="w-full justify-start" />
+                <LanguageSwitcher className="w-full justify-start" />
               </div>
 
               <Link
                 href="/dashboard/login"
                 onClick={() => setOpen(false)}
-                className="block rounded-xl px-3 py-3 text-base font-medium text-white/80 hover:bg-white/5 hover:text-white sm:hidden"
+                className="block rounded-xl px-3 py-3 text-base font-medium text-mq-ink/80 hover:bg-slate-100 hover:text-mq-ink sm:hidden"
               >
                 {t('login')}
               </Link>

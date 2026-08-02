@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "bash scripts/dev.sh",
+    "dev:mobile": "pnpm --dir mobile start",
+    "dev:mobile:web": "pnpm --dir mobile exec expo start --web --port 8081",
     "build": "next build",
     "start": "next start",
     "payload": "payload",

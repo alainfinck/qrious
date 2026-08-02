@@ -27,6 +27,20 @@ const isProd = process.env.NODE_ENV === 'production'
 
 export default buildConfig({
   serverURL: (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(/\/$/, ''),
+  cors: [
+    'http://localhost:3000',
+    'http://localhost:8081',
+    'http://localhost:19006',
+    'http://127.0.0.1:8081',
+    'http://127.0.0.1:19006',
+  ],
+  csrf: [
+    'http://localhost:3000',
+    'http://localhost:8081',
+    'http://localhost:19006',
+    'http://127.0.0.1:8081',
+    'http://127.0.0.1:19006',
+  ],
   admin: {
     user: 'users',
     meta: {

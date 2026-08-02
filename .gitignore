@@ -8,6 +8,11 @@ out/
 dist/
 build/
 
+# expo
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+
 # env & secrets
 .env
 .env.local
