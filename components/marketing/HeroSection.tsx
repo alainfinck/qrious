@@ -22,11 +22,19 @@ import {
 import { Link, defaultLocale } from '@/src/i18n/routing'
 import { cn } from '@/lib/utils'
 
-const HERO_TEMPLATES = STYLE_TEMPLATES.filter((template) =>
-  ['signal', 'coral', 'ink', 'sunset', 'ocean', 'radial-glow', 'classic'].includes(
-    template.id,
-  ),
-)
+const HERO_STYLE_ORDER = [
+  'signal',
+  'coral',
+  'ink',
+  'sunset',
+  'ocean',
+  'radial-glow',
+  'classic',
+] as const
+
+const HERO_TEMPLATES = HERO_STYLE_ORDER.map(
+  (id) => STYLE_TEMPLATES.find((template) => template.id === id)!,
+).filter(Boolean)
 
 const STYLE_INTERVAL_MS = 6500
 
@@ -178,7 +186,7 @@ function HeroQrVisual({
                 animate={{ opacity: 1, y: 0 }}
                 exit={reduce ? undefined : { opacity: 0, y: -6 }}
                 transition={{ duration: 0.35 }}
-                className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/20 bg-mq-ink/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90 backdrop-blur-sm"
+                className="pointer-events-none absolute bottom-3 right-3 z-10 rounded-full border border-white/20 bg-mq-ink/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90 backdrop-blur-sm"
               >
                 {template.name}
               </motion.span>
