@@ -16,17 +16,21 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   LogOut,
+  Menu,
   Plus,
   QrCode,
   ScanLine,
   User,
   X,
 } from 'lucide-react-native'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, {
   Easing,
+  Extrapolation,
   FadeIn,
   FadeOut,
   interpolate,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -38,9 +42,10 @@ import { colors, spacing } from '../theme/colors'
 
 const SIDEBAR_EXPANDED = 200
 const SIDEBAR_COLLAPSED = 68
+const DRAWER_WIDTH = SIDEBAR_EXPANDED + 16
 const STORAGE_KEY = 'qrious_sidebar_collapsed'
-const COLLAPSE_MS = 280
-const COLLAPSE_EASING = Easing.bezier(0.22, 1, 0.36, 1)
+const MOTION_MS = 300
+const MOTION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
 
 const NAV = [
   { href: '/home', label: 'Vue d’ensemble', icon: LayoutDashboard, exact: true },
@@ -94,31 +99,113 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         ) : (
           <>
             <View style={styles.mobileHeader}>
-              <Pressable onPress={() => setDrawerOpen(true)} style={styles.menuBtn}>
-                <Text style={styles.menuBtnText}>☰</Text>
+              <Pressable
+                onPress={() => setDrawerOpen(true)}
+                style={styles.menuBtn}
+                accessibilityLabel="Ouvrir le menu"
+              >
+                <Menu size={22} color={colors.ink} strokeWidth={2.25} />
               </Pressable>
               <Text style={styles.brand}>{isScanner ? 'Scanner' : 'QRious'}</Text>
               {isScanner ? <View style={styles.headerSpacer} /> : <NewButton compact />}
             </View>
-            {drawerOpen ? (
-              <View style={styles.drawerOverlay}>
-                <Pressable style={styles.drawerBackdrop} onPress={() => setDrawerOpen(false)} />
-                <View style={styles.drawer}>
-                  <Pressable style={styles.close} onPress={() => setDrawerOpen(false)}>
-                    <X size={18} color={colors.slate600} />
-                  </Pressable>
-                  <Sidebar
-                    collapsed={false}
-                    onNavigate={() => setDrawerOpen(false)}
-                  />
-                </View>
-              </View>
-            ) : null}
+            <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+              <Sidebar collapsed={false} onNavigate={() => setDrawerOpen(false)} />
+            </MobileDrawer>
           </>
         )}
         <View style={[styles.content, isScanner && styles.contentScanner]}>{children}</View>
       </View>
     </SafeAreaView>
+  )
+}
+
+/** Drawer latéral gauche — slide + fade, swipe pour fermer (iOS / iPad / web). */
+function MobileDrawer({
+  open,
+  onClose,
+  children,
+}: {
+  open: boolean
+  onClose: () => void
+  children: React.ReactNode
+}) {
+  const [mounted, setMounted] = useState(open)
+  const progress = useSharedValue(open ? 1 : 0)
+  const dragX = useSharedValue(0)
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true)
+      dragX.value = 0
+      progress.value = withTiming(1, { duration: MOTION_MS, easing: MOTION_EASING })
+      return
+    }
+    progress.value = withTiming(0, { duration: MOTION_MS, easing: MOTION_EASING }, (finished) => {
+      if (finished) runOnJS(setMounted)(false)
+    })
+  }, [open, progress, dragX])
+
+  const closeFromGesture = () => {
+    onClose()
+  }
+
+  const pan = Gesture.Pan()
+    .activeOffsetX([-12, 12])
+    .failOffsetY([-24, 24])
+    .onUpdate((e) => {
+      dragX.value = Math.min(0, Math.max(-DRAWER_WIDTH, e.translationX))
+    })
+    .onEnd((e) => {
+      const shouldClose = e.translationX < -DRAWER_WIDTH * 0.28 || e.velocityX < -600
+      if (shouldClose) {
+        dragX.value = withTiming(-DRAWER_WIDTH, { duration: 180, easing: MOTION_EASING })
+        progress.value = withTiming(0, { duration: 180, easing: MOTION_EASING }, (finished) => {
+          if (finished) {
+            dragX.value = 0
+            runOnJS(closeFromGesture)()
+          }
+        })
+      } else {
+        dragX.value = withTiming(0, { duration: 220, easing: MOTION_EASING })
+      }
+    })
+
+  const backdropOpacityStyle = useAnimatedStyle(() => {
+    const dragFactor = interpolate(
+      dragX.value,
+      [-DRAWER_WIDTH, 0],
+      [0, 1],
+      Extrapolation.CLAMP,
+    )
+    return {
+      opacity: interpolate(progress.value, [0, 1], [0, 0.35], Extrapolation.CLAMP) * dragFactor,
+    }
+  })
+
+  const drawerStyle = useAnimatedStyle(() => {
+    const base = interpolate(progress.value, [0, 1], [-DRAWER_WIDTH, 0], Extrapolation.CLAMP)
+    return {
+      transform: [{ translateX: base + dragX.value }],
+    }
+  })
+
+  if (!mounted) return null
+
+  return (
+    <View style={styles.drawerOverlay} pointerEvents="box-none">
+      <Animated.View style={[styles.drawerBackdrop, backdropOpacityStyle]}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Fermer le menu" />
+      </Animated.View>
+      <GestureDetector gesture={pan}>
+        <Animated.View style={[styles.drawer, drawerStyle]}>
+          <Pressable style={styles.close} onPress={onClose} accessibilityLabel="Fermer">
+            <X size={18} color={colors.slate600} />
+          </Pressable>
+          {children}
+        </Animated.View>
+      </GestureDetector>
+    </View>
   )
 }
 
@@ -171,11 +258,11 @@ function Sidebar({
 
     if (collapsed) {
       setLabelsVisible(false)
-      progress.value = withTiming(0, { duration: COLLAPSE_MS, easing: COLLAPSE_EASING })
+      progress.value = withTiming(0, { duration: MOTION_MS, easing: MOTION_EASING })
       return
     }
 
-    progress.value = withTiming(1, { duration: COLLAPSE_MS, easing: COLLAPSE_EASING })
+    progress.value = withTiming(1, { duration: MOTION_MS, easing: MOTION_EASING })
     const t = setTimeout(() => setLabelsVisible(true), 100)
     return () => clearTimeout(t)
   }, [animate, collapsed, progress])
@@ -337,25 +424,37 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   menuBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  menuBtnText: { fontSize: 22, color: colors.ink },
   brand: { fontSize: 18, fontWeight: '700', color: colors.ink },
   drawerOverlay: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     zIndex: 20,
     flexDirection: 'row',
   },
-  drawerBackdrop: { flex: 1, backgroundColor: 'rgba(15,23,42,0.35)' },
+  drawerBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#0F172A',
+  },
   drawer: {
-    width: SIDEBAR_EXPANDED + 16,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: DRAWER_WIDTH,
     backgroundColor: colors.white,
     borderRightWidth: 1,
     borderRightColor: colors.border,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 8, height: 0 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    elevation: 12,
   },
   close: { position: 'absolute', right: 8, top: 10, zIndex: 2, padding: 8 },
   sidebar: {
     width: SIDEBAR_EXPANDED,
     flexGrow: 0,
     flexShrink: 0,
+    flex: 1,
     backgroundColor: colors.white,
     borderRightWidth: 1,
     borderRightColor: colors.border,

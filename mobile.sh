@@ -5,6 +5,13 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MOBILE_DIR="$ROOT_DIR/mobile"
 DEFAULT_SIMULATOR="${MOBILE_SIMULATOR:-iPhone 17}"
+
+# Respecte mobile/.env si EXPO_PUBLIC_API_URL n’est pas déjà dans l’environnement
+if [[ -z "${EXPO_PUBLIC_API_URL:-}" && -f "$MOBILE_DIR/.env" ]]; then
+  # shellcheck disable=SC1091
+  EXPO_PUBLIC_API_URL="$(grep -E '^EXPO_PUBLIC_API_URL=' "$MOBILE_DIR/.env" | tail -1 | cut -d= -f2- | tr -d '"' | tr -d "'")"
+  export EXPO_PUBLIC_API_URL
+fi
 DEFAULT_API_URL="${EXPO_PUBLIC_API_URL:-http://localhost:3000}"
 
 # ---------------------------------------------------------------------------
@@ -244,6 +251,10 @@ iPhone / Xcode:
   devices                Liste les iPhones/iPads branchés / connus
   eas:preview            Build EAS interne (installable)
   eas:production         Build EAS production (App Store / submit)
+  eas:init               Login + init projet Expo (projectId)
+  eas:update [canal]     OTA Update (défaut: preview) — sans store
+  eas:submit             Submit stores (iOS/Android) depuis dernier build
+  eas:deploy [--prod]    Export web + deploy EAS Hosting
 
 Simulateur & Metro:
   ios [simulateur]       Compile et lance sur simulateur — défaut: "${DEFAULT_SIMULATOR}"
@@ -453,24 +464,89 @@ cmd_native() {
   echo "   Ouvre QRious sur l’iPhone : elle démarre seule, sans Metro."
 }
 
+cmd_eas_init() {
+  cd_mobile
+  echo "☁️  EAS — login + init projet…"
+  if ! pnpm exec eas whoami >/dev/null 2>&1; then
+    pnpm exec eas login
+  else
+    echo "   Connecté : $(pnpm exec eas whoami)"
+  fi
+  pnpm exec eas init
+  echo ""
+  echo "✅ Puis configure OTA : pnpm exec eas update:configure"
+  echo "   Builds : ./mobile.sh eas:preview | eas:production"
+}
+
 cmd_eas_preview() {
   cd_mobile
-  if [[ ! -f eas.json ]]; then
-    echo "❌ eas.json introuvable dans mobile/. Configure EAS d’abord (eas init)."
-    exit 1
-  fi
-  echo "☁️  EAS build preview (distribution interne)…"
-  pnpm exec eas build --platform ios --profile preview
+  require_eas
+  local platform="${1:-all}"
+  echo "☁️  EAS build preview (distribution interne) — platform=${platform}"
+  pnpm exec eas build --platform "$platform" --profile preview
 }
 
 cmd_eas_production() {
   cd_mobile
+  require_eas
+  local platform="${1:-all}"
+  echo "☁️  EAS build production — platform=${platform}"
+  pnpm exec eas build --platform "$platform" --profile production
+}
+
+cmd_eas_update() {
+  cd_mobile
+  require_eas
+  local channel="${1:-preview}"
+  local env_name="$channel"
+  if [[ "$channel" == "production" ]]; then
+    env_name="production"
+  elif [[ "$channel" == "preview" ]]; then
+    env_name="preview"
+  else
+    env_name="development"
+  fi
+  shift || true
+  local message="${*:-OTA $(date '+%Y-%m-%d %H:%M')}"
+  echo "⚡ EAS Update — channel=$channel env=$env_name"
+  pnpm exec eas update --channel "$channel" --environment "$env_name" --message "$message"
+}
+
+cmd_eas_submit() {
+  cd_mobile
+  require_eas
+  local platform="${1:-all}"
+  echo "📤 EAS Submit — platform=${platform}"
+  pnpm exec eas submit --platform "$platform" --profile production --latest
+}
+
+cmd_eas_deploy() {
+  cd_mobile
+  require_eas
+  local prod=0
+  for arg in "$@"; do
+    case "$arg" in
+      --prod|prod) prod=1 ;;
+    esac
+  done
+  echo "🌐 Export web + EAS Hosting…"
+  pnpm exec expo export --platform web
+  if [[ "$prod" -eq 1 ]]; then
+    pnpm exec eas deploy --prod
+  else
+    pnpm exec eas deploy
+  fi
+}
+
+require_eas() {
   if [[ ! -f eas.json ]]; then
-    echo "❌ eas.json introuvable dans mobile/. Configure EAS d’abord (eas init)."
+    echo "❌ eas.json introuvable. Lance : ./mobile.sh eas:init"
     exit 1
   fi
-  echo "☁️  EAS build production…"
-  pnpm exec eas build --platform ios --profile production
+  if ! pnpm exec eas whoami >/dev/null 2>&1; then
+    echo "❌ Pas connecté à Expo. Lance : ./mobile.sh eas:init"
+    exit 1
+  fi
 }
 
 cmd_sim() {
@@ -674,6 +750,10 @@ case "$CMD" in
   native|release|standalone) cmd_native "$@" ;;
   eas:preview|eas-preview) cmd_eas_preview "$@" ;;
   eas:production|eas-production) cmd_eas_production "$@" ;;
+  eas:init|eas-init) cmd_eas_init "$@" ;;
+  eas:update|eas-update) cmd_eas_update "$@" ;;
+  eas:submit|eas-submit) cmd_eas_submit "$@" ;;
+  eas:deploy|eas-deploy) cmd_eas_deploy "$@" ;;
   devices)          cmd_devices "$@" ;;
   sim|last)         cmd_sim "$@" ;;
   start)            cmd_start "$@" ;;

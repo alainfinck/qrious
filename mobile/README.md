@@ -23,6 +23,31 @@ Depuis la racine (recommandé) :
 
 L’éditeur public marketing (`/newqr`) **est** l’app Expo (une seule UI). `/editeur` redirige vers `/newqr`.
 
+## EAS (builds cloud, OTA, web)
+
+Compte Expo requis. Une fois :
+
+```bash
+./mobile.sh eas:init              # login + lie le projet (écrit projectId)
+pnpm --dir mobile exec eas update:configure   # runtimeVersion + updates.url
+```
+
+| Commande | Rôle |
+| --- | --- |
+| `./mobile.sh eas:preview` | Build interne iOS/Android (TestFlight interne / APK) |
+| `./mobile.sh eas:production` | Build store-ready |
+| `./mobile.sh eas:update preview` | **OTA** JS/assets sur le canal `preview` (pas de review store) |
+| `./mobile.sh eas:update production` | OTA canal `production` |
+| `./mobile.sh eas:submit` | Envoi App Store / Play depuis le dernier build |
+| `./mobile.sh eas:deploy` | Export web + **EAS Hosting** (preview URL) |
+| `./mobile.sh eas:deploy --prod` | Promote le deploy web en production |
+
+Profils dans `mobile/eas.json` : `development`, `development-device`, `preview`, `production` (canaux OTA alignés).
+
+Bundle ID : `fr.qrious.app`. API prod injectée en build : `https://www.qrious.fr`.
+
+> Note : `/newqr` via Next reste le chemin site marketing. EAS Hosting est l’option cloud Expo autonome.
+
 ## Auth
 
 Login via `POST /api/users/login` (JWT Payload). Le token est stocké dans SecureStore (natif) ou AsyncStorage (web).

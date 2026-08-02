@@ -4,7 +4,7 @@ import Svg, { Rect } from 'react-native-svg'
 
 export function BrandMark({ size = 32, color = '#FF5C4D' }: { size?: number; color?: string }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 32 32" fill="none" accessibilityElementsHidden>
+    <Svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden>
       <Rect x="2" y="2" width="12" height="12" rx="1" stroke={color} strokeWidth="2.2" />
       <Rect x="5.5" y="5.5" width="5" height="5" fill={color} />
       <Rect x="18" y="2" width="12" height="12" rx="1" stroke={color} strokeWidth="2.2" />
