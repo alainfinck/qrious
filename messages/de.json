@@ -157,13 +157,13 @@
     "badge": "Dynamische QR · Landingpages · White Label",
     "brand": "QRious",
     "headlineLine1": "Ein QR-Code.",
-    "headlineLine2": "Drei Welten.",
+    "headlineLine2": "Alle Branchen.",
     "headlineLine3": "Null Grenzen.",
-    "description": "Verwandeln Sie jeden Scan in eine maßgeschneiderte Landingpage — Kunst, Immobilien oder Visitenkarte — editierbar, ohne jemals neu zu drucken.",
+    "description": "Verwandeln Sie jeden Scan in eine maßgeschneiderte Landingpage — Gastronomie, Kunst, Immobilien, Events und mehr — editierbar, ohne jemals neu zu drucken.",
     "ctaPrimary": "Kostenlos starten",
     "ctaSecondary": "So funktioniert’s",
     "scanHint": "Scanne mich",
-    "scanPayload": "🎉 Super, du bist neugierig!\n\nWillkommen bei QRious — Ein QR-Code. Drei Welten. Null Grenzen.\n\n→ https://www.qrious.fr"
+    "scanPayload": "🎉 Super, du bist neugierig!\n\nWillkommen bei QRious — Ein QR-Code. Alle Branchen. Null Grenzen.\n\n→ https://www.qrious.fr"
   },
   "HelloScan": {
     "metaTitle": "Du bist neugierig! — QRious",
@@ -171,7 +171,7 @@
     "badge": "Scan erfolgreich",
     "headline": "Super, du bist neugierig!",
     "message": "Dieser QR ist nicht nur hübsch — er öffnet eine echte Landingpage. Genau das macht QRious für deine Marke, Ausstellung oder Visitenkarte.",
-    "punchline": "Ein QR. Drei Welten. Null Grenzen.",
+    "punchline": "Ein QR. Alle Branchen. Null Grenzen.",
     "cta": "Meinen QR erstellen",
     "back": "Zur Startseite"
   },
@@ -938,9 +938,9 @@
     "auth": {
       "brandEyebrow": "Dashboard",
       "heroLine1": "Ein QR.",
-      "heroLine2": "Drei Welten.",
+      "heroLine2": "Alle Branchen.",
       "heroLine3": "Null Reibung.",
-      "heroDescription": "Verwalten Sie Kunst-, Immobilien- und Visitenkarten-Landings — dynamischer Inhalt, White Label, Stats auf einen Blick.",
+      "heroDescription": "Verwalten Sie Multi-Branchen-Landings — dynamischer Inhalt, White Label, Stats auf einen Blick.",
       "feature1": "Dynamische QR-Codes ohne Nachdruck",
       "feature2": "Sofort einsatzbereite Branchen-Templates",
       "feature3": "White Label in wenigen Klicks",

@@ -157,13 +157,13 @@
     "badge": "QR dynamiques · Landing pages · Marque blanche",
     "brand": "QRious",
     "headlineLine1": "Un QR code.",
-    "headlineLine2": "Trois univers.",
+    "headlineLine2": "Tous les métiers.",
     "headlineLine3": "Zéro limite.",
-    "description": "Transformez chaque scan en landing page sur-mesure — art, immobilier ou carte de visite — modifiable sans jamais réimprimer.",
+    "description": "Transformez chaque scan en landing page sur-mesure — resto, art, immobilier, événement et bien plus — modifiable sans jamais réimprimer.",
     "ctaPrimary": "Commencer gratuitement",
     "ctaSecondary": "Voir comment ça marche",
     "scanHint": "Scannez-moi",
-    "scanPayload": "🎉 Bravo, tu es curieux !\n\nBienvenue sur QRious — Un QR code. Trois univers. Zéro limite.\n\n→ https://www.qrious.fr"
+    "scanPayload": "🎉 Bravo, tu es curieux !\n\nBienvenue sur QRious — Un QR code. Tous les métiers. Zéro limite.\n\n→ https://www.qrious.fr"
   },
   "HelloScan": {
     "metaTitle": "Tu es curieux ! — QRious",
@@ -171,7 +171,7 @@
     "badge": "Scan réussi",
     "headline": "Bravo, tu es curieux !",
     "message": "Ce QR n’est pas juste joli — il ouvre une vraie landing. Exactement ce que QRious fait pour ta marque, ton expo ou ta carte de visite.",
-    "punchline": "Un QR. Trois univers. Zéro limite.",
+    "punchline": "Un QR. Tous les métiers. Zéro limite.",
     "cta": "Créer mon QR",
     "back": "Retour à l’accueil"
   },
@@ -938,9 +938,9 @@
     "auth": {
       "brandEyebrow": "Tableau de bord",
       "heroLine1": "Un QR.",
-      "heroLine2": "Trois univers.",
+      "heroLine2": "Tous les métiers.",
       "heroLine3": "Zéro friction.",
-      "heroDescription": "Gérez vos landings art, immobilier et cartes de visite — contenu dynamique, marque blanche, stats en un clin d'œil.",
+      "heroDescription": "Gérez vos landings multi-métiers — contenu dynamique, marque blanche, stats en un clin d'œil.",
       "feature1": "QR dynamiques sans réimpression",
       "feature2": "Templates métiers prêts à l'emploi",
       "feature3": "Marque blanche en quelques clics",

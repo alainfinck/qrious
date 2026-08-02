@@ -118,9 +118,7 @@ function NavDropdown({
 }: NavDropdownProps) {
   const t = useTranslations('Header')
   const [open, setOpen] = useState(false)
-  const [panelPos, setPanelPos] = useState<{ top: number; left: number } | null>(
-    null,
-  )
+  const [panelTop, setPanelTop] = useState<number | null>(null)
   const ref = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -159,7 +157,7 @@ function NavDropdown({
 
   useEffect(() => {
     if (!open) {
-      setPanelPos(null)
+      setPanelTop(null)
       return
     }
 
@@ -167,11 +165,7 @@ function NavDropdown({
       const bar = ref.current?.closest('[data-header-bar]') as HTMLElement | null
       const anchor = bar ?? ref.current
       if (!anchor) return
-      const rect = anchor.getBoundingClientRect()
-      setPanelPos({
-        top: rect.bottom + 12,
-        left: rect.left + rect.width / 2,
-      })
+      setPanelTop(anchor.getBoundingClientRect().bottom + 12)
     }
 
     updatePosition()
@@ -225,81 +219,87 @@ function NavDropdown({
         />
       </button>
 
-      {open && panelPos && (
+      {open && panelTop != null && (
         <div
           ref={panelRef}
-          role="menu"
-          style={{ top: panelPos.top, left: panelPos.left }}
-          className={cn(
-            'fixed z-50 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/15 bg-mq-ink/95 backdrop-blur-2xl shadow-[0_24px_60px_-16px_rgba(0,0,0,0.9)] transition-all animate-in fade-in-0 zoom-in-95 duration-150',
-            widthClass || defaultWidth,
-          )}
-          onMouseEnter={clearClose}
-          onMouseLeave={scheduleClose}
+          role="presentation"
+          className="pointer-events-none fixed inset-x-0 z-50 flex justify-center px-4"
+          style={{ top: panelTop }}
         >
-          {/* Top triangle pointer */}
-          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-t border-l border-white/20 bg-mq-ink" />
+          <div
+            role="menu"
+            className={cn(
+              'pointer-events-auto relative overflow-hidden rounded-2xl border border-white/15 bg-mq-ink/95 shadow-[0_24px_60px_-16px_rgba(0,0,0,0.9)] backdrop-blur-2xl animate-in fade-in-0 zoom-in-95 duration-150',
+              widthClass || defaultWidth,
+            )}
+            onMouseEnter={clearClose}
+            onMouseLeave={scheduleClose}
+          >
+            {/* Top triangle pointer */}
+            <div className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-l border-t border-white/20 bg-mq-ink" />
 
-          {sectionHeader && (
-            <div className="flex items-center justify-between border-b border-white/10 px-5 py-3 bg-white/[0.02]">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-mq-signal/90">
-                {sectionHeader}
-              </span>
-              <span className="text-[10px] uppercase font-semibold text-white/40 tracking-wider">
-                {t('optionsAvailable', { count: items.length })}
-              </span>
-            </div>
-          )}
-
-          <div className={cn('grid gap-2 p-3', gridColsClass)}>
-            {items.map((item) => (
-              <Link
-                key={item.href + item.label}
-                href={item.href}
-                role="menuitem"
-                className="group relative flex items-start gap-3.5 rounded-xl border border-transparent p-3 transition-all duration-150 hover:border-white/15 hover:bg-white/10 hover:shadow-md"
-                onClick={() => setOpen(false)}
-              >
-                <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-mq-signal transition-all duration-200 group-hover:scale-105 group-hover:border-mq-coral/40 group-hover:bg-gradient-to-br group-hover:from-mq-coral group-hover:to-mq-sun group-hover:text-mq-ink group-hover:shadow-sm">
-                  <item.icon className="h-5 w-5" />
+            {sectionHeader && (
+              <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.02] px-5 py-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-mq-signal/90">
+                  {sectionHeader}
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center justify-between gap-1">
-                    <span className="block font-display text-[15px] font-semibold text-white/95 transition-colors group-hover:text-white">
-                      {item.label}
-                    </span>
-                    {item.badge && (
-                      <span
-                        className={cn(
-                          'inline-flex items-center rounded-md border px-1.5 py-0.2 text-[10px] font-bold tracking-wide uppercase',
-                          item.badgeTone || 'bg-mq-signal/20 text-mq-signal border-mq-signal/30',
-                        )}
-                      >
-                        {item.badge}
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-white/40">
+                  {t('optionsAvailable', { count: items.length })}
+                </span>
+              </div>
+            )}
+
+            <div className={cn('grid gap-2 p-3', gridColsClass)}>
+              {items.map((item) => (
+                <Link
+                  key={item.href + item.label}
+                  href={item.href}
+                  role="menuitem"
+                  className="group relative flex items-start gap-3.5 rounded-xl border border-transparent p-3 transition-all duration-150 hover:border-white/15 hover:bg-white/10 hover:shadow-md"
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-mq-signal transition-all duration-200 group-hover:scale-105 group-hover:border-mq-coral/40 group-hover:bg-gradient-to-br group-hover:from-mq-coral group-hover:to-mq-sun group-hover:text-mq-ink group-hover:shadow-sm">
+                    <item.icon className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center justify-between gap-1">
+                      <span className="block font-display text-[15px] font-semibold text-white/95 transition-colors group-hover:text-white">
+                        {item.label}
                       </span>
-                    )}
+                      {item.badge && (
+                        <span
+                          className={cn(
+                            'inline-flex items-center rounded-md border px-1.5 py-0.2 text-[10px] font-bold uppercase tracking-wide',
+                            item.badgeTone ||
+                              'border-mq-signal/30 bg-mq-signal/20 text-mq-signal',
+                          )}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-0.5 block text-[13px] leading-snug text-white/50 line-clamp-2 transition-colors group-hover:text-white/80">
+                      {item.description}
+                    </span>
                   </span>
-                  <span className="mt-0.5 block text-[13px] leading-snug text-white/50 transition-colors group-hover:text-white/80 line-clamp-2">
-                    {item.description}
-                  </span>
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          {footer && (
-            <div className="flex items-center justify-between border-t border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-white/70">
-              <span>{footer.text}</span>
-              <Link
-                href={footer.href}
-                onClick={() => setOpen(false)}
-                className="inline-flex items-center gap-1.5 font-semibold text-mq-signal hover:text-white transition-colors group"
-              >
-                <span>{footer.linkText}</span>
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
-              </Link>
+                </Link>
+              ))}
             </div>
-          )}
+
+            {footer && (
+              <div className="flex items-center justify-between border-t border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-white/70">
+                <span>{footer.text}</span>
+                <Link
+                  href={footer.href}
+                  onClick={() => setOpen(false)}
+                  className="group inline-flex items-center gap-1.5 font-semibold text-mq-signal transition-colors hover:text-white"
+                >
+                  <span>{footer.linkText}</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

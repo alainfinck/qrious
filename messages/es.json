@@ -157,13 +157,13 @@
     "badge": "QR dinámicos · Landing pages · Marca blanca",
     "brand": "QRious",
     "headlineLine1": "Un código QR.",
-    "headlineLine2": "Tres universos.",
+    "headlineLine2": "Todos los sectores.",
     "headlineLine3": "Cero límites.",
-    "description": "Transforma cada escaneo en una landing page a medida — arte, inmobiliaria o tarjeta de visita — editable sin volver a imprimir.",
+    "description": "Transforma cada escaneo en una landing page a medida — hostelería, arte, inmobiliaria, eventos y más — editable sin volver a imprimir.",
     "ctaPrimary": "Empezar gratis",
     "ctaSecondary": "Ver cómo funciona",
     "scanHint": "Escanéame",
-    "scanPayload": "🎉 ¡Bravo, eres curioso!\n\nBienvenido a QRious — Un código QR. Tres universos. Cero límites.\n\n→ https://www.qrious.fr"
+    "scanPayload": "🎉 ¡Bravo, eres curioso!\n\nBienvenido a QRious — Un código QR. Todos los sectores. Cero límites.\n\n→ https://www.qrious.fr"
   },
   "HelloScan": {
     "metaTitle": "¡Eres curioso! — QRious",
@@ -171,7 +171,7 @@
     "badge": "Escaneo correcto",
     "headline": "¡Bravo, eres curioso!",
     "message": "Este QR no solo es bonito — abre una landing de verdad. Exactamente lo que QRious hace por tu marca, exposición o tarjeta de visita.",
-    "punchline": "Un QR. Tres universos. Cero límites.",
+    "punchline": "Un QR. Todos los sectores. Cero límites.",
     "cta": "Crear mi QR",
     "back": "Volver al inicio"
   },
@@ -938,9 +938,9 @@
     "auth": {
       "brandEyebrow": "Panel",
       "heroLine1": "Un QR.",
-      "heroLine2": "Tres universos.",
+      "heroLine2": "Todos los sectores.",
       "heroLine3": "Cero fricción.",
-      "heroDescription": "Gestiona tus landings de arte, inmobiliaria y tarjetas de visita — contenido dinámico, marca blanca, stats de un vistazo.",
+      "heroDescription": "Gestiona landings multi-sector — contenido dinámico, marca blanca, stats de un vistazo.",
       "feature1": "QR dinámicos sin reimpresión",
       "feature2": "Plantillas sectoriales listas para usar",
       "feature3": "Marca blanca en pocos clics",

@@ -23,13 +23,13 @@ const qr = Pixelify_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'QRious — QR codes dynamiques pour Art, Immobilier & Cartes de visite',
+  title: 'QRious — QR codes dynamiques multi-métiers',
   description:
-    'Créez des QR codes permanents qui pointent vers des landing pages dynamiques. Art, immobilier, carte de visite — marque blanche incluse.',
+    'Créez des QR codes permanents qui pointent vers des landing pages dynamiques. Tous les métiers — marque blanche incluse.',
   openGraph: {
     title: 'QRious — QR codes dynamiques multi-métiers',
     description:
-      'Un QR code. Trois univers. Zéro limite. Landing pages mobile-first avec marque blanche.',
+      'Un QR code. Tous les métiers. Zéro limite. Landing pages mobile-first avec marque blanche.',
     type: 'website',
     locale: 'fr_FR',
   },

@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from 'next-intl'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 
-import { BrandMark } from '@/components/brand/BrandMark'
 import { BrandWordmarkAppear } from '@/components/brand/BrandWordmarkAppear'
 import { AnimatedShinyText } from '@/components/ui/animated-shiny-text'
 import { BlurFade } from '@/components/ui/blur-fade'
@@ -260,12 +259,9 @@ export function HeroSection() {
           </BlurFade>
 
           <BlurFade delay={0.12} inView>
-            <div className="flex items-center gap-4 sm:gap-5">
-              <BrandMark className="h-12 w-12 shrink-0 text-mq-coral sm:h-14 sm:w-14 lg:h-16 lg:w-16" />
-              <p className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-                <BrandWordmarkAppear rainbow />
-              </p>
-            </div>
+            <p className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              <BrandWordmarkAppear rainbow />
+            </p>
           </BlurFade>
 
           <BlurFade delay={0.2} inView>

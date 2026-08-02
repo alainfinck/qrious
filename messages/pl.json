@@ -157,13 +157,13 @@
     "badge": "Dynamiczne QR · Landing page · White label",
     "brand": "QRious",
     "headlineLine1": "Jeden kod QR.",
-    "headlineLine2": "Trzy światy.",
+    "headlineLine2": "Wszystkie branże.",
     "headlineLine3": "Zero limitów.",
-    "description": "Zamień każdy skan w landing page na miarę — sztuka, nieruchomości lub wizytówka — edytowalną bez ponownego drukowania.",
+    "description": "Zamień każdy skan w landing page na miarę — gastronomia, sztuka, nieruchomości, eventy i więcej — edytowalną bez ponownego drukowania.",
     "ctaPrimary": "Zacznij za darmo",
     "ctaSecondary": "Zobacz, jak to działa",
     "scanHint": "Zeskanuj mnie",
-    "scanPayload": "🎉 Brawo, jesteś ciekawy!\n\nWitaj w QRious — Jeden kod QR. Trzy światy. Zero limitów.\n\n→ https://www.qrious.fr"
+    "scanPayload": "🎉 Brawo, jesteś ciekawy!\n\nWitaj w QRious — Jeden kod QR. Wszystkie branże. Zero limitów.\n\n→ https://www.qrious.fr"
   },
   "HelloScan": {
     "metaTitle": "Jesteś ciekawy! — QRious",
@@ -171,7 +171,7 @@
     "badge": "Skan udany",
     "headline": "Brawo, jesteś ciekawy!",
     "message": "Ten QR nie jest tylko ładny — otwiera prawdziwy landing. Dokładnie to robi QRious dla Twojej marki, wystawy lub wizytówki.",
-    "punchline": "Jeden QR. Trzy światy. Zero limitów.",
+    "punchline": "Jeden QR. Wszystkie branże. Zero limitów.",
     "cta": "Stwórz mój QR",
     "back": "Wróć na stronę główną"
   },
@@ -938,9 +938,9 @@
     "auth": {
       "brandEyebrow": "Panel",
       "heroLine1": "Jeden QR.",
-      "heroLine2": "Trzy światy.",
+      "heroLine2": "Wszystkie branże.",
       "heroLine3": "Zero tarcia.",
-      "heroDescription": "Zarządzaj landingami sztuki, nieruchomości i wizytówek — treść dynamiczna, white label, stats w mgnieniu oka.",
+      "heroDescription": "Zarządzaj landingami multi-branżowymi — treść dynamiczna, white label, stats w mgnieniu oka.",
       "feature1": "Dynamiczne kody QR bez ponownego drukowania",
       "feature2": "Gotowe szablony branżowe",
       "feature3": "White label w kilku kliknięciach",

@@ -157,13 +157,13 @@
     "badge": "Dynamic QR · Landing pages · White label",
     "brand": "QRious",
     "headlineLine1": "One QR code.",
-    "headlineLine2": "Three worlds.",
+    "headlineLine2": "Every industry.",
     "headlineLine3": "Zero limits.",
-    "description": "Turn every scan into a custom landing page — art, real estate, or business card — editable without ever reprinting.",
+    "description": "Turn every scan into a custom landing page — hospitality, art, real estate, events and more — editable without ever reprinting.",
     "ctaPrimary": "Start for free",
     "ctaSecondary": "See how it works",
     "scanHint": "Scan me",
-    "scanPayload": "🎉 Nice — you are curious!\n\nWelcome to QRious — One QR code. Three worlds. Zero limits.\n\n→ https://www.qrious.fr"
+    "scanPayload": "🎉 Nice — you are curious!\n\nWelcome to QRious — One QR code. Every industry. Zero limits.\n\n→ https://www.qrious.fr"
   },
   "HelloScan": {
     "metaTitle": "You are curious! — QRious",
@@ -171,7 +171,7 @@
     "badge": "Scan successful",
     "headline": "Nice — you are curious!",
     "message": "This QR isn’t just pretty — it opens a real landing page. That’s exactly what QRious does for your brand, show, or business card.",
-    "punchline": "One QR. Three worlds. Zero limits.",
+    "punchline": "One QR. Every industry. Zero limits.",
     "cta": "Create my QR",
     "back": "Back to home"
   },
@@ -938,9 +938,9 @@
     "auth": {
       "brandEyebrow": "Dashboard",
       "heroLine1": "One QR.",
-      "heroLine2": "Three worlds.",
+      "heroLine2": "Every industry.",
       "heroLine3": "Zero friction.",
-      "heroDescription": "Manage your art, real estate, and business card landings — dynamic content, white label, stats at a glance.",
+      "heroDescription": "Manage multi-industry landings — dynamic content, white label, stats at a glance.",
       "feature1": "Dynamic QR codes without reprinting",
       "feature2": "Ready-to-use industry templates",
       "feature3": "White label in a few clicks",

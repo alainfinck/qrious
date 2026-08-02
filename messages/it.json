@@ -157,13 +157,13 @@
     "badge": "QR dinamici · Landing page · White label",
     "brand": "QRious",
     "headlineLine1": "Un QR code.",
-    "headlineLine2": "Tre universi.",
+    "headlineLine2": "Tutti i settori.",
     "headlineLine3": "Zero limiti.",
-    "description": "Trasforma ogni scansione in una landing page su misura — arte, immobiliare o biglietto da visita — modificabile senza mai ristampare.",
+    "description": "Trasforma ogni scansione in una landing page su misura — hospitality, arte, immobiliare, eventi e altro — modificabile senza mai ristampare.",
     "ctaPrimary": "Inizia gratis",
     "ctaSecondary": "Scopri come funziona",
     "scanHint": "Scansionami",
-    "scanPayload": "🎉 Bravo, sei curioso!\n\nBenvenuto su QRious — Un QR code. Tre universi. Zero limiti.\n\n→ https://www.qrious.fr"
+    "scanPayload": "🎉 Bravo, sei curioso!\n\nBenvenuto su QRious — Un QR code. Tutti i settori. Zero limiti.\n\n→ https://www.qrious.fr"
   },
   "HelloScan": {
     "metaTitle": "Sei curioso! — QRious",
@@ -171,7 +171,7 @@
     "badge": "Scansione riuscita",
     "headline": "Bravo, sei curioso!",
     "message": "Questo QR non è solo bello — apre una vera landing. Esattamente ciò che QRious fa per il tuo brand, la tua mostra o il biglietto da visita.",
-    "punchline": "Un QR. Tre universi. Zero limiti.",
+    "punchline": "Un QR. Tutti i settori. Zero limiti.",
     "cta": "Crea il mio QR",
     "back": "Torna alla home"
   },
@@ -938,9 +938,9 @@
     "auth": {
       "brandEyebrow": "Dashboard",
       "heroLine1": "Un QR.",
-      "heroLine2": "Tre universi.",
+      "heroLine2": "Tutti i settori.",
       "heroLine3": "Zero attrito.",
-      "heroDescription": "Gestisci landing di arte, immobiliare e biglietti da visita — contenuto dinamico, white label, stats in un batter d'occhio.",
+      "heroDescription": "Gestisci landing multi-settore — contenuto dinamico, white label, stats in un batter d'occhio.",
       "feature1": "QR dinamici senza ristampa",
       "feature2": "Template di settore pronti all'uso",
       "feature3": "White label in pochi clic",
