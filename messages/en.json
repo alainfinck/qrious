@@ -242,6 +242,11 @@
     "cta": "Create my QR",
     "stepLabel": "Step"
   },
+  "ScanSection": {
+    "eyebrow": "Free tool",
+    "title": "Scan a QR from an image",
+    "subtitle": "Drop a screenshot or photo of a QR code. We read the payload, show a mobile preview, and fetch Open Graph metadata."
+  },
   "Verticals": {
     "eyebrow": "Industries",
     "titleBefore": "One template per",

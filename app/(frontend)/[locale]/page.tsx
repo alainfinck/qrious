@@ -8,6 +8,7 @@ import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { MarketingHeader } from '@/components/marketing/MarketingHeader'
 import { QrPrintMediumsSection } from '@/components/marketing/QrPrintMediumsSection'
 import { QuickStepsSection } from '@/components/marketing/QuickStepsSection'
+import { ScanQrSection } from '@/components/marketing/ScanQrSection'
 import { SocialProofSection } from '@/components/marketing/SocialProofSection'
 import { VerticalsSection } from '@/components/marketing/VerticalsSection'
 import { WhiteLabelSection } from '@/components/marketing/WhiteLabelSection'
@@ -25,6 +26,7 @@ export default function HomePage() {
         <FeaturesSection />
         <QrPrintMediumsSection />
         <HowItWorksSection />
+        <ScanQrSection />
         <WhiteLabelSection />
         <DisclaimerSection />
         <CtaSection />

@@ -6,7 +6,6 @@ import { ArrowRight } from 'lucide-react'
 import { BrandWordmark } from '@/components/brand/BrandWordmark'
 import { BlurFade } from '@/components/ui/blur-fade'
 import { ShimmerButton } from '@/components/ui/shimmer-button'
-import { Link } from '@/src/i18n/routing'
 
 export function CtaSection() {
   const t = useTranslations('CTA')
@@ -41,19 +40,18 @@ export function CtaSection() {
         </BlurFade>
         <BlurFade delay={0.34} inView>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/dashboard/register">
-              <ShimmerButton
-                className="h-12 px-6"
-                background="#0b1220"
-                shimmerColor="#ffc53d"
-                borderRadius="14px"
-              >
-                <span className="flex items-center gap-2 font-semibold text-white">
-                  {t('primary')}
-                  <ArrowRight className="h-4 w-4" />
-                </span>
-              </ShimmerButton>
-            </Link>
+            <ShimmerButton
+              href="/dashboard/register"
+              className="h-12 px-6"
+              background="#0b1220"
+              shimmerColor="#ffc53d"
+              borderRadius="14px"
+            >
+              <span className="flex items-center gap-2 font-semibold text-white">
+                {t('primary')}
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </ShimmerButton>
             <a
               href="#metiers"
               className="inline-flex h-12 items-center justify-center rounded-xl border-2 border-mq-ink/20 bg-white/50 px-6 text-base font-semibold text-mq-ink backdrop-blur-sm transition-colors hover:bg-white"

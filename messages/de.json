@@ -242,6 +242,11 @@
     "cta": "Meinen QR erstellen",
     "stepLabel": "Schritt"
   },
+  "ScanSection": {
+    "eyebrow": "Kostenloses Tool",
+    "title": "QR-Code aus einem Bild scannen",
+    "subtitle": "Legen Sie einen Screenshot oder ein Foto eines QR-Codes ab. Wir lesen den Inhalt, zeigen eine mobile Vorschau und holen Open-Graph-Metadaten."
+  },
   "Verticals": {
     "eyebrow": "Branchen",
     "titleBefore": "Ein Template pro",

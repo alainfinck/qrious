@@ -242,6 +242,11 @@
     "cta": "Crea il mio QR",
     "stepLabel": "Passo"
   },
+  "ScanSection": {
+    "eyebrow": "Strumento gratuito",
+    "title": "Scansiona un QR da un’immagine",
+    "subtitle": "Trascina uno screenshot o una foto di un QR code. Leggiamo il contenuto, mostriamo l’anteprima mobile e i metadati Open Graph."
+  },
   "Verticals": {
     "eyebrow": "Settori",
     "titleBefore": "Un template per",

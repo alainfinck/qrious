@@ -18,7 +18,7 @@ import {
   styleToOptions,
   type QrStyleTemplate,
 } from '@/lib/qr/style'
-import { Link, defaultLocale } from '@/src/i18n/routing'
+import { defaultLocale } from '@/src/i18n/routing'
 import { cn } from '@/lib/utils'
 
 const HERO_STYLE_ORDER = [
@@ -226,7 +226,7 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-[min(100dvh,920px)] overflow-hidden bg-mq-ink text-white">
-      <div className="absolute inset-0" aria-hidden>
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
         <div className="absolute inset-0 bg-[linear-gradient(155deg,#0b1220_0%,#102536_40%,#0b1a2a_100%)]" />
         <div className="mq-blob absolute -right-[12%] top-[-8%] h-[55%] w-[55%] rounded-full bg-mq-signal/35 blur-[90px]" />
         <div className="mq-blob-delay absolute -left-[8%] bottom-[-12%] h-[45%] w-[45%] rounded-full bg-mq-coral/30 blur-[90px]" />
@@ -280,20 +280,19 @@ export function HeroSection() {
 
           <BlurFade delay={0.36} inView>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Link href="/dashboard/register">
-                <ShimmerButton
-                  className="h-12 px-6"
-                  background="linear-gradient(135deg, #ff5c4d 0%, #ff8a3d 55%, #ffc53d 100%)"
-                  shimmerColor="#fff7e8"
-                  borderRadius="14px"
-                  shimmerDuration="2.2s"
-                >
-                  <span className="flex items-center gap-2 font-semibold text-mq-ink">
-                    {t('ctaPrimary')}
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                </ShimmerButton>
-              </Link>
+              <ShimmerButton
+                href="/dashboard/register"
+                className="h-12 px-6"
+                background="linear-gradient(135deg, #ff5c4d 0%, #ff8a3d 55%, #ffc53d 100%)"
+                shimmerColor="#fff7e8"
+                borderRadius="14px"
+                shimmerDuration="2.2s"
+              >
+                <span className="flex items-center gap-2 font-semibold text-mq-ink">
+                  {t('ctaPrimary')}
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </ShimmerButton>
               <a
                 href="#comment"
                 className="inline-flex h-12 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-6 text-base font-medium text-white/90 transition-colors hover:border-mq-signal/50 hover:bg-mq-signal/15"
