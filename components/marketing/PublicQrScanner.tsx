@@ -293,7 +293,7 @@ export function PublicQrScanner() {
           'flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-6 py-14 text-center transition-colors',
           dragging
             ? 'border-mq-signal bg-mq-signal/10'
-            : 'border-mq-ink/15 bg-white hover:border-mq-ink/30 hover:bg-mq-ink/[0.02]',
+            : 'border-mq-ink/15 bg-white hover:border-mq-signal/40 hover:bg-mq-paper',
           decoding && 'pointer-events-none opacity-70',
         )}
       >
