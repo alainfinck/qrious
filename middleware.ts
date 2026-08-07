@@ -6,6 +6,30 @@ const handleI18n = createMiddleware(routing)
 
 const EXPO_WEB_BASE = '/newqr'
 
+/** Sites autorisés à iframe l’éditeur (/newqr?embed=1) */
+const EMBED_FRAME_ANCESTORS = [
+  "'self'",
+  'https://www.qrious.fr',
+  'https://qrious.fr',
+  'https://www.cartepostale.cool',
+  'https://cartepostale.cool',
+  'https://www.postcard.cool',
+  'https://postcard.cool',
+  'http://localhost:3000',
+  'http://localhost:8081',
+  'http://localhost:8082',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:8081',
+  'http://127.0.0.1:8082',
+].join(' ')
+
+function withEmbedHeaders(response: NextResponse): NextResponse {
+  // Autorise l’iframe partenaire ; retire X-Frame-Options si un proxy l’avait posé
+  response.headers.set('Content-Security-Policy', `frame-ancestors ${EMBED_FRAME_ANCESTORS}`)
+  response.headers.delete('X-Frame-Options')
+  return response
+}
+
 /**
  * Expo export static pose des fichiers `home.html`, `login.html`, `[id].html`, etc.
  * Next ne mappe pas `/newqr/home` → `home.html` : on réécrit ici.
@@ -93,14 +117,18 @@ export default function middleware(request: NextRequest) {
     if (rewriteTarget) {
       const url = request.nextUrl.clone()
       url.pathname = rewriteTarget
-      return NextResponse.rewrite(url, {
-        request: { headers: requestHeaders },
-      })
+      return withEmbedHeaders(
+        NextResponse.rewrite(url, {
+          request: { headers: requestHeaders },
+        }),
+      )
     }
 
-    return NextResponse.next({
-      request: { headers: requestHeaders },
-    })
+    return withEmbedHeaders(
+      NextResponse.next({
+        request: { headers: requestHeaders },
+      }),
+    )
   }
 
   const requestHeaders = new Headers(request.headers)

@@ -1,16 +1,33 @@
 import React from 'react'
-import { ActivityIndicator, View } from 'react-native'
-import { Stack, useRouter, useSegments } from 'expo-router'
+import { ActivityIndicator, Platform, View } from 'react-native'
+import { Stack, useGlobalSearchParams, useRouter, useSegments } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 import { AuthProvider, useAuth } from '../src/auth/AuthContext'
 import { colors } from '../src/theme/colors'
 
+function isEmbedMode(params: Record<string, string | string[] | undefined>): boolean {
+  const raw = params.embed
+  const v = (Array.isArray(raw) ? raw[0] : raw)?.toLowerCase()
+  if (v === '1' || v === 'true' || v === 'yes') return true
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    try {
+      const q = new URLSearchParams(window.location.search).get('embed')?.toLowerCase()
+      return q === '1' || q === 'true' || q === 'yes'
+    } catch {
+      return false
+    }
+  }
+  return false
+}
+
 function AuthGate({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   const segments = useSegments()
   const router = useRouter()
+  const params = useGlobalSearchParams()
+  const embedMode = isEmbedMode(params)
 
   React.useEffect(() => {
     if (loading) return
@@ -23,10 +40,11 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       router.replace('/')
     } else if (user && inAuth) {
       router.replace('/home')
-    } else if (user && inPublic) {
+    } else if (user && inPublic && !embedMode) {
+      // Mode embed (iframe partenaires) : rester sur l’éditeur même si connecté
       router.replace('/home')
     }
-  }, [user, loading, segments, router])
+  }, [user, loading, segments, router, embedMode])
 
   if (loading) {
     return (

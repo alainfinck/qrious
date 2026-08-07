@@ -44,6 +44,8 @@ const ICONS: Record<StaticQrContentType, LucideIcon> = {
 type Props = {
   contentType: StaticQrContentType
   payload: StaticQrPayload
+  /** Masque le sélecteur de type et fige l’URL (partenaire embed) */
+  lockUrl?: boolean
   onTypeChange: (type: StaticQrContentType) => void
   onPayloadChange: (payload: StaticQrPayload) => void
 }
@@ -51,36 +53,44 @@ type Props = {
 export function StaticContentFields({
   contentType,
   payload,
+  lockUrl = false,
   onTypeChange,
   onPayloadChange,
 }: Props) {
   return (
     <View style={styles.root}>
       <Text style={styles.hint}>
-        QR figé : le contenu est gravé dans le code. Pour éditer plus tard, choisissez Smart Page.
+        {lockUrl
+          ? 'Destination verrouillée par le site hôte. Personnalisez le design à l’étape suivante.'
+          : 'QR figé : le contenu est gravé dans le code. Pour éditer plus tard, choisissez Smart Page.'}
       </Text>
-      <View style={styles.typeGrid}>
-        {STATIC_CONTENT_TYPES.map((opt) => {
-          const Icon = ICONS[opt.value]
-          const active = contentType === opt.value
-          return (
-            <Pressable
-              key={opt.value}
-              onPress={() => onTypeChange(opt.value)}
-              style={[styles.typeCard, active && styles.typeCardActive]}
-            >
-              <View style={[styles.typeIcon, active && styles.typeIconActive]}>
-                <Icon size={16} color={active ? colors.ink : colors.slate700} />
-              </View>
-              <Text style={[styles.typeLabel, active && { color: colors.white }]} numberOfLines={1}>
-                {opt.label}
-              </Text>
-            </Pressable>
-          )
-        })}
-      </View>
+      {!lockUrl ? (
+        <View style={styles.typeGrid}>
+          {STATIC_CONTENT_TYPES.map((opt) => {
+            const Icon = ICONS[opt.value]
+            const active = contentType === opt.value
+            return (
+              <Pressable
+                key={opt.value}
+                onPress={() => onTypeChange(opt.value)}
+                style={[styles.typeCard, active && styles.typeCardActive]}
+              >
+                <View style={[styles.typeIcon, active && styles.typeIconActive]}>
+                  <Icon size={16} color={active ? colors.ink : colors.slate700} />
+                </View>
+                <Text
+                  style={[styles.typeLabel, active && { color: colors.white }]}
+                  numberOfLines={1}
+                >
+                  {opt.label}
+                </Text>
+              </Pressable>
+            )
+          })}
+        </View>
+      ) : null}
 
-      <StaticFields payload={payload} onChange={onPayloadChange} />
+      <StaticFields payload={payload} onChange={onPayloadChange} urlReadOnly={lockUrl} />
     </View>
   )
 }
@@ -88,9 +98,11 @@ export function StaticContentFields({
 function StaticFields({
   payload,
   onChange,
+  urlReadOnly = false,
 }: {
   payload: StaticQrPayload
   onChange: (p: StaticQrPayload) => void
+  urlReadOnly?: boolean
 }) {
   switch (payload.type) {
     case 'url':
@@ -101,6 +113,8 @@ function StaticFields({
           onChangeText={(url) => onChange({ type: 'url', data: { url } })}
           autoCapitalize="none"
           placeholder="https://"
+          editable={!urlReadOnly}
+          selectTextOnFocus={!urlReadOnly}
         />
       )
     case 'text':

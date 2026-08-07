@@ -23,6 +23,25 @@ Depuis la racine (recommandé) :
 
 L’éditeur public marketing (`/newqr`) **est** l’app Expo (une seule UI). `/editeur` redirige vers `/newqr`.
 
+### Mode embed (sites partenaires)
+
+Pour intégrer l’éditeur dans un site externe (iframe) sans chrome marketing :
+
+```
+https://www.qrious.fr/newqr?embed=1&url=https%3A%2F%2Fvotre-page&lockUrl=1&partner=cartepostale
+```
+
+| Param | Rôle |
+| --- | --- |
+| `embed=1` | Masque header / CTA compte / upsell Smart Page |
+| `url` | Prefill du contenu (URL encodée) |
+| `lockUrl=1` | Fige le type sur URL (design libre, destination verrouillée) |
+| `partner` | Label optionnel dans le footer « propulsé par QRious » |
+
+Les origines iframe autorisées sont listées dans `middleware.ts` (`EMBED_FRAME_ANCESTORS`).
+
+Dev Metro : `http://localhost:8081/newqr?embed=1&…`
+
 ## EAS (builds cloud, OTA, web)
 
 Compte Expo requis. Une fois :

@@ -99,33 +99,55 @@ type Props = {
   page?: LandingPage
   initialVertical?: LandingPageVertical
   initialStaticType?: StaticQrContentType
+  /** Prefill URL (type url) — sites partenaires / deep links */
+  initialUrl?: string
+  /** Verrouille le contenu sur une URL (pas de changement de type) */
+  lockUrl?: boolean
   /** Mode invité (éditeur public) : export OK, publication → compte */
   guestMode?: boolean
+  /**
+   * Mode iframe / site externe : pas d’upsell compte, chrome allégé.
+   * Combiné à guestMode pour l’export statique.
+   */
+  embedMode?: boolean
   submitLabel: string
   onSubmit: (data: LandingPageInput) => Promise<void>
   onDelete?: () => Promise<void>
+}
+
+function initialStaticState(
+  initialStaticType: StaticQrContentType,
+  initialUrl?: string,
+  lockUrl?: boolean,
+): { type: StaticQrContentType; payload: StaticQrPayload } {
+  if (initialUrl && (lockUrl || initialStaticType === 'url')) {
+    return { type: 'url', payload: { type: 'url', data: { url: initialUrl } } }
+  }
+  return { type: initialStaticType, payload: defaultStaticPayload(initialStaticType) }
 }
 
 export function QrCodeForm({
   page,
   initialVertical,
   initialStaticType = 'url',
+  initialUrl,
+  lockUrl = false,
   guestMode = false,
+  embedMode = false,
   submitLabel,
   onSubmit,
   onDelete,
 }: Props) {
   const { width } = useWindowDimensions()
   const wide = width >= 960
-  const [mode, setMode] = useState<QrMode>(guestMode ? 'static' : 'smart')
+  const [mode, setMode] = useState<QrMode>(guestMode || embedMode ? 'static' : 'smart')
   const [step, setStep] = useState(0)
   const [state, setState] = useState<FormState>(() =>
     page ? formStateFromPage(page) : emptyFormState(initialVertical || 'generic'),
   )
-  const [staticType, setStaticType] = useState<StaticQrContentType>(initialStaticType)
-  const [staticPayload, setStaticPayload] = useState<StaticQrPayload>(() =>
-    defaultStaticPayload(initialStaticType),
-  )
+  const boot = initialStaticState(initialStaticType, initialUrl, lockUrl)
+  const [staticType, setStaticType] = useState<StaticQrContentType>(boot.type)
+  const [staticPayload, setStaticPayload] = useState<StaticQrPayload>(boot.payload)
   const [qrStyle, setQrStyle] = useState<QrStyle>(INITIAL_STYLE)
   const [activeTemplateId, setActiveTemplateId] = useState<string | null>(INITIAL_TEMPLATE.id)
   const [error, setError] = useState<string | null>(null)
@@ -289,33 +311,47 @@ export function QrCodeForm({
   return (
     <View style={[styles.wrap, wide && styles.wrapWide]}>
       <View style={[styles.main, wide && { flex: 1.4 }]}>
-        {guestMode ? (
+        {guestMode || embedMode ? (
           <>
-            <View style={styles.guestModeBanner}>
-              <QrCode size={16} color={colors.signal} />
-              <View style={{ flex: 1, gap: 2 }}>
-                <Text style={styles.guestModeTitle}>QR statique — prêt à exporter</Text>
-                <Text style={styles.guestModeHint}>
-                  Contenu figé dans le code · Wi‑Fi, vCard, lien, texte…
-                </Text>
+            {!embedMode ? (
+              <>
+                <View style={styles.guestModeBanner}>
+                  <QrCode size={16} color={colors.signal} />
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Text style={styles.guestModeTitle}>QR statique — prêt à exporter</Text>
+                    <Text style={styles.guestModeHint}>
+                      Contenu figé dans le code · Wi‑Fi, vCard, lien, texte…
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.smartUpsell}>
+                  <View style={styles.smartUpsellIcon}>
+                    <Sparkles size={16} color={colors.ink} />
+                  </View>
+                  <View style={{ flex: 1, gap: 4 }}>
+                    <Text style={styles.smartUpsellTitle}>Besoin d’une Smart Page ?</Text>
+                    <Text style={styles.smartUpsellText}>
+                      URL dynamique, contenu éditable, analytics — disponible après connexion.
+                    </Text>
+                  </View>
+                  <Link href="/register" asChild>
+                    <Pressable style={styles.smartUpsellCta}>
+                      <Text style={styles.smartUpsellCtaText}>Créer un compte</Text>
+                    </Pressable>
+                  </Link>
+                </View>
+              </>
+            ) : lockUrl ? (
+              <View style={styles.guestModeBanner}>
+                <QrCode size={16} color={colors.signal} />
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Text style={styles.guestModeTitle}>Personnalisez votre QR</Text>
+                  <Text style={styles.guestModeHint}>
+                    L’URL de destination est fixée · styles, formes et logo libres
+                  </Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.smartUpsell}>
-              <View style={styles.smartUpsellIcon}>
-                <Sparkles size={16} color={colors.ink} />
-              </View>
-              <View style={{ flex: 1, gap: 4 }}>
-                <Text style={styles.smartUpsellTitle}>Besoin d’une Smart Page ?</Text>
-                <Text style={styles.smartUpsellText}>
-                  URL dynamique, contenu éditable, analytics — disponible après connexion.
-                </Text>
-              </View>
-              <Link href="/register" asChild>
-                <Pressable style={styles.smartUpsellCta}>
-                  <Text style={styles.smartUpsellCtaText}>Créer un compte</Text>
-                </Pressable>
-              </Link>
-            </View>
+            ) : null}
           </>
         ) : (
           <>
@@ -413,7 +449,9 @@ export function QrCodeForm({
             <StaticContentFields
               contentType={staticType}
               payload={staticPayload}
+              lockUrl={lockUrl}
               onTypeChange={(type) => {
+                if (lockUrl) return
                 setStaticType(type)
                 setStaticPayload(defaultStaticPayload(type))
               }}

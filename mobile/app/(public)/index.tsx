@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -18,11 +19,78 @@ import { colors, spacing } from '../../src/theme/colors'
 import type { LandingPageVertical } from '../../src/types/landing-page'
 import type { StaticQrContentType } from '../../src/lib/qr-payload'
 
+function firstParam(value: string | string[] | undefined): string | undefined {
+  if (Array.isArray(value)) return value[0]
+  return value
+}
+
+function isTruthyParam(value: string | string[] | undefined): boolean {
+  const v = firstParam(value)?.toLowerCase()
+  return v === '1' || v === 'true' || v === 'yes'
+}
+
+/**
+ * Mode embed pour sites partenaires (ex. cartepostale.cool) :
+ *   /newqr?embed=1&url=https://…&lockUrl=1&partner=cartepostale
+ * — chrome marketing masqué, URL préremplie, export OK
+ */
 export default function PublicEditorScreen() {
   const router = useRouter()
   const { width } = useWindowDimensions()
-  const params = useLocalSearchParams<{ type?: string; vertical?: string }>()
+  const params = useLocalSearchParams<{
+    type?: string
+    vertical?: string
+    embed?: string
+    url?: string
+    lockUrl?: string
+    partner?: string
+  }>()
   const showHomeHint = width >= 420
+
+  const embedMode = isTruthyParam(params.embed)
+  const lockUrl = isTruthyParam(params.lockUrl)
+  const initialUrl = useMemo(() => {
+    const raw = firstParam(params.url)?.trim()
+    if (!raw) return undefined
+    try {
+      return decodeURIComponent(raw)
+    } catch {
+      return raw
+    }
+  }, [params.url])
+  const partner = firstParam(params.partner)?.trim()
+  const initialStaticType = (firstParam(params.type) as StaticQrContentType) || 'url'
+
+  if (embedMode) {
+    return (
+      <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
+        <ScrollView
+          contentContainerStyle={[styles.container, styles.embedContainer]}
+          keyboardShouldPersistTaps="handled"
+        >
+          <QrCodeForm
+            guestMode
+            embedMode
+            lockUrl={lockUrl || Boolean(initialUrl)}
+            initialUrl={initialUrl}
+            initialVertical={(firstParam(params.vertical) as LandingPageVertical) || 'generic'}
+            initialStaticType={lockUrl || initialUrl ? 'url' : initialStaticType}
+            submitLabel="Exporter"
+            onSubmit={async () => undefined}
+          />
+          <Pressable
+            onPress={() => void Linking.openURL('https://www.qrious.fr')}
+            style={styles.poweredBy}
+            accessibilityRole="link"
+          >
+            <Text style={styles.poweredByText}>
+              Éditeur QR{partner ? ` · ${partner}` : ''} · propulsé par QRious
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
@@ -59,8 +127,10 @@ export default function PublicEditorScreen() {
         </View>
         <QrCodeForm
           guestMode
-          initialVertical={(params.vertical as LandingPageVertical) || 'generic'}
-          initialStaticType={(params.type as StaticQrContentType) || 'url'}
+          initialUrl={initialUrl}
+          lockUrl={lockUrl}
+          initialVertical={(firstParam(params.vertical) as LandingPageVertical) || 'generic'}
+          initialStaticType={lockUrl || initialUrl ? 'url' : initialStaticType}
           submitLabel="Créer un compte pour publier"
           onSubmit={async () => {
             router.push('/register')
@@ -114,6 +184,21 @@ const styles = StyleSheet.create({
     maxWidth: 1100,
     width: '100%',
     alignSelf: 'center',
+  },
+  embedContainer: {
+    paddingTop: spacing.md,
+    paddingBottom: 24,
+  },
+  poweredBy: {
+    alignSelf: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  poweredByText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: colors.slate400,
+    textAlign: 'center',
   },
   intro: { gap: 6, paddingTop: spacing.md },
   title: { fontSize: 28, fontWeight: '800', color: colors.ink },
