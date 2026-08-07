@@ -309,8 +309,13 @@ export function QrCodeForm({
   }
 
   return (
-    <View style={[styles.wrap, wide && styles.wrapWide]}>
-      <View style={[styles.main, wide && { flex: 1.4 }]}>
+    <View style={[styles.wrap, wide && styles.wrapWide, embedMode && styles.wrapEmbed]}>
+      <View
+        style={[
+          embedMode ? styles.mainEmbed : styles.main,
+          wide && !embedMode && { flex: 1.4 },
+        ]}
+      >
         {guestMode || embedMode ? (
           <>
             {!embedMode ? (
@@ -435,7 +440,12 @@ export function QrCodeForm({
           })}
         </View>
 
-        <ScrollView contentContainerStyle={styles.formBody} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.formBody}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={!embedMode}
+          style={embedMode ? styles.formBodyEmbed : undefined}
+        >
           {mode === 'smart' && currentStepId === 'identity' ? (
             <SmartIdentityStep
               state={state}
@@ -515,7 +525,13 @@ export function QrCodeForm({
         </ScrollView>
       </View>
 
-      <View style={[styles.preview, wide && { flex: 1 }]}>
+      <View
+        style={[
+          styles.preview,
+          wide && !embedMode && { flex: 1 },
+          embedMode && styles.previewEmbed,
+        ]}
+      >
         <View style={styles.previewHead}>
           <Text style={styles.previewTitle}>Aperçu</Text>
           <Text style={styles.previewSubtitle}>
@@ -877,7 +893,10 @@ function PublishStep({
 const styles = StyleSheet.create({
   wrap: { gap: spacing.xl },
   wrapWide: { flexDirection: 'row', alignItems: 'flex-start' },
+  wrapEmbed: { width: '100%' },
   main: { flex: 1, gap: spacing.lg },
+  mainEmbed: { gap: spacing.lg, width: '100%', minWidth: 0 },
+  formBodyEmbed: { flexGrow: 0, flexShrink: 0 },
   modeRow: { flexDirection: 'row', gap: 8 },
   modeBtn: {
     flex: 1,
@@ -1147,6 +1166,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     alignItems: 'center',
   },
+  previewEmbed: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', alignSelf: 'stretch' },
   previewHead: { alignSelf: 'stretch', gap: 2 },
   previewTitle: { fontSize: 16, fontWeight: '700', color: colors.ink },
   previewSubtitle: { fontSize: 12, color: colors.slate500 },

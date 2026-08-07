@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import {
   Linking,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -19,6 +20,8 @@ import { colors, spacing } from '../../src/theme/colors'
 import type { LandingPageVertical } from '../../src/types/landing-page'
 import type { StaticQrContentType } from '../../src/lib/qr-payload'
 
+const EMBED_RESIZE_MSG = 'qrious-embed-resize'
+
 function firstParam(value: string | string[] | undefined): string | undefined {
   if (Array.isArray(value)) return value[0]
   return value
@@ -27,6 +30,52 @@ function firstParam(value: string | string[] | undefined): string | undefined {
 function isTruthyParam(value: string | string[] | undefined): boolean {
   const v = firstParam(value)?.toLowerCase()
   return v === '1' || v === 'true' || v === 'yes'
+}
+
+function useEmbedAutoHeight(enabled: boolean) {
+  useEffect(() => {
+    if (!enabled || Platform.OS !== 'web' || typeof window === 'undefined') return
+
+    const root = document.documentElement
+    const body = document.body
+    root.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    body.style.height = 'auto'
+    root.style.height = 'auto'
+
+    const report = () => {
+      const height = Math.ceil(
+        Math.max(
+          body.scrollHeight,
+          body.offsetHeight,
+          root.scrollHeight,
+          root.offsetHeight,
+          document.getElementById('root')?.scrollHeight ?? 0,
+        ),
+      )
+      if (height < 200) return
+      window.parent?.postMessage({ type: EMBED_RESIZE_MSG, height }, '*')
+    }
+
+    report()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(report) : null
+    ro?.observe(body)
+    const rootEl = document.getElementById('root')
+    if (rootEl) ro?.observe(rootEl)
+
+    window.addEventListener('resize', report)
+    const interval = window.setInterval(report, 400)
+
+    return () => {
+      ro?.disconnect()
+      window.removeEventListener('resize', report)
+      window.clearInterval(interval)
+      root.style.overflow = ''
+      body.style.overflow = ''
+      body.style.height = ''
+      root.style.height = ''
+    }
+  }, [enabled])
 }
 
 /**
@@ -61,13 +110,12 @@ export default function PublicEditorScreen() {
   const partner = firstParam(params.partner)?.trim()
   const initialStaticType = (firstParam(params.type) as StaticQrContentType) || 'url'
 
+  useEmbedAutoHeight(embedMode)
+
   if (embedMode) {
     return (
-      <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <ScrollView
-          contentContainerStyle={[styles.container, styles.embedContainer]}
-          keyboardShouldPersistTaps="handled"
-        >
+      <View style={styles.embedRoot}>
+        <View style={[styles.container, styles.embedContainer]}>
           <QrCodeForm
             guestMode
             embedMode
@@ -87,8 +135,8 @@ export default function PublicEditorScreen() {
               Éditeur QR{partner ? ` · ${partner}` : ''} · propulsé par QRious
             </Text>
           </Pressable>
-        </ScrollView>
-      </SafeAreaView>
+        </View>
+      </View>
     )
   }
 
@@ -143,6 +191,11 @@ export default function PublicEditorScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.slate50 },
+  /** Pas de flex:1 — laisse le contenu dicter la hauteur pour l’iframe parent */
+  embedRoot: {
+    backgroundColor: colors.slate50,
+    width: '100%',
+  },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -187,7 +240,8 @@ const styles = StyleSheet.create({
   },
   embedContainer: {
     paddingTop: spacing.md,
-    paddingBottom: 24,
+    paddingBottom: 16,
+    maxWidth: '100%',
   },
   poweredBy: {
     alignSelf: 'center',
