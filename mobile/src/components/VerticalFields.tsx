@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { Input, TextArea } from './ui'
+import { BlockBuilder } from './PageBuilder/BlockBuilder'
 import type { FormState } from '../lib/form-state'
 
 export function VerticalFields({
@@ -180,13 +181,10 @@ export function VerticalFields({
     default:
       return (
         <View style={styles.section}>
-          <Input label="Headline" value={state.genericHeadline} onChangeText={(v) => setField('genericHeadline', v)} />
-          <Input label="Sous-titre" value={state.genericSubheadline} onChangeText={(v) => setField('genericSubheadline', v)} />
-          <TextArea label="Corps" value={state.genericBody} onChangeText={(v) => setField('genericBody', v)} />
-          <Input label="CTA label" value={state.genericCtaLabel} onChangeText={(v) => setField('genericCtaLabel', v)} />
-          <Input label="CTA URL" value={state.genericCtaUrl} onChangeText={(v) => setField('genericCtaUrl', v)} autoCapitalize="none" />
-          <Input label="Site web" value={state.genericWebsiteUrl} onChangeText={(v) => setField('genericWebsiteUrl', v)} autoCapitalize="none" />
-          <Input label="Email" value={state.genericContactEmail} onChangeText={(v) => setField('genericContactEmail', v)} autoCapitalize="none" />
+          <BlockBuilder
+            blocks={state.genericBlocks || []}
+            onChange={(blocks) => setField('genericBlocks', blocks)}
+          />
         </View>
       )
   }

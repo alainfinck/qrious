@@ -52,7 +52,7 @@ export default function EmbedConfigScreen() {
     if (partner.trim()) {
       params.set('partner', partner.trim())
     }
-    return `${origin}/newqr?${params.toString()}`
+    return `${origin}/embed?${params.toString()}`
   }
 
   const embedUrl = buildEmbedUrl()

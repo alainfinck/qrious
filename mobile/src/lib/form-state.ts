@@ -20,6 +20,7 @@ export type FormState = {
   genericCtaUrl: string
   genericWebsiteUrl: string
   genericContactEmail: string
+  genericBlocks: any[] // PageBlock[]
   // redirect
   redirectTargetUrl: string
   redirectLabel: string
@@ -135,6 +136,7 @@ export function emptyFormState(vertical: LandingPageVertical = 'generic'): FormS
     genericCtaUrl: '',
     genericWebsiteUrl: '',
     genericContactEmail: '',
+    genericBlocks: [],
     redirectTargetUrl: '',
     redirectLabel: '',
     artistName: '',
@@ -241,6 +243,7 @@ export function formStateFromPage(page: LandingPage): FormState {
     genericCtaUrl: page.genericData?.ctaUrl || '',
     genericWebsiteUrl: page.genericData?.websiteUrl || '',
     genericContactEmail: page.genericData?.contactEmail || '',
+    genericBlocks: page.genericData?.blocks || [],
     redirectTargetUrl: page.redirectData?.targetUrl || '',
     redirectLabel: page.redirectData?.label || '',
     artistName: page.artData?.artistName || '',
@@ -371,6 +374,7 @@ export function toLandingPageInput(state: FormState): LandingPageInput {
             ctaUrl: state.genericCtaUrl || null,
             websiteUrl: state.genericWebsiteUrl || null,
             contactEmail: state.genericContactEmail || null,
+            blocks: state.genericBlocks?.length ? state.genericBlocks : null,
           }
         : undefined,
     redirectData:

@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { usePathname, useRouter } from 'expo-router'
+import { useGlobalSearchParams, usePathname, useRouter } from 'expo-router'
 import {
   BarChart3,
   ChevronLeft,
@@ -57,7 +57,7 @@ const NAV = [
   { href: '/pages', label: 'Smart Pages', icon: FileText },
   { href: '/medias', label: 'Médias', icon: ImageIcon },
   { href: '/statistiques', label: 'Statistiques', icon: BarChart3 },
-  { href: '/embed', label: 'Intégration', icon: Code },
+  { href: '/integration', label: 'Intégration', icon: Code },
   { href: '/profil', label: 'Profil', icon: User },
 ] as const
 
@@ -69,6 +69,19 @@ function isActive(pathname: string, href: string, exact?: boolean) {
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions()
   const pathname = usePathname()
+  const params = useGlobalSearchParams()
+  const embedParam = Array.isArray(params.embed) ? params.embed[0] : params.embed
+  const isEmbed =
+    pathname.startsWith('/embed') ||
+    pathname === '/embed' ||
+    embedParam === '1' ||
+    embedParam === 'true' ||
+    (typeof window !== 'undefined' && (window.location.pathname.includes('/embed') || window.location.search.includes('embed=1')))
+
+  if (isEmbed) {
+    return <View style={{ flex: 1 }}>{children}</View>
+  }
+
   const desktop = width >= 900
   const isScanner = pathname === '/scanner' || pathname.startsWith('/scanner/')
   const [drawerOpen, setDrawerOpen] = useState(false)

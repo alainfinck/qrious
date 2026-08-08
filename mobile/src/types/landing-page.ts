@@ -237,6 +237,27 @@ export interface FieldServiceData {
   maintenanceNotes?: string | null
 }
 
+export type PageBlockType = 'text' | 'gallery' | 'contact' | 'cta' | 'hero'
+
+export interface PageBlock {
+  id: string
+  type: PageBlockType
+  // Text Block
+  htmlContent?: string
+  // Gallery Block
+  images?: string[] // URLs
+  // Contact Block
+  email?: string
+  phone?: string
+  address?: string
+  socialLinks?: string[]
+  // CTA Block
+  buttonText?: string
+  buttonUrl?: string
+  // Generic title for block
+  title?: string
+}
+
 export interface GenericData {
   headline?: string | null
   subheadline?: string | null
@@ -250,6 +271,7 @@ export interface GenericData {
   contactEmail?: string | null
   contactPhone?: string | null
   sections?: { title: string; body: string; id?: string | null }[] | null
+  blocks?: PageBlock[] | null
 }
 
 export interface RedirectData {

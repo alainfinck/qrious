@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   embedRoot: {
     backgroundColor: colors.slate50,
     width: '100%',
-    minHeight: '100vh',
+    minHeight: '100%',
   },
   topBar: {
     flexDirection: 'row',

@@ -1,7 +1,10 @@
 import React from 'react'
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import { Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import {
   CalendarDays,
+  Check,
+  Copy,
+  ExternalLink,
   FileText,
   Link2,
   Mail,
@@ -16,6 +19,7 @@ import {
   Wifi,
   type LucideIcon,
 } from 'lucide-react-native'
+import * as Clipboard from 'expo-clipboard'
 
 import { Input, TextArea } from './ui'
 import {
@@ -97,6 +101,49 @@ export function StaticContentFields({
   )
 }
 
+function CopyUrlButton({ url }: { url: string }) {
+  const [copied, setCopied] = React.useState(false)
+  if (!url) return null
+
+  const handleOpen = () => {
+    const targetUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      window.open(targetUrl, '_blank')
+    } else {
+      void Linking.openURL(targetUrl)
+    }
+  }
+
+  const handleCopy = async () => {
+    await Clipboard.setStringAsync(url)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+      <Pressable
+        onPress={handleOpen}
+        style={{ padding: 4 }}
+        hitSlop={6}
+      >
+        <ExternalLink size={16} color={colors.slate500} />
+      </Pressable>
+      <Pressable
+        onPress={() => void handleCopy()}
+        style={{ padding: 4 }}
+        hitSlop={6}
+      >
+        {copied ? (
+          <Check size={16} color={colors.signal} />
+        ) : (
+          <Copy size={16} color={colors.slate500} />
+        )}
+      </Pressable>
+    </View>
+  )
+}
+
 function StaticFields({
   payload,
   onChange,
@@ -110,13 +157,14 @@ function StaticFields({
     case 'url':
       return (
         <Input
-          label="URL"
+          label="Lien web (URL)"
           value={payload.data.url}
           onChangeText={(url) => onChange({ type: 'url', data: { url } })}
           autoCapitalize="none"
           placeholder="https://"
           editable={!urlReadOnly}
           selectTextOnFocus={!urlReadOnly}
+          rightElement={<CopyUrlButton url={payload.data.url} />}
         />
       )
     case 'text':

@@ -18,7 +18,9 @@ import {
   Calendar,
   Check,
   Compass,
+  Copy,
   Download,
+  ExternalLink,
   FileType,
   LayoutGrid,
   Palette,
@@ -510,11 +512,7 @@ export function QrCodeForm({
             {!isLastStep && !embedMode ? (
               <Button label="Suivant" onPress={() => setStep((s) => s + 1)} />
             ) : mode === 'static' || embedMode ? (
-              <Button
-                label={exporting ? 'Export…' : 'Télécharger PNG'}
-                loading={exporting}
-                onPress={() => void handleExport('png')}
-              />
+              <View />
             ) : (
               <Button label={submitLabel} loading={saving} onPress={() => void handleSubmit()} />
             )}
@@ -541,7 +539,7 @@ export function QrCodeForm({
         <View style={styles.previewHead}>
           <Text style={styles.previewTitle}>Aperçu</Text>
           <Text style={styles.previewSubtitle}>
-            {mode === 'static' ? 'QR statique · payload direct' : 'Smart Page · URL dynamique'}
+            {mode === 'static' ? 'QR statique · Lien direct' : 'Smart Page · URL dynamique'}
           </Text>
         </View>
 
@@ -616,10 +614,51 @@ export function QrCodeForm({
               </>
             ) : (
               <View style={styles.urlBox}>
-                <Text style={styles.urlLabel}>Payload</Text>
-                <Text style={styles.url} numberOfLines={3}>
-                  {encodedPayload || '—'}
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text style={styles.urlLabel}>Lien Web</Text>
+                  {encodedPayload ? (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                      <Pressable
+                        onPress={() => {
+                          const target = encodedPayload.startsWith('http://') || encodedPayload.startsWith('https://') ? encodedPayload : `https://${encodedPayload}`
+                          if (Platform.OS === 'web' && typeof window !== 'undefined') {
+                            window.open(target, '_blank')
+                          } else {
+                            void Linking.openURL(target)
+                          }
+                        }}
+                        hitSlop={6}
+                      >
+                        <ExternalLink size={14} color={colors.slate500} />
+                      </Pressable>
+                      <Pressable
+                        onPress={async () => {
+                          await Clipboard.setStringAsync(encodedPayload)
+                          setCopied(true)
+                          setTimeout(() => setCopied(false), 1500)
+                        }}
+                        hitSlop={6}
+                      >
+                        {copied ? <Check size={14} color={colors.signal} /> : <Copy size={14} color={colors.slate500} />}
+                      </Pressable>
+                    </View>
+                  ) : null}
+                </View>
+                <Pressable
+                  onPress={() => {
+                    if (!encodedPayload) return
+                    const target = encodedPayload.startsWith('http://') || encodedPayload.startsWith('https://') ? encodedPayload : `https://${encodedPayload}`
+                    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+                      window.open(target, '_blank')
+                    } else {
+                      void Linking.openURL(target)
+                    }
+                  }}
+                >
+                  <Text style={[styles.url, { color: colors.signal, textDecorationLine: 'underline' }]} numberOfLines={3}>
+                    {encodedPayload || '—'}
+                  </Text>
+                </Pressable>
               </View>
             )}
           </>
@@ -672,15 +711,17 @@ export function QrCodeForm({
           </View>
         ) : null}
 
-        <Button
-          label={copied ? 'Copié !' : mode === 'static' ? 'Copier le payload' : 'Copier l’URL'}
-          variant="ghost"
-          onPress={async () => {
-            await Clipboard.setStringAsync(encodedPayload || publicUrl)
-            setCopied(true)
-            setTimeout(() => setCopied(false), 1500)
-          }}
-        />
+        {mode === 'smart' ? (
+          <Button
+            label={copied ? 'Copié !' : 'Copier l’URL'}
+            variant="ghost"
+            onPress={async () => {
+              await Clipboard.setStringAsync(publicUrl)
+              setCopied(true)
+              setTimeout(() => setCopied(false), 1500)
+            }}
+          />
+        ) : null}
       </View>
     </View>
   )

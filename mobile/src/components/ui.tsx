@@ -92,16 +92,24 @@ export function Button({
 export function Input({
   label,
   error,
+  rightElement,
   ...props
-}: TextInputProps & { label?: string; error?: string }) {
+}: TextInputProps & { label?: string; error?: string; rightElement?: React.ReactNode }) {
   return (
     <View style={styles.field}>
       {label ? <Text style={styles.label}>{label}</Text> : null}
-      <TextInput
-        placeholderTextColor={colors.slate400}
-        style={[styles.input, error ? styles.inputError : null]}
-        {...props}
-      />
+      <View style={styles.inputWrapper}>
+        <TextInput
+          placeholderTextColor={colors.slate400}
+          style={[
+            styles.input,
+            rightElement ? { paddingRight: 64 } : null,
+            error ? styles.inputError : null,
+          ]}
+          {...props}
+        />
+        {rightElement ? <View style={styles.rightElementContainer}>{rightElement}</View> : null}
+      </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   )
@@ -252,6 +260,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: colors.slate600,
+  },
+  inputWrapper: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
+  rightElementContainer: {
+    position: 'absolute',
+    right: 8,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   input: {
     minHeight: 44,

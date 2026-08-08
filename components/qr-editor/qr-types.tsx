@@ -1,10 +1,13 @@
-import { type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import {
   Box,
   Building2,
   Calendar,
   CalendarDays,
+  Check,
   Compass,
+  Copy,
+  ExternalLink,
   FileText,
   LayoutGrid,
   Link2,
@@ -183,6 +186,61 @@ function Field({
   )
 }
 
+function CopyUrlInput({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (val: string) => void
+}) {
+  const [copied, setCopied] = useState(false)
+  const handleCopy = async () => {
+    if (!value) return
+    await navigator.clipboard.writeText(value)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  const handleOpen = () => {
+    if (!value) return
+    const target = value.startsWith('http://') || value.startsWith('https://') ? value : `https://${value}`
+    window.open(target, '_blank', 'noopener,noreferrer')
+  }
+
+  return (
+    <div className="relative flex items-center">
+      <Input
+        id="qr-url"
+        type="url"
+        placeholder="https://votresite.com"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="pr-16"
+      />
+      {value ? (
+        <div className="absolute right-2 flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleOpen}
+            className="rounded-md p-1 text-mq-muted hover:bg-mq-mist hover:text-mq-ink transition-colors"
+            title="Ouvrir dans un nouvel onglet"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="rounded-md p-1 text-mq-muted hover:bg-mq-mist hover:text-mq-ink transition-colors"
+            title="Copier l'URL"
+          >
+            {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 export function ContentFields({
   payload,
   onChange,
@@ -193,13 +251,10 @@ export function ContentFields({
   switch (payload.type) {
     case 'url':
       return (
-        <Field label="Adresse web (URL)" htmlFor="qr-url" hint="Ex: https://votresite.com">
-          <Input
-            id="qr-url"
-            type="url"
-            placeholder="https://votresite.com"
+        <Field label="Lien web (URL)" htmlFor="qr-url" hint="Ex: https://votresite.com">
+          <CopyUrlInput
             value={payload.data.url}
-            onChange={(e) => onChange({ type: 'url', data: { url: e.target.value } })}
+            onChange={(url) => onChange({ type: 'url', data: { url } })}
           />
         </Field>
       )

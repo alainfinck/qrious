@@ -25,22 +25,34 @@ const fromEmail = process.env.FROM_EMAIL || 'noreply@qrious.fr'
 const isNextBuild = process.env.NEXT_PHASE === 'phase-production-build'
 const isProd = process.env.NODE_ENV === 'production'
 
+const serverUrl = (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(/\/$/, '')
+
+const allowedOrigins = Array.from(
+  new Set(
+    [
+      serverUrl,
+      'https://www.qrious.fr',
+      'https://qrious.fr',
+      'https://www.cartepostale.cool',
+      'https://cartepostale.cool',
+      'https://www.postcard.cool',
+      'https://postcard.cool',
+      'http://localhost:3000',
+      'http://localhost:8081',
+      'http://localhost:8082',
+      'http://localhost:19006',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:8081',
+      'http://127.0.0.1:8082',
+      'http://127.0.0.1:19006',
+    ].filter(Boolean),
+  ),
+)
+
 export default buildConfig({
-  serverURL: (process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000').replace(/\/$/, ''),
-  cors: [
-    'http://localhost:3000',
-    'http://localhost:8081',
-    'http://localhost:19006',
-    'http://127.0.0.1:8081',
-    'http://127.0.0.1:19006',
-  ],
-  csrf: [
-    'http://localhost:3000',
-    'http://localhost:8081',
-    'http://localhost:19006',
-    'http://127.0.0.1:8081',
-    'http://127.0.0.1:19006',
-  ],
+  serverURL: serverUrl,
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   admin: {
     user: 'users',
     meta: {

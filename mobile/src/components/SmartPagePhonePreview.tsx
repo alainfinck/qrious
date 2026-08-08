@@ -211,23 +211,53 @@ export function SmartPagePhonePreview({ state, liveUrl, preferLive = false }: Pr
                     </View>
                   ) : null}
 
-                  {copy.body ? (
-                    <Text style={styles.bodyText} numberOfLines={8}>
-                      {copy.body}
-                    </Text>
-                  ) : (
-                    <Text style={styles.bodyPlaceholder}>
-                      Remplissez le contenu pour voir l’aperçu de la page scannée.
-                    </Text>
-                  )}
-
-                  {copy.cta ? (
-                    <View style={[styles.cta, { backgroundColor: primary }]}>
-                      <Text style={styles.ctaText} numberOfLines={1}>
-                        {copy.cta}
-                      </Text>
+                  {state.vertical === 'generic' && state.genericBlocks?.length ? (
+                    <View style={{ gap: 12 }}>
+                      {state.genericBlocks.slice(0, 4).map((block, i) => (
+                        <View key={block.id || i} style={styles.previewBlock}>
+                          <Text style={styles.previewBlockType}>{block.type.toUpperCase()}</Text>
+                          {block.title ? <Text style={styles.previewBlockTitle}>{block.title}</Text> : null}
+                          {block.type === 'text' && block.htmlContent ? (
+                            <Text style={styles.previewBlockText} numberOfLines={2}>
+                              {block.htmlContent.replace(/<[^>]*>?/gm, '')}
+                            </Text>
+                          ) : null}
+                          {block.type === 'gallery' && block.images?.length ? (
+                            <View style={styles.previewGallery}>
+                              {block.images.slice(0, 3).map((img: string, j: number) => (
+                                <View key={j} style={styles.previewGalleryImg} />
+                              ))}
+                            </View>
+                          ) : null}
+                          {block.type === 'cta' && block.buttonText ? (
+                            <View style={[styles.previewBlockCta, { backgroundColor: primary }]}>
+                              <Text style={styles.previewBlockCtaText}>{block.buttonText}</Text>
+                            </View>
+                          ) : null}
+                        </View>
+                      ))}
                     </View>
-                  ) : null}
+                  ) : (
+                    <>
+                      {copy.body ? (
+                        <Text style={styles.bodyText} numberOfLines={8}>
+                          {copy.body}
+                        </Text>
+                      ) : (
+                        <Text style={styles.bodyPlaceholder}>
+                          Remplissez le contenu pour voir l’aperçu de la page scannée.
+                        </Text>
+                      )}
+
+                      {copy.cta ? (
+                        <View style={[styles.cta, { backgroundColor: primary }]}>
+                          <Text style={styles.ctaText} numberOfLines={1}>
+                            {copy.cta}
+                          </Text>
+                        </View>
+                      ) : null}
+                    </>
+                  )}
                 </View>
 
                 <View style={styles.footerHint}>
@@ -387,4 +417,51 @@ const styles = StyleSheet.create({
     color: colors.slate400,
     letterSpacing: 0.2,
   },
+  previewBlock: {
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+  },
+  previewBlockType: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.slate400,
+    marginBottom: 4,
+  },
+  previewBlockTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.ink,
+    marginBottom: 2,
+  },
+  previewBlockText: {
+    fontSize: 11,
+    color: colors.slate600,
+    lineHeight: 16,
+  },
+  previewGallery: {
+    flexDirection: 'row',
+    gap: 4,
+    marginTop: 4,
+  },
+  previewGalleryImg: {
+    width: 32,
+    height: 32,
+    borderRadius: 4,
+    backgroundColor: colors.slate200,
+  },
+  previewBlockCta: {
+    marginTop: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  previewBlockCtaText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#fff',
+  }
 })

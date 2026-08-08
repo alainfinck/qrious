@@ -444,16 +444,6 @@ export function PublicQrEditor({ initialType = 'url' }: { initialType?: QrConten
                 JPEG
               </Button>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-9 text-xs text-mq-muted hover:text-mq-ink"
-              disabled={!encoded}
-              onClick={copyPayload}
-            >
-              {copied ? <Check className="mr-2 h-3.5 w-3.5" /> : <Copy className="mr-2 h-3.5 w-3.5" />}
-              {copied ? 'Copié' : 'Copier le payload'}
-            </Button>
           </div>
 
           <Separator className="my-5" />
