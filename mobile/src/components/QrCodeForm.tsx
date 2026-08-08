@@ -141,7 +141,7 @@ export function QrCodeForm({
   const { width } = useWindowDimensions()
   const wide = width >= 960
   const [mode, setMode] = useState<QrMode>(guestMode || embedMode ? 'static' : 'smart')
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(() => (lockUrl || (embedMode && Boolean(initialUrl)) ? 1 : 0))
   const [state, setState] = useState<FormState>(() =>
     page ? formStateFromPage(page) : emptyFormState(initialVertical || 'generic'),
   )
@@ -388,11 +388,41 @@ export function QrCodeForm({
           </>
         )}
 
-        <View style={styles.steps}>
+        <View style={[styles.steps, embedMode && styles.stepsEmbed]}>
           {steps.map((s, index) => {
             const active = step === index
             const done = step > index
             const isLast = index === steps.length - 1
+
+            if (embedMode) {
+              return (
+                <Pressable
+                  key={s.id}
+                  onPress={() => setStep(index)}
+                  style={[styles.embedStepTab, active && styles.embedStepTabActive]}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: active }}
+                >
+                  <View style={[styles.embedStepBadge, active && styles.embedStepBadgeActive]}>
+                    <Text
+                      style={[
+                        styles.embedStepBadgeText,
+                        active && styles.embedStepBadgeTextActive,
+                      ]}
+                    >
+                      {index + 1}
+                    </Text>
+                  </View>
+                  <Text style={[styles.embedStepLabel, active && styles.embedStepLabelActive]}>
+                    {s.id === 'content' ? 'URL (Destination)' : 'Personnaliser le Design'}
+                  </Text>
+                  {s.id === 'design' && active ? (
+                    <Sparkles size={14} color={colors.signal} style={{ marginLeft: 2 }} />
+                  ) : null}
+                </Pressable>
+              )
+            }
+
             return (
               <React.Fragment key={s.id}>
                 <Pressable
@@ -968,6 +998,61 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     gap: 0,
     paddingVertical: 4,
+  },
+  stepsEmbed: {
+    backgroundColor: colors.slate100,
+    padding: 4,
+    borderRadius: 14,
+    gap: 6,
+    marginVertical: 4,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+  },
+  embedStepTab: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 11,
+    backgroundColor: 'transparent',
+  },
+  embedStepTabActive: {
+    backgroundColor: colors.white,
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
+  embedStepBadge: {
+    width: 22,
+    height: 22,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.slate200,
+  },
+  embedStepBadgeActive: {
+    backgroundColor: colors.ink,
+  },
+  embedStepBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.slate600,
+  },
+  embedStepBadgeTextActive: {
+    color: colors.white,
+  },
+  embedStepLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.slate600,
+  },
+  embedStepLabelActive: {
+    color: colors.ink,
   },
   stepItem: {
     flex: 1,
