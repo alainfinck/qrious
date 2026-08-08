@@ -40,7 +40,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (!cancelled) setUser(null)
           return
         }
-        const result = await Promise.race([meRequest(token), timeoutPromise])
+        const mePromise = meRequest(token)
+        mePromise.catch(() => {})
+        const result = await Promise.race([mePromise, timeoutPromise])
         if (!cancelled) {
           setUser({
             id: String(result.user.id),
