@@ -23,6 +23,7 @@ import {
   User,
   X,
   PenTool,
+  Code,
 } from 'lucide-react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, {
@@ -41,7 +42,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useAuth } from '../auth/AuthContext'
 import { colors, spacing } from '../theme/colors'
 
-const SIDEBAR_EXPANDED = 200
+const SIDEBAR_EXPANDED = 240
 const SIDEBAR_COLLAPSED = 68
 const DRAWER_WIDTH = SIDEBAR_EXPANDED + 16
 const STORAGE_KEY = 'qrious_sidebar_collapsed'
@@ -56,6 +57,7 @@ const NAV = [
   { href: '/pages', label: 'Smart Pages', icon: FileText },
   { href: '/medias', label: 'Médias', icon: ImageIcon },
   { href: '/statistiques', label: 'Statistiques', icon: BarChart3 },
+  { href: '/embed', label: 'Intégration', icon: Code },
   { href: '/profil', label: 'Profil', icon: User },
 ] as const
 
@@ -456,7 +458,6 @@ const styles = StyleSheet.create({
     width: SIDEBAR_EXPANDED,
     flexGrow: 0,
     flexShrink: 0,
-    flex: 1,
     backgroundColor: colors.white,
     borderRightWidth: 1,
     borderRightColor: colors.border,
