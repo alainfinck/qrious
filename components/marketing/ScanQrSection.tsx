@@ -19,7 +19,7 @@ export function ScanQrSection() {
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -right-16 bottom-8 h-64 w-64 rounded-full bg-mq-coral/15 blur-3xl"
+        className="pointer-events-none absolute -right-16 bottom-8 h-64 w-64 rounded-full bg-mq-coral/20 blur-3xl"
         aria-hidden
       />
       <div className="mq-noise pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay" aria-hidden />
