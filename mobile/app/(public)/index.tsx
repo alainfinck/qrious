@@ -38,10 +38,16 @@ function useEmbedAutoHeight(enabled: boolean) {
 
     const root = document.documentElement
     const body = document.body
-    root.style.overflow = 'hidden'
-    body.style.overflow = 'hidden'
+    const rootEl = document.getElementById('root')
+
+    root.style.overflow = 'visible'
+    body.style.overflow = 'visible'
     body.style.height = 'auto'
     root.style.height = 'auto'
+    if (rootEl) {
+      rootEl.style.height = 'auto'
+      rootEl.style.minHeight = '100vh'
+    }
 
     const report = () => {
       const height = Math.ceil(
@@ -50,21 +56,21 @@ function useEmbedAutoHeight(enabled: boolean) {
           body.offsetHeight,
           root.scrollHeight,
           root.offsetHeight,
-          document.getElementById('root')?.scrollHeight ?? 0,
+          rootEl?.scrollHeight ?? 0,
+          rootEl?.offsetHeight ?? 0,
         ),
       )
-      if (height < 200) return
+      if (height < 100) return
       window.parent?.postMessage({ type: EMBED_RESIZE_MSG, height }, '*')
     }
 
     report()
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(report) : null
-    ro?.observe(body)
-    const rootEl = document.getElementById('root')
+    if (body) ro?.observe(body)
     if (rootEl) ro?.observe(rootEl)
 
     window.addEventListener('resize', report)
-    const interval = window.setInterval(report, 400)
+    const interval = window.setInterval(report, 300)
 
     return () => {
       ro?.disconnect()
@@ -74,6 +80,10 @@ function useEmbedAutoHeight(enabled: boolean) {
       body.style.overflow = ''
       body.style.height = ''
       root.style.height = ''
+      if (rootEl) {
+        rootEl.style.height = ''
+        rootEl.style.minHeight = ''
+      }
     }
   }, [enabled])
 }
@@ -200,6 +210,7 @@ const styles = StyleSheet.create({
   embedRoot: {
     backgroundColor: colors.slate50,
     width: '100%',
+    minHeight: '100vh',
   },
   topBar: {
     flexDirection: 'row',

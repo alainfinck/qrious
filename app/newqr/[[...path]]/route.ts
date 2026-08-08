@@ -115,7 +115,7 @@ export async function GET(
       'Content-Security-Policy': `frame-ancestors ${EMBED_FRAME_ANCESTORS}`,
       'Cache-Control': relPath.includes('_expo/static/')
         ? 'public, max-age=31536000, immutable'
-        : 'no-cache',
+        : 'no-cache, no-store, must-revalidate',
     },
   })
   response.headers.delete('X-Frame-Options')

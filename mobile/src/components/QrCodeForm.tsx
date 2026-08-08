@@ -309,7 +309,7 @@ export function QrCodeForm({
   }
 
   return (
-    <View style={[styles.wrap, wide && styles.wrapWide, embedMode && styles.wrapEmbed]}>
+    <View style={[styles.wrap, wide && !embedMode && styles.wrapWide, embedMode && styles.wrapEmbed]}>
       <View
         style={[
           embedMode ? styles.mainEmbed : styles.main,
