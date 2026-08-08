@@ -121,11 +121,13 @@ export default buildConfig({
       connectionTimeoutMillis: 4_000,
       idleTimeoutMillis: 20_000,
       max: 20,
+      // Prevent any single query from blocking the server indefinitely.
+      statement_timeout: 15_000,
     },
     // Never auto-push schema in prod/build (avoids mixing push + migrations).
     push: !isProd && !isNextBuild && process.env.PAYLOAD_DATABASE_PUSH !== 'false',
-    // Skip during Next build: migrate prompt hangs CI when a `batch = -1` row exists.
-    ...(isNextBuild ? {} : { prodMigrations: migrations }),
+    // Migrations are run explicitly via `pnpm migrate` in the start script,
+    // NOT here — prodMigrations blocks the first API request if schema drifted.
   }),
   ...(smtpHost
     ? {

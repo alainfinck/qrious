@@ -10,7 +10,7 @@
     "newqr:build": "node scripts/build-newqr.mjs",
     "editeur:build": "node scripts/build-newqr.mjs",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' pnpm --dir mobile install --frozen-lockfile && pnpm newqr:build && next build",
-    "start": "next start",
+    "start": "node -e \"if(process.env.NODE_ENV==='production'){require('child_process').execSync('pnpm payload migrate',{stdio:'inherit'})}\" && next start",
     "payload": "payload",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
