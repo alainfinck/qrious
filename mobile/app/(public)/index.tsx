@@ -99,7 +99,9 @@ export default function PublicEditorScreen() {
   const embedMode = isTruthyParam(params.embed)
   const lockUrl = isTruthyParam(params.lockUrl)
   const initialUrl = useMemo(() => {
-    const raw = firstParam(params.url)?.trim()
+    let raw = firstParam(params.url)?.trim()
+    if (!raw) return undefined
+    raw = raw.replace(/^["']+|["']+$/g, '').trim()
     if (!raw) return undefined
     try {
       return decodeURIComponent(raw)
@@ -107,7 +109,10 @@ export default function PublicEditorScreen() {
       return raw
     }
   }, [params.url])
-  const partner = firstParam(params.partner)?.trim()
+  const partner = useMemo(() => {
+    const raw = firstParam(params.partner)?.trim()
+    return raw ? raw.replace(/^["']+|["']+$/g, '').trim() : undefined
+  }, [params.partner])
   const initialStaticType = (firstParam(params.type) as StaticQrContentType) || 'url'
 
   useEmbedAutoHeight(embedMode)
