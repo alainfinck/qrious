@@ -34,36 +34,51 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     body = JSON.stringify(options.body)
   }
 
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
-    method: options.method || 'GET',
-    headers,
-    body,
-  })
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null
+  const timeoutId = controller ? setTimeout(() => controller.abort(), 12000) : null
 
-  const text = await response.text()
-  let data: unknown = null
-  if (text) {
-    try {
-      data = JSON.parse(text)
-    } catch {
-      data = { message: text }
+  try {
+    const response = await fetch(`${getApiBaseUrl()}${path}`, {
+      method: options.method || 'GET',
+      headers,
+      body,
+      signal: controller ? controller.signal : undefined,
+    })
+
+    if (timeoutId) clearTimeout(timeoutId)
+
+    const text = await response.text()
+    let data: unknown = null
+    if (text) {
+      try {
+        data = JSON.parse(text)
+      } catch {
+        data = { message: text }
+      }
     }
-  }
 
-  if (!response.ok) {
-    const message =
-      typeof data === 'object' &&
-      data &&
-      'errors' in data &&
-      Array.isArray((data as { errors: { message?: string }[] }).errors)
-        ? (data as { errors: { message?: string }[] }).errors[0]?.message
-        : typeof data === 'object' && data && 'error' in data
-          ? String((data as { error: unknown }).error)
-          : typeof data === 'object' && data && 'message' in data
-            ? String((data as { message: unknown }).message)
-            : `Erreur ${response.status}`
-    throw new ApiError(message || `Erreur ${response.status}`, response.status)
-  }
+    if (!response.ok) {
+      const message =
+        typeof data === 'object' &&
+        data &&
+        'errors' in data &&
+        Array.isArray((data as { errors: { message?: string }[] }).errors)
+          ? (data as { errors: { message?: string }[] }).errors[0]?.message
+          : typeof data === 'object' && data && 'error' in data
+            ? String((data as { error: unknown }).error)
+            : typeof data === 'object' && data && 'message' in data
+              ? String((data as { message: unknown }).message)
+              : `Erreur ${response.status}`
+      throw new ApiError(message || `Erreur ${response.status}`, response.status)
+    }
 
-  return data as T
+    return data as T
+  } catch (err) {
+    if (timeoutId) clearTimeout(timeoutId)
+    if (err instanceof ApiError) throw err
+    if (err && typeof err === 'object' && 'name' in err && err.name === 'AbortError') {
+      throw new ApiError('Le serveur ne répond pas (délai dépassé). Veuillez réessayer.', 504)
+    }
+    throw err
+  }
 }

@@ -121,6 +121,13 @@ export default function middleware(request: NextRequest) {
     const requestHeaders = new Headers(request.headers)
     requestHeaders.set('x-pathname', pathname)
 
+    const expoRewrite = resolveExpoStaticRewrite(pathname)
+    if (expoRewrite && expoRewrite !== pathname) {
+      const url = request.nextUrl.clone()
+      url.pathname = expoRewrite
+      return withEmbedHeaders(NextResponse.rewrite(url, { request: { headers: requestHeaders } }))
+    }
+
     return withEmbedHeaders(
       NextResponse.next({
         request: { headers: requestHeaders },

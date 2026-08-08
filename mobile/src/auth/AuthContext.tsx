@@ -30,13 +30,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false
 
     async function bootstrap() {
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Auth check timeout')), 5000),
+      )
+
       try {
         const token = await getStoredToken()
         if (!token) {
           if (!cancelled) setUser(null)
           return
         }
-        const result = await meRequest(token)
+        const result = await Promise.race([meRequest(token), timeoutPromise])
         if (!cancelled) {
           setUser({
             id: String(result.user.id),
@@ -45,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           })
         }
       } catch {
-        await clearStoredToken()
+        await clearStoredToken().catch(() => {})
         if (!cancelled) setUser(null)
       } finally {
         if (!cancelled) setLoading(false)
