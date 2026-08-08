@@ -63,6 +63,7 @@ function resolveExpoStaticRewrite(pathname: string): string | null {
     '/statistiques',
     '/profil',
     '/scanner',
+    '/embed',
   ])
 
   if (staticRoutes.has(rest)) {
@@ -82,9 +83,9 @@ function stripLocalePrefix(pathname: string): string | null {
   const parts = pathname.split('/')
   if (parts.length >= 2 && locales.includes(parts[1] as (typeof locales)[number])) {
     const segment = parts[2]
-    if (segment === 'newqr' || segment === 'editeur') {
+    if (segment === 'newqr' || segment === 'editeur' || segment === 'embed') {
       return (
-        EXPO_WEB_BASE + (parts.length > 3 ? '/' + parts.slice(3).join('/') : '')
+        EXPO_WEB_BASE + (segment === 'embed' ? '/embed' : '') + (parts.length > 3 ? '/' + parts.slice(3).join('/') : '')
       )
     }
   }
@@ -94,7 +95,7 @@ function stripLocalePrefix(pathname: string): string | null {
 export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // /fr/newqr|/editeur → /newqr (pas de locale sur l’app Expo)
+  // /fr/newqr|/editeur|/embed → /newqr ou /newqr/embed
   const localeStripped = stripLocalePrefix(pathname)
   if (localeStripped) {
     const url = request.nextUrl.clone()
@@ -107,6 +108,13 @@ export default function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = pathname.replace(/^\/editeur/, EXPO_WEB_BASE)
     return NextResponse.redirect(url, 301)
+  }
+
+  // Chemin direct /embed → /newqr/embed
+  if (pathname === '/embed' || pathname.startsWith('/embed/')) {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname.replace(/^\/embed/, `${EXPO_WEB_BASE}/embed`)
+    return withEmbedHeaders(NextResponse.rewrite(url))
   }
 
   if (pathname === EXPO_WEB_BASE || pathname.startsWith(`${EXPO_WEB_BASE}/`)) {

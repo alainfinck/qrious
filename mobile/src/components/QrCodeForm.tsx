@@ -308,12 +308,14 @@ export function QrCodeForm({
     }
   }
 
+
   return (
-    <View style={[styles.wrap, wide && !embedMode && styles.wrapWide, embedMode && styles.wrapEmbed]}>
+    <View style={[styles.wrap, wide && styles.wrapWide, embedMode && !wide && styles.wrapEmbed]}>
       <View
         style={[
-          embedMode ? styles.mainEmbed : styles.main,
-          wide && !embedMode && { flex: 1.4 },
+          styles.main,
+          embedMode && !wide && styles.mainEmbed,
+          wide && { flex: 1.4 },
         ]}
       >
         {guestMode || embedMode ? (
@@ -346,7 +348,7 @@ export function QrCodeForm({
                   </Link>
                 </View>
               </>
-            ) : lockUrl ? (
+            ) : lockUrl && !embedMode ? (
               <View style={styles.guestModeBanner}>
                 <QrCode size={16} color={colors.signal} />
                 <View style={{ flex: 1, gap: 2 }}>
@@ -388,87 +390,60 @@ export function QrCodeForm({
           </>
         )}
 
-        <View style={[styles.steps, embedMode && styles.stepsEmbed]}>
-          {steps.map((s, index) => {
-            const active = step === index
-            const done = step > index
-            const isLast = index === steps.length - 1
+        {!embedMode && (
+          <View style={styles.steps}>
+            {steps.map((s, index) => {
+              const active = step === index
+              const done = step > index
+              const isLast = index === steps.length - 1
 
-            if (embedMode) {
               return (
-                <Pressable
-                  key={s.id}
-                  onPress={() => setStep(index)}
-                  style={[styles.embedStepTab, active && styles.embedStepTabActive]}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: active }}
-                >
-                  <View style={[styles.embedStepBadge, active && styles.embedStepBadgeActive]}>
-                    <Text
+                <React.Fragment key={s.id}>
+                  <Pressable
+                    onPress={() => setStep(index)}
+                    style={styles.stepItem}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: active }}
+                  >
+                    <View
                       style={[
-                        styles.embedStepBadgeText,
-                        active && styles.embedStepBadgeTextActive,
+                        styles.stepIndex,
+                        done && styles.stepIndexDone,
+                        active && styles.stepIndexActive,
                       ]}
                     >
-                      {index + 1}
+                      {done ? (
+                        <Check size={14} color={colors.ink} strokeWidth={3} />
+                      ) : (
+                        <Text
+                          style={[
+                            styles.stepIndexText,
+                            (active || done) && styles.stepIndexTextActive,
+                          ]}
+                        >
+                          {index + 1}
+                        </Text>
+                      )}
+                    </View>
+                    <Text
+                      style={[
+                        styles.stepLabel,
+                        done && styles.stepLabelDone,
+                        active && styles.stepLabelActive,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {s.label}
                     </Text>
-                  </View>
-                  <Text style={[styles.embedStepLabel, active && styles.embedStepLabelActive]}>
-                    {s.id === 'content' ? 'URL (Destination)' : 'Personnaliser le Design'}
-                  </Text>
-                  {s.id === 'design' && active ? (
-                    <Sparkles size={14} color={colors.signal} style={{ marginLeft: 2 }} />
+                  </Pressable>
+                  {!isLast ? (
+                    <View style={[styles.stepConnector, step > index && styles.stepConnectorDone]} />
                   ) : null}
-                </Pressable>
+                </React.Fragment>
               )
-            }
-
-            return (
-              <React.Fragment key={s.id}>
-                <Pressable
-                  onPress={() => setStep(index)}
-                  style={styles.stepItem}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: active }}
-                >
-                  <View
-                    style={[
-                      styles.stepIndex,
-                      done && styles.stepIndexDone,
-                      active && styles.stepIndexActive,
-                    ]}
-                  >
-                    {done ? (
-                      <Check size={14} color={colors.ink} strokeWidth={3} />
-                    ) : (
-                      <Text
-                        style={[
-                          styles.stepIndexText,
-                          (active || done) && styles.stepIndexTextActive,
-                        ]}
-                      >
-                        {index + 1}
-                      </Text>
-                    )}
-                  </View>
-                  <Text
-                    style={[
-                      styles.stepLabel,
-                      done && styles.stepLabelDone,
-                      active && styles.stepLabelActive,
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {s.label}
-                  </Text>
-                </Pressable>
-                {!isLast ? (
-                  <View style={[styles.stepConnector, step > index && styles.stepConnectorDone]} />
-                ) : null}
-              </React.Fragment>
-            )
-          })}
-        </View>
+            })}
+          </View>
+        )}
 
         <ScrollView
           contentContainerStyle={styles.formBody}
@@ -476,7 +451,7 @@ export function QrCodeForm({
           scrollEnabled={!embedMode}
           style={embedMode ? styles.formBodyEmbed : undefined}
         >
-          {mode === 'smart' && currentStepId === 'identity' ? (
+          {mode === 'smart' && (currentStepId === 'identity' || embedMode) ? (
             <SmartIdentityStep
               state={state}
               setField={setField}
@@ -485,13 +460,14 @@ export function QrCodeForm({
             />
           ) : null}
 
-          {mode === 'static' && currentStepId === 'content' ? (
+          {mode === 'static' && (currentStepId === 'content' || (embedMode && !lockUrl)) ? (
             <StaticContentFields
               contentType={staticType}
               payload={staticPayload}
               lockUrl={lockUrl}
+              hideTypeSelector={embedMode}
               onTypeChange={(type) => {
-                if (lockUrl) return
+                if (lockUrl || embedMode) return
                 setStaticType(type)
                 setStaticPayload(defaultStaticPayload(type))
               }}
@@ -499,11 +475,11 @@ export function QrCodeForm({
             />
           ) : null}
 
-          {mode === 'smart' && currentStepId === 'content' ? (
+          {mode === 'smart' && (currentStepId === 'content' || embedMode) ? (
             <VerticalFields state={state} setField={setField} />
           ) : null}
 
-          {currentStepId === 'design' ? (
+          {currentStepId === 'design' || embedMode ? (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Éditeur visuel</Text>
               <Text style={styles.universHint}>
@@ -526,14 +502,14 @@ export function QrCodeForm({
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
           <View style={styles.footerActions}>
-            {step > 0 ? (
+            {step > 0 && !embedMode ? (
               <Button label="Précédent" variant="secondary" onPress={() => setStep((s) => s - 1)} />
             ) : (
               <View />
             )}
-            {!isLastStep ? (
+            {!isLastStep && !embedMode ? (
               <Button label="Suivant" onPress={() => setStep((s) => s + 1)} />
-            ) : mode === 'static' ? (
+            ) : mode === 'static' || embedMode ? (
               <Button
                 label={exporting ? 'Export…' : 'Télécharger PNG'}
                 loading={exporting}
@@ -558,8 +534,8 @@ export function QrCodeForm({
       <View
         style={[
           styles.preview,
-          wide && !embedMode && { flex: 1 },
-          embedMode && styles.previewEmbed,
+          wide && { flex: 1 },
+          embedMode && !wide && styles.previewEmbed,
         ]}
       >
         <View style={styles.previewHead}>
@@ -923,7 +899,66 @@ function PublishStep({
 const styles = StyleSheet.create({
   wrap: { gap: spacing.xl },
   wrapWide: { flexDirection: 'row', alignItems: 'flex-start' },
-  wrapEmbed: { width: '100%' },
+  wrapEmbed: { width: '100%', gap: 16 },
+  embedPreviewCard: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    gap: 16,
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  embedPreviewTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.ink,
+  },
+  embedExportRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    width: '100%',
+    maxWidth: 320,
+  },
+  embedEditorSection: {
+    gap: 12,
+  },
+  embedSectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.ink,
+  },
+  embedDestCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: colors.slate100,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    marginTop: 4,
+  },
+  embedDestLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.slate600,
+  },
+  embedDestUrl: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.signal,
+  },
   main: { flex: 1, gap: spacing.lg },
   mainEmbed: { gap: spacing.lg, width: '100%', minWidth: 0 },
   formBodyEmbed: { flexGrow: 0, flexShrink: 0 },

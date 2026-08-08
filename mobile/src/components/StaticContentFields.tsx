@@ -46,6 +46,7 @@ type Props = {
   payload: StaticQrPayload
   /** Masque le sélecteur de type et fige l’URL (partenaire embed) */
   lockUrl?: boolean
+  hideTypeSelector?: boolean
   onTypeChange: (type: StaticQrContentType) => void
   onPayloadChange: (payload: StaticQrPayload) => void
 }
@@ -54,6 +55,7 @@ export function StaticContentFields({
   contentType,
   payload,
   lockUrl = false,
+  hideTypeSelector = false,
   onTypeChange,
   onPayloadChange,
 }: Props) {
@@ -64,7 +66,7 @@ export function StaticContentFields({
           ? 'Destination verrouillée par le site hôte. Personnalisez le design à l’étape suivante.'
           : 'QR figé : le contenu est gravé dans le code. Pour éditer plus tard, choisissez Smart Page.'}
       </Text>
-      {!lockUrl ? (
+      {!lockUrl && !hideTypeSelector ? (
         <View style={styles.typeGrid}>
           {STATIC_CONTENT_TYPES.map((opt) => {
             const Icon = ICONS[opt.value]

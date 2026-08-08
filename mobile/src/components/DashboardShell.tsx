@@ -22,6 +22,7 @@ import {
   ScanLine,
   User,
   X,
+  PenTool,
 } from 'lucide-react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, {
@@ -49,6 +50,7 @@ const MOTION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
 
 const NAV = [
   { href: '/home', label: 'Vue d’ensemble', icon: LayoutDashboard, exact: true },
+  { href: '/new', label: 'Éditeur', icon: PenTool },
   { href: '/scanner', label: 'Scanner', icon: ScanLine },
   { href: '/qr-codes', label: 'Mes QR Codes', icon: QrCode },
   { href: '/pages', label: 'Smart Pages', icon: FileText },

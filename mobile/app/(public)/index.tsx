@@ -88,12 +88,22 @@ function useEmbedAutoHeight(enabled: boolean) {
   }, [enabled])
 }
 
+function getWebSearchParam(key: string): string | undefined {
+  if (Platform.OS !== 'web' || typeof window === 'undefined') return undefined
+  try {
+    const val = new URLSearchParams(window.location.search).get(key)
+    return val ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
 /**
  * Mode embed pour sites partenaires (ex. cartepostale.cool) :
  *   /newqr?embed=1&url=https://…&lockUrl=1&partner=cartepostale
  * — chrome marketing masqué, URL préremplie, export OK
  */
-export default function PublicEditorScreen() {
+export default function PublicEditorScreen({ forceEmbed = false }: { forceEmbed?: boolean } = {}) {
   const router = useRouter()
   const { width } = useWindowDimensions()
   const params = useLocalSearchParams<{
@@ -106,10 +116,24 @@ export default function PublicEditorScreen() {
   }>()
   const showHomeHint = width >= 420
 
-  const embedMode = isTruthyParam(params.embed)
-  const lockUrl = isTruthyParam(params.lockUrl)
+  const getParam = (key: 'type' | 'vertical' | 'embed' | 'url' | 'lockUrl' | 'partner') => {
+    const val = firstParam(params[key])
+    if (val !== undefined && val !== '') return val
+    return getWebSearchParam(key)
+  }
+
+  const rawEmbed = getParam('embed')
+  const rawLockUrl = getParam('lockUrl')
+  const rawUrl = getParam('url')
+  const rawPartner = getParam('partner')
+  const rawType = getParam('type')
+  const rawVertical = getParam('vertical')
+
+  const isEmbedPath = Platform.OS === 'web' && typeof window !== 'undefined' && window.location.pathname.includes('/embed')
+  const embedMode = forceEmbed || isTruthyParam(rawEmbed) || isEmbedPath
+  const lockUrl = isTruthyParam(rawLockUrl)
   const initialUrl = useMemo(() => {
-    let raw = firstParam(params.url)?.trim()
+    let raw = rawUrl?.trim()
     if (!raw) return undefined
     raw = raw.replace(/^["']+|["']+$/g, '').trim()
     if (!raw) return undefined
@@ -118,12 +142,12 @@ export default function PublicEditorScreen() {
     } catch {
       return raw
     }
-  }, [params.url])
+  }, [rawUrl])
   const partner = useMemo(() => {
-    const raw = firstParam(params.partner)?.trim()
+    const raw = rawPartner?.trim()
     return raw ? raw.replace(/^["']+|["']+$/g, '').trim() : undefined
-  }, [params.partner])
-  const initialStaticType = (firstParam(params.type) as StaticQrContentType) || 'url'
+  }, [rawPartner])
+  const initialStaticType = (rawType as StaticQrContentType) || 'url'
 
   useEmbedAutoHeight(embedMode)
 
@@ -136,7 +160,7 @@ export default function PublicEditorScreen() {
             embedMode
             lockUrl={lockUrl || Boolean(initialUrl)}
             initialUrl={initialUrl}
-            initialVertical={(firstParam(params.vertical) as LandingPageVertical) || 'generic'}
+            initialVertical={(rawVertical as LandingPageVertical) || 'generic'}
             initialStaticType={lockUrl || initialUrl ? 'url' : initialStaticType}
             submitLabel="Exporter"
             onSubmit={async () => undefined}

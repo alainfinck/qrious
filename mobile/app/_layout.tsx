@@ -13,6 +13,7 @@ function isEmbedMode(params: Record<string, string | string[] | undefined>): boo
   if (v === '1' || v === 'true' || v === 'yes') return true
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
     try {
+      if (window.location.pathname.includes('/embed')) return true
       const q = new URLSearchParams(window.location.search).get('embed')?.toLowerCase()
       return q === '1' || q === 'true' || q === 'yes'
     } catch {
@@ -31,6 +32,11 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (loading) return
+    if (embedMode) {
+      // Mode embed (iframe partenaires) : ne jamais rediriger (rester sur l'éditeur public)
+      return
+    }
+
     const segStr = segments.join('/')
     const inAuth =
       segments.includes('(auth)') ||
@@ -44,6 +50,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       segStr === '' ||
       segStr === 'index' ||
       segStr === 'newqr' ||
+      segStr.startsWith('newqr/') ||
+      segStr === 'embed' ||
+      segStr.startsWith('embed/') ||
       segments.length === 0
 
     if (!user && !inAuth && !inPublic) {
@@ -51,8 +60,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       router.replace('/login')
     } else if (user && inAuth) {
       router.replace('/home')
-    } else if (user && inPublic && !embedMode) {
-      // Mode embed (iframe partenaires) : rester sur l’éditeur même si connecté
+    } else if (user && inPublic) {
       router.replace('/home')
     }
   }, [user, loading, segments, router, embedMode])
