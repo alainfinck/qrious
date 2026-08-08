@@ -31,13 +31,24 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (loading) return
-    const root = segments[0]
-    const inAuth = root === '(auth)'
-    const inPublic = root === '(public)'
+    const segStr = segments.join('/')
+    const inAuth =
+      segments.includes('(auth)') ||
+      segments.includes('login') ||
+      segments.includes('register') ||
+      segments.includes('forgot-password') ||
+      segments.includes('reset-password')
+
+    const inPublic =
+      segments.includes('(public)') ||
+      segStr === '' ||
+      segStr === 'index' ||
+      segStr === 'newqr' ||
+      segments.length === 0
 
     if (!user && !inAuth && !inPublic) {
-      // Invité : éditeur public plutôt que login forcé
-      router.replace('/')
+      // Non connecté et sur une route protégée -> rediriger vers login
+      router.replace('/login')
     } else if (user && inAuth) {
       router.replace('/home')
     } else if (user && inPublic && !embedMode) {
